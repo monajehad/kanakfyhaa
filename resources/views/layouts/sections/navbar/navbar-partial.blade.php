@@ -107,9 +107,9 @@
             <i class="icon-base ri ri-user-3-line icon-22px me-2"></i> <span class="align-middle">My
               Profile</span> </a>
         </li>
-        @if (Auth::check() && Laravel\Jetstream\Jetstream::hasApiFeatures())
+        @if (Auth::check() )
           <li>
-            <a class="dropdown-item" href="{{ route('api-tokens.index') }}"> <i
+            <a class="dropdown-item" > <i
                 class="icon-base ri ri-settings-4-line icon-22px me-3"></i><span class="align-middle">Settings</span>
             </a>
           </li>
@@ -123,7 +123,7 @@
             </span>
           </a>
         </li>
-        @if (Auth::User() && Laravel\Jetstream\Jetstream::hasTeamFeatures())
+        @if (Auth::User() )
           <li>
             <div class="dropdown-divider"></div>
           </li>
@@ -135,35 +135,13 @@
           </li>
           <li>
             <a class="dropdown-item"
-              href="{{ Auth::user() ? route('teams.show', Auth::user()->currentTeam->id) : 'javascript:void(0)' }}">
+              href="javascript:void(0)">
               <i class="icon-base ri ri-settings-3-line icon-md me-3"></i><span>Team Settings</span>
             </a>
           </li>
-          @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-            <li>
-              <a class="dropdown-item" href="{{ route('teams.create') }}">
-                <i class="icon-base ri ri-group-line icon-md me-3"></i><span>Create New Team</span>
-              </a>
-            </li>
-          @endcan
-          @if (Auth::user()->allTeams()->count() > 1)
-            <li>
-              <div class="dropdown-divider my-1"></div>
-            </li>
-            <li>
-              <h6 class="dropdown-header">Switch Teams</h6>
-            </li>
-            <li>
-              <div class="dropdown-divider my-1"></div>
-            </li>
-          @endif
-          @if (Auth::user())
-            @foreach (Auth::user()->allTeams() as $team)
-              {{-- Below commented code read by artisan command while installing jetstream. !! Do not remove if you want to use jetstream. --}}
-
-              {{-- <x-switchable-team :team="$team" /> --}}
-            @endforeach
-          @endif
+          
+      
+          
         @endif
         <li>
           <div class="dropdown-divider my-1"></div>
@@ -171,14 +149,14 @@
         @if (Auth::check())
           <li>
             <div class="d-grid px-4 pt-2 pb-1">
-              <a class="btn btn-danger d-flex" href="{{ route('logout') }}"
+              <a class="btn btn-danger d-flex" href="{{ route('admin.logout') }}"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <small class=" align-middle">Logout</small>
                 <i class="icon-base ri ri-logout-box-r-line ms-2 icon-16px"></i>
               </a>
             </div>
           </li>
-          <form method="POST" id="logout-form" action="{{ route('logout') }}">
+          <form method="POST" id="logout-form" action="{{ route('admin.logout') }}">
             @csrf
           </form>
         @else
