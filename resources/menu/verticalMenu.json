@@ -42,6 +42,27 @@
        
       ]
       
+    },
+        {
+      "name": "Country Management",
+      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "slug": "admin.products",
+      "submenu": [
+        {
+          "name": "Show",
+          "url": "/admin/countries",
+          "slug": "admin.countries.index"
+        },
+        {
+          "name": "Create",
+          "url": "/admin/countries/create",
+          "slug": "admin.countries.create"
+        }
+
+ 
+       
+      ]
+      
     }
   ]
 }
