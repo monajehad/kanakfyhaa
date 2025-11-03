@@ -20,8 +20,28 @@
           "name": "Create",
           "url": "/admin/products/create",
           "slug": "admin.products.create"
+        },
+        {
+      "name": "Category Management",
+      "slug": "admin.categories",
+      "submenu": [
+        {
+          "name": "Show",
+          "url": "/admin/categories",
+          "slug": "admin.categories.index"
+        },
+        {
+          "name": "Create",
+          "url": "/admin/categories/create",
+          "slug": "admin.categories.create"
         }
+       
       ]
+      
+    }
+       
+      ]
+      
     }
   ]
 }

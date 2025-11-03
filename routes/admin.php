@@ -33,6 +33,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 // ==========================================[Recources]==================================
     // Product Management
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
+
 });
 
 // ============================================
