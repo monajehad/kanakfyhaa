@@ -10,14 +10,22 @@ class AdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * 
+     * ⚠️ هذا الـ Seeder لا يقبل التعديل - ينشئ مستخدم Admin واحد فقط
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@admin.com',
-            'password' => Hash::make('password'),
-            'type' => 'admin',
-        ]);
+        $this->command->info('👤 Creating Admin user...');
+
+        User::firstOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password'),
+                'type' => 'admin',
+            ]
+        );
+
+        $this->command->info('✅ Admin user created successfully!');
     }
 }

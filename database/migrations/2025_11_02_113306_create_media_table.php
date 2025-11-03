@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('mediable_id');
             $table->string('mediable_type');
             $table->enum('type', ['image', 'video']);
+            $table->enum('role', ['main', 'sub'])->default('sub')->comment('Defines if the file is the main file or a supplementary (sub) file. For example: image and sub images');
             $table->string('url');
             $table->string('thumbnail')->nullable();
             $table->string('alt_text')->nullable();

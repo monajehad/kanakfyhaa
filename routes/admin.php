@@ -21,16 +21,18 @@ Route::prefix('admin')->group(function () {
 // Authenticated Routes
 // ============================================
 Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
-    
+
     // Dashboard
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
-    
+    //// Logout =================================================================================
+
     Route::post('logout', [AuthController::class, 'adminLogout'])->name('logout');
-    // Logout
     
-    // يمكنك إضافة routes إضافية هنا
+// ==========================================[Recources]==================================
+    // Product Management
+    Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
 });
 
 // ============================================
