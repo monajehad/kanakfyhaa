@@ -38,6 +38,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
             // Country Management
         Route::resource('countries', \App\Http\Controllers\Admin\CountryController::class);
+         // City Management
+         Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
 
 
 });

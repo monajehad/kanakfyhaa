@@ -46,7 +46,7 @@
         {
       "name": "Country Management",
       "icon": "menu-icon icon-base ri ri-box-3-line",
-      "slug": "admin.products",
+      "slug": "admin.countries",
       "submenu": [
         {
           "name": "Show",
@@ -57,6 +57,27 @@
           "name": "Create",
           "url": "/admin/countries/create",
           "slug": "admin.countries.create"
+        }
+
+ 
+       
+      ]
+      
+    },
+     {
+      "name": "City Management",
+      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "slug": "admin.cities",
+      "submenu": [
+        {
+          "name": "Show",
+          "url": "/admin/cities",
+          "slug": "admin.cities.index"
+        },
+        {
+          "name": "Create",
+          "url": "/admin/cities/create",
+          "slug": "admin.cities.create"
         }
 
  
