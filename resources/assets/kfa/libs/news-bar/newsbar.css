@@ -3,8 +3,8 @@
   --news-color: #000;
   --news-height: 40px;
   --news-font-size: 1rem;
-  --news-item-padding-inline: 2rem;
-  --news-item-margin-inline: 0.5rem;
+  --news-item-padding-inline: 0rem;
+  --news-item-margin-inline: 0rem;
 }
 .news-bar {
   background: var(--news-bg);

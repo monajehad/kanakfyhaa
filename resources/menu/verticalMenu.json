@@ -76,17 +76,12 @@
     {
       "name": "Content Management",
       "icon": "menu-icon icon-base ri ri-file-list-3-line",
-      "slug": "admin.content",
+      "slug": "admin.",
       "submenu": [
         {
           "name": "News Bar",
-          "url": "/admin/news-bar",
-          "slug": "admin.news-bar.index"
-        },
-        {
-          "name": "Pages",
-          "url": "/admin/pages",
-          "slug": "admin.pages.index"
+          "url": "/admin/news_bar",
+          "slug": "admin.news_bar.index"
         }
       ]
     }

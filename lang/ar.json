@@ -52,7 +52,9 @@
   "Name or Description": "الاسم أو الوصف",
     "Category Management": "إدارة التصنيفات",
     "Country Management": "إدارة الدول",
-    "City Management": "إدارة المدن"
+    "City Management": "إدارة المدن",
+  "Content Management": "إدارة المحتوى",
+  "News Bar": "شريط الأخبار"
 
   
 }

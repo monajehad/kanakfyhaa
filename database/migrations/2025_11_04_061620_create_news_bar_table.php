@@ -22,13 +22,16 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Continue defining `news_bar_items` table
+        // Continue defining `news_bar_items` table with the missing `news_bar_id` column as foreign key
         Schema::create('news_bar_items', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('news_bar_id'); // Foreign key to news_bar
             $table->text('text'); // The news item text to appear in the news bar
             $table->boolean('active')->default(true); // Show/hide this item
             $table->integer('order')->default(0); // The display order of the item
             $table->timestamps();
+
+            $table->foreign('news_bar_id')->references('id')->on('news_bar')->onDelete('cascade');
         });
     }
 

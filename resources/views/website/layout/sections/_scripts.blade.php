@@ -43,16 +43,5 @@
 
     // ✅ Initialize News Bar============================
 
-    document.addEventListener("DOMContentLoaded", function() {
-
-        new NewsBar({
-            container: "#newsBar",
-            track: "#newsTrack",
-            speed: 120,
-            direction: "مفق",
-            pauseOnHover: true,
-            theme: "dark"
-        });
-
-    });
+  
 </script>

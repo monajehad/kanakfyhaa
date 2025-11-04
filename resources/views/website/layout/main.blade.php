@@ -3,11 +3,15 @@
 
 <head>
     @include('website.layout.sections._head')
-
 </head>
 
 <body>
-   @include('website.layout.home._news-bar')
+    {{-- عرض شريط الأخبار. تأكد أن متغير $newsBar معرف بشكل صحيح في الكنترولر ويتم تمريره إلى هذا العرض --}}
+    @if(isset($newsBar))
+        @include('website.layout.home._news_bar', ['newsBar' => $newsBar])
+    @else
+        {{-- ملاحظة: لم يتم إرسال متغير $newsBar إلى هذا العرض، لذلك لن يظهر شريط الأخبار --}}
+    @endif
 
     <!-- ==================== Header ============================ -->
     <header class="main-header">
@@ -36,7 +40,6 @@
                         <path d="m21 21-4.3-4.3" />
                     </svg>
                 </button>
-
 
                 <!-- Mobile Menu -->
                 <button class="menu-toggle" id="menuToggle">☰</button>
@@ -510,6 +513,8 @@
     @include('website.layout.sections._footer')
     <!-- ============================================================ -->
     @include('website.layout.sections._scripts')
+    
+    @stack("scripts")
 </body>
 
 </html>
