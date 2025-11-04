@@ -106,17 +106,15 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
         ]);
 
-        // إنشاء slug تلقائي من الاسم
         $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
 
-        // تحديث البيانات
         $category->update($validated);
 
         return response()->json([
             'success' => true,
             'message' => ' تم تحديث التصنيف بنجاح.',
             'category' => $category,
-          'redirect' => route('admin.categories.index') // رابط صفحة العرض
+          'redirect' => route('admin.categories.index') 
 
         ]);
     } catch (\Illuminate\Validation\ValidationException $e) {

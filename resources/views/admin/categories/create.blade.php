@@ -4,9 +4,12 @@
 
 @section('content')
 <div class="card mt-3">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">إنشاء تصنيف جديد</h4>
+            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">الرجوع</a>
+
     </div>
+   
     <div class="card-body">
         <form id="categoryForm" autocomplete="off">
             @csrf

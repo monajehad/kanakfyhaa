@@ -3,7 +3,11 @@
 @section('title', __('Categories'))
 
 @section('content')
-    <h4>{{ __('Categories') }}</h4>
+<div class="d-flex justify-content-between align-items-center mb-3 flex-row-reverse">
+     <h4>{{ __('Categories') }}</h4>
+    <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">إضافة فئة</a>
+</div>
+   
 
     {{-- Search Form --}}
     <form method="GET" name="csrf-token" content="{{ csrf_token() }}" action="{{ route('admin.categories.index') }}" class="row mb-3 gx-2 gy-1 align-items-end">
@@ -69,29 +73,57 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function deleteCategory(id) {
-            Swal.fire({
-                title: 'هل أنت متأكد؟',
-                text: "لن تتمكن من التراجع عن هذا!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'نعم، احذف!',
-                cancelButtonText: 'إلغاء'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.delete(`/categories/${id}`)
-                        .then(() => {
-                            Swal.fire('تم الحذف!', 'تم حذف التصنيف بنجاح.', 'success').then(() => {
-                                location.reload();
-                            });
-                        })
-                        .catch(error => {
-                            Swal.fire('خطأ', 'حدث خطأ أثناء الحذف.', 'error');
+        axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+function deleteCategory(id) {
+    Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "لن تتمكن من التراجع عن هذا!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'نعم، احذف!',
+        cancelButtonText: 'إلغاء'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            axios.delete(`/admin/categories/${id}`)
+                .then(response => {
+                    if (response.data.success) {
+                        Swal.fire('تم الحذف!', response.data.message, 'success').then(() => {
+                            location.reload();
                         });
-                }
-            });
+                    } else {
+                        Swal.fire('خطأ', response.data.message, 'error');
+                    }
+                })
+                .catch(() => Swal.fire('خطأ', 'حدث خطأ أثناء الحذف.', 'error'));
         }
+    });
+}
+        // function deleteCategory(id) {
+        //     Swal.fire({
+        //         title: 'هل أنت متأكد؟',
+        //         text: "لن تتمكن من التراجع عن هذا!",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonText: 'نعم، احذف!',
+        //         cancelButtonText: 'إلغاء'
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             axios.delete(`/categories/${id}`)
+        //                 .then(() => {
+        //                     Swal.fire('تم الحذف!', 'تم حذف التصنيف بنجاح.', 'success').then(() => {
+        //                         location.reload();
+        //                     });
+        //                 })
+        //                 .catch(error => {
+        //                     Swal.fire('خطأ', 'حدث خطأ أثناء الحذف.', 'error');
+        //                 });
+        //         }
+        //     });
+        // }
     </script>
 @endsection
