@@ -1,0 +1,52 @@
+:root {
+  /* ====== Brand Colors ====== */
+  --color-primary: #c7db09;     /* زر الاشتراك / اللون الأساسي */
+  --color-olive-green: #78812a; /* أيقونات */
+  --color-vivid-green: #8bc34a; /* تأكيد */
+  --color-burnt-orange: #ff7043;/* زر الإلغاء */
+  --color-fiery-red: #e53935;   /* تنبيه */
+
+  /* ====== Grays & Neutrals ====== */
+  --color-dark-gray: #4a4a4a;   /* نص فقرة */
+  --color-light-gray: #d1d1d1;  /* خط تقسيم */
+  --color-warm-white: #f9f9f4;  /* خلفية قسم */
+  --color-light-beige: #edebd7; /* خلفية بطاقة */
+
+  /* ====== Accent Colors ====== */
+  --color-light-blue: #a3d1ff;  /* شريط تحميل */
+
+  /* ====== Text ====== */
+  --text-primary: var(--color-dark-gray);
+  --text-muted: #777;
+
+  /* ====== Backgrounds ====== */
+  --bg-main: var(--color-warm-white);
+  --bg-section: var(--color-light-beige);
+  --bg-card: #ffffff;
+
+  /* ====== Borders ====== */
+  --border-color: var(--color-light-gray);
+
+  /* ====== Shadows ====== */
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+  /* ====== Typography ====== */
+  --font-main: "Cairo", system-ui, sans-serif;
+
+  /* ====== Transitions ====== */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.35s ease;
+}
+
+/* ====== Light Theme (default) ====== */
+html[data-theme="light"] {
+  --bg-main: var(--color-warm-white);
+  --text-primary: var(--color-dark-gray);
+}
+
+/* ====== Dark Theme (optional) ====== */
+html[data-theme="dark"] {
+  --bg-main: #111;
+  --text-primary: #f9f9f4;
+}

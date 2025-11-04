@@ -1,0 +1,31 @@
+:root {
+  --news-bg: #c7db09;
+  --news-color: #000;
+  --news-height: 40px;
+  --news-font-size: 1rem;
+  --news-item-padding-inline: 2rem;
+  --news-item-margin-inline: 0.5rem;
+}
+.news-bar {
+  background: var(--news-bg);
+  color: var(--news-color);
+  font-size: var(--news-font-size);
+  height: var(--news-height);
+  line-height: var(--news-height);
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+  user-select: none;
+  cursor: default;
+}
+.news-track {
+  display: inline-flex;
+  align-items: center;
+  will-change: transform;
+}
+.news-track span {
+  display: inline-block;
+  padding-inline: var(--news-item-padding-inline);
+  margin-inline: var(--news-item-margin-inline);
+}
+.news-bar.paused { opacity: 0.9; }

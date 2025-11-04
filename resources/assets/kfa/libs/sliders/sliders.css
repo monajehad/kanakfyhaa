@@ -1,0 +1,156 @@
+:root {
+  --accent: #c7db09;
+  --text-light: #fff;
+  --text-dark: #111;
+}
+
+/* ============================
+   HERO SLIDER
+============================ */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  overflow: hidden;
+  direction: rtl;
+}
+
+.hero-slider {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-slide {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-inline: 10%;
+  color: var(--text-light);
+}
+
+.hero-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.hero-content {
+  position: relative;
+  max-width: 550px;
+  z-index: 2;
+  animation: fadeUp 1s ease forwards;
+}
+
+.hero-content h1 {
+  font-family: "Cairo", sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.hero-content .highlight {
+  color: var(--accent);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-dark);
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background: #b5c90a;
+}
+
+/* Navigation Buttons */
+.swiper-button-prev,
+.swiper-button-next {
+  color: var(--accent);
+  transition: 0.3s;
+}
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  color: #fff;
+}
+
+/* Animation */
+@keyframes fadeUp {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+/* ============================
+   GALLERY SLIDER
+============================ */
+.gallery-slider {
+  width: 100%;
+  background: #111;
+  padding: 0.5rem 0;
+}
+
+.thumbs-slider {
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+.thumbs-slider .swiper-slide {
+  width: auto;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.thumbs-slider .swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.thumbs-slider .swiper-slide:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* ============================
+   RESPONSIVE
+============================ */
+@media (max-width: 992px) {
+  .hero-content h1 {
+    font-size: 2.2rem;
+  }
+  .hero-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-content {
+    text-align: center;
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  .hero-slide {
+    justify-content: center;
+    padding-inline: 1rem;
+  }
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none;
+  }
+}
