@@ -22,28 +22,24 @@
           "slug": "admin.products.create"
         },
         {
-      "name": "Category Management",
-      "slug": "admin.categories",
-      "submenu": [
-        {
-          "name": "Show",
-          "url": "/admin/categories",
-          "slug": "admin.categories.index"
-        },
-        {
-          "name": "Create",
-          "url": "/admin/categories/create",
-          "slug": "admin.categories.create"
+          "name": "Category Management",
+          "slug": "admin.categories",
+          "submenu": [
+            {
+              "name": "Show",
+              "url": "/admin/categories",
+              "slug": "admin.categories.index"
+            },
+            {
+              "name": "Create",
+              "url": "/admin/categories/create",
+              "slug": "admin.categories.create"
+            }
+          ]
         }
-       
       ]
-      
-    }
-       
-      ]
-      
     },
-        {
+    {
       "name": "Country Management",
       "icon": "menu-icon icon-base ri ri-box-3-line",
       "slug": "admin.products",
@@ -58,11 +54,24 @@
           "url": "/admin/countries/create",
           "slug": "admin.countries.create"
         }
-
- 
-       
       ]
-      
+    },
+    {
+      "name": "Content Management",
+      "icon": "menu-icon icon-base ri ri-file-list-3-line",
+      "slug": "admin.content",
+      "submenu": [
+        {
+          "name": "News Bar",
+          "url": "/admin/news-bar",
+          "slug": "admin.news-bar.index"
+        },
+        {
+          "name": "Pages",
+          "url": "/admin/pages",
+          "slug": "admin.pages.index"
+        }
+      ]
     }
   ]
 }

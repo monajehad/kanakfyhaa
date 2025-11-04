@@ -29,6 +29,11 @@ class DatabaseSeeder extends Seeder
         $this->call(MediaSeeder::class, false, ['count' => 3000000]); // 3 media per product
         $this->call(ExperienceSeeder::class, false, ['count' => 5000000]); // 5 experiences per product
 
+
+        $this->call(NewsBarSeeder::class);
+
+
+        
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
