@@ -84,6 +84,40 @@
           "slug": "admin.news_bar.index"
         }
       ]
+    },
+     {
+      "name": "Landmark Management",
+      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "slug": "admin.landmarks",
+      "submenu": [
+        {
+          "name": "Show",
+          "url": "/admin/landmarks",
+          "slug": "admin.landmarks.index"
+        },
+        {
+          "name": "Create",
+          "url": "/admin/landmarks/create",
+          "slug": "admin.landmarks.create"
+        }
+      ]
+    },
+    {
+      "name": "Artifact Management",
+      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "slug": "admin.artifacts",
+      "submenu": [
+        {
+          "name": "Show",
+          "url": "/admin/artifacts",
+          "slug": "admin.artifacts.index"
+        },
+        {
+          "name": "Create",
+          "url": "/admin/artifacts/create",
+          "slug": "admin.artifacts.create"
+        }
+      ]
     }
   ]
 }

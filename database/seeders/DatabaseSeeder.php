@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Artifact;
+use App\Models\Landmark;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +33,8 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call(NewsBarSeeder::class);
+        $this->call(LandmarkSeeder::class);
+        $this->call(ArtifactSeeder::class);
 
 
         

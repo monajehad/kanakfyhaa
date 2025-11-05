@@ -53,6 +53,11 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
 
     Route::resource('news_bar', \App\Http\Controllers\Admin\NewsBarController::class);
+  
+    Route::resource('landmarks', \App\Http\Controllers\Admin\LandmarkController::class);
+
+    Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
+
 });
 
 // ============================================
