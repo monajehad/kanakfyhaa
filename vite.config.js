@@ -14,26 +14,43 @@ function GetFilesArray(query) {
   return glob.sync(query);
 }
 
-// Page JS Files
-const pageJsFiles = GetFilesArray('resources/assets/js/*.js');
+// Standard asset groups
+const pageJsFiles        = GetFilesArray('resources/assets/js/*.js');
+const vendorJsFiles      = GetFilesArray('resources/assets/vendor/js/*.js');
+const LibsJsFiles        = GetFilesArray('resources/assets/vendor/libs/**/*.js');
+const LibsScssFiles      = GetFilesArray('resources/assets/vendor/libs/**/!(_)*.scss');
+const LibsCssFiles       = GetFilesArray('resources/assets/vendor/libs/**/*.css');
+const CoreScssFiles      = GetFilesArray('resources/assets/vendor/scss/**/!(_)*.scss');
+const FontsScssFiles     = GetFilesArray('resources/assets/vendor/fonts/!(_)*.scss');
+const FontsJsFiles       = GetFilesArray('resources/assets/vendor/fonts/**/!(_)*.js');
+const FontsCssFiles      = GetFilesArray('resources/assets/vendor/fonts/**/!(_)*.css');
 
-// Processing Vendor JS Files
-const vendorJsFiles = GetFilesArray('resources/assets/vendor/js/*.js');
+// KFA assets, NOTE: Do NOT wildcard include directories in "input" -- only valid entry files!
+const KfaCssFiles         = GetFilesArray('resources/assets/kfa/css/**/*.css');
+const KfaFontsFiles       = GetFilesArray('resources/assets/kfa/fonts/**/*');
+const KfaIconsFiles       = GetFilesArray('resources/assets/kfa/icons/**/*');
+const KfaImagesFiles      = GetFilesArray('resources/assets/kfa/images/**/*');
+const KfaJsFiles          = GetFilesArray('resources/assets/kfa/js/**/*.js');
 
-// Processing Libs JS Files
-const LibsJsFiles = GetFilesArray('resources/assets/vendor/libs/**/*.js');
+// Only include .js/.css files for news-bar and sliders (NOT the whole dir)
+const KfaLibsNewsBarJsFiles  = GetFilesArray('resources/assets/kfa/libs/news-bar/**/*.js');
+const KfaLibsNewsBarCssFiles = GetFilesArray('resources/assets/kfa/libs/news-bar/**/*.css');
+const KfaLibsSlidersJsFiles  = GetFilesArray('resources/assets/kfa/libs/sliders/**/*.js');
+const KfaLibsSlidersCssFiles = GetFilesArray('resources/assets/kfa/libs/sliders/**/*.css');
 
-// Processing Libs Scss & Css Files
-const LibsScssFiles = GetFilesArray('resources/assets/vendor/libs/**/!(_)*.scss');
-const LibsCssFiles = GetFilesArray('resources/assets/vendor/libs/**/*.css');
+// REMOVE: The problematic swiper-bundle.js entry which isn't present and causes Vite build errors.
+// Instead, make sure publicKfaEntries and the laravel input array do NOT reference the missing file!
+// Optionally, refer to files present in your project structure.
 
-// Processing Core, Themes & Pages Scss Files
-const CoreScssFiles = GetFilesArray('resources/assets/vendor/scss/**/!(_)*.scss');
-
-// Processing Fonts Scss & JS Files
-const FontsScssFiles = GetFilesArray('resources/assets/vendor/fonts/!(_)*.scss');
-const FontsJsFiles = GetFilesArray('resources/assets/vendor/fonts/**/!(_)*.js');
-const FontsCssFiles = GetFilesArray('resources/assets/vendor/fonts/**/!(_)*.css');
+// Optionally: publicKfaEntries with correct, existing files only
+const publicKfaEntries = [
+  'resources/assets/kfa/js/main.js',
+  'resources/assets/kfa/libs/news-bar/newsbar.js',
+  'resources/assets/kfa/libs/sliders/sliders.js',
+  'resources/assets/kfa/libs/sliders/sliders.css',
+  'resources/assets/kfa/libs/news-bar/newsbar.css',
+  'resources/assets/kfa/css/styles.css',
+];
 
 // Processing Window Assignment for Libs like jKanban, pdfMake
 function libsWindowAssignment() {
@@ -60,13 +77,23 @@ export default defineConfig({
         ...pageJsFiles,
         ...vendorJsFiles,
         ...LibsJsFiles,
-        'resources/js/laravel-user-management.js', // Processing Laravel User Management CRUD JS File
+        'resources/js/laravel-user-management.js',
         ...CoreScssFiles,
         ...LibsScssFiles,
         ...LibsCssFiles,
         ...FontsScssFiles,
         ...FontsJsFiles,
-        ...FontsCssFiles
+        ...FontsCssFiles,
+        ...KfaCssFiles,
+        ...KfaFontsFiles,
+        ...KfaIconsFiles,
+        ...KfaImagesFiles,
+        ...KfaJsFiles,
+        // Only include valid entry files that actually exist (no swiper-bundle.js here):
+        ...KfaLibsNewsBarJsFiles,
+        ...KfaLibsNewsBarCssFiles,
+        ...KfaLibsSlidersJsFiles,
+        ...KfaLibsSlidersCssFiles,
       ],
       refresh: true
     }),
@@ -80,11 +107,11 @@ export default defineConfig({
     }
   },
   json: {
-    stringify: true // Helps with JSON import compatibility
+    stringify: true
   },
   build: {
     commonjsOptions: {
-      include: [/node_modules/] // Helps with importing CommonJS modules
+      include: [/node_modules/]
     }
   }
 });

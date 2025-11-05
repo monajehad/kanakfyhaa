@@ -998,6 +998,165 @@
     "src": "resources/assets/js/wizard-ex-property-listing.js",
     "isEntry": true
   },
+  "resources/assets/kfa/css/header.css": {
+    "file": "assets/header-D7kqyj16.css",
+    "src": "resources/assets/kfa/css/header.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/css/reset.css": {
+    "file": "assets/reset-lrNpHx4y.css",
+    "src": "resources/assets/kfa/css/reset.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/css/sliders.css": {
+    "file": "assets/sliders-l0sNRNKZ.js",
+    "name": "sliders",
+    "src": "resources/assets/kfa/css/sliders.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/css/styles.css": {
+    "file": "assets/styles-ClUm3ojC.css",
+    "src": "resources/assets/kfa/css/styles.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/css/utilities.css": {
+    "file": "assets/utilities-c2AiH58r.css",
+    "src": "resources/assets/kfa/css/utilities.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/css/variables.css": {
+    "file": "assets/variables-DT9Gu35o.css",
+    "src": "resources/assets/kfa/css/variables.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/fonts/Cairo-Black.ttf": {
+    "file": "assets/Cairo-Black-BBBecWCb.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-Black.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-Bold.ttf": {
+    "file": "assets/Cairo-Bold-CRUa7UyS.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-Bold.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-ExtraBold.ttf": {
+    "file": "assets/Cairo-ExtraBold-BOrJWdUw.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-ExtraBold.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-ExtraLight.ttf": {
+    "file": "assets/Cairo-ExtraLight-B8LDBVyd.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-ExtraLight.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-Light.ttf": {
+    "file": "assets/Cairo-Light-DijhTkuQ.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-Light.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-Medium.ttf": {
+    "file": "assets/Cairo-Medium-BVfnydw0.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-Medium.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-Regular.ttf": {
+    "file": "assets/Cairo-Regular-CvRCENXA.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-Regular.ttf"
+  },
+  "resources/assets/kfa/fonts/Cairo-SemiBold.ttf": {
+    "file": "assets/Cairo-SemiBold-WHNjihNv.ttf",
+    "src": "resources/assets/kfa/fonts/Cairo-SemiBold.ttf"
+  },
+  "resources/assets/kfa/icons/logo.svg": {
+    "file": "assets/logo-DMQJLqUM.svg",
+    "src": "resources/assets/kfa/icons/logo.svg"
+  },
+  "resources/assets/kfa/icons/visa-1.svg": {
+    "file": "assets/visa-1-lzjQ6j2d.svg",
+    "src": "resources/assets/kfa/icons/visa-1.svg"
+  },
+  "resources/assets/kfa/icons/visa-2.svg": {
+    "file": "assets/visa-2-JxhnErlM.svg",
+    "src": "resources/assets/kfa/icons/visa-2.svg"
+  },
+  "resources/assets/kfa/icons/visa-3.svg": {
+    "file": "assets/visa-3-DrCdYu7z.svg",
+    "src": "resources/assets/kfa/icons/visa-3.svg"
+  },
+  "resources/assets/kfa/images/category-item1.svg": {
+    "file": "assets/category-item1-0ebx_FQK.svg",
+    "src": "resources/assets/kfa/images/category-item1.svg"
+  },
+  "resources/assets/kfa/images/placeholder-hero.svg": {
+    "file": "assets/placeholder-hero-bN6YN0G-.svg",
+    "src": "resources/assets/kfa/images/placeholder-hero.svg"
+  },
+  "resources/assets/kfa/images/prduct-item2.png": {
+    "file": "assets/prduct-item2-BJR9UTHp.png",
+    "src": "resources/assets/kfa/images/prduct-item2.png"
+  },
+  "resources/assets/kfa/images/product-item1.png": {
+    "file": "assets/product-item1-BWQb2caz.png",
+    "src": "resources/assets/kfa/images/product-item1.png"
+  },
+  "resources/assets/kfa/images/slide-01.png": {
+    "file": "assets/slide-01-DBewp-t5.png",
+    "src": "resources/assets/kfa/images/slide-01.png"
+  },
+  "resources/assets/kfa/images/slide-02.png": {
+    "file": "assets/slide-01-DBewp-t5.png",
+    "src": "resources/assets/kfa/images/slide-01.png"
+  },
+  "resources/assets/kfa/images/slide-03.png": {
+    "file": "assets/slide-01-DBewp-t5.png",
+    "src": "resources/assets/kfa/images/slide-01.png"
+  },
+  "resources/assets/kfa/images/trend1.png": {
+    "file": "assets/trend1-CbT2WO8v.png",
+    "src": "resources/assets/kfa/images/trend1.png"
+  },
+  "resources/assets/kfa/images/trend2.png": {
+    "file": "assets/trend2-U1l46BEb.png",
+    "src": "resources/assets/kfa/images/trend2.png"
+  },
+  "resources/assets/kfa/images/trend3.png": {
+    "file": "assets/trend3-DlHG281w.png",
+    "src": "resources/assets/kfa/images/trend3.png"
+  },
+  "resources/assets/kfa/js/header.js": {
+    "file": "assets/header-l0sNRNKZ.js",
+    "name": "header",
+    "src": "resources/assets/kfa/js/header.js",
+    "isEntry": true
+  },
+  "resources/assets/kfa/js/helpers.js": {
+    "file": "assets/helpers-l0sNRNKZ.js",
+    "name": "helpers",
+    "src": "resources/assets/kfa/js/helpers.js",
+    "isEntry": true
+  },
+  "resources/assets/kfa/js/main.js": {
+    "file": "assets/main-DQDeOs8A.js",
+    "name": "main",
+    "src": "resources/assets/kfa/js/main.js",
+    "isEntry": true
+  },
+  "resources/assets/kfa/libs/news-bar/newsbar.css": {
+    "file": "assets/newsbar-D1u5asjj.css",
+    "src": "resources/assets/kfa/libs/news-bar/newsbar.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/libs/news-bar/newsbar.js": {
+    "file": "assets/newsbar-AGth10cR.js",
+    "name": "newsbar",
+    "src": "resources/assets/kfa/libs/news-bar/newsbar.js",
+    "isEntry": true
+  },
+  "resources/assets/kfa/libs/sliders/sliders.css": {
+    "file": "assets/sliders-DlSpq3gZ.css",
+    "src": "resources/assets/kfa/libs/sliders/sliders.css",
+    "isEntry": true
+  },
+  "resources/assets/kfa/libs/sliders/sliders.js": {
+    "file": "assets/sliders-Bu3Eyi6s.js",
+    "name": "sliders",
+    "src": "resources/assets/kfa/libs/sliders/sliders.js",
+    "isEntry": true
+  },
   "resources/assets/vendor/fonts/flag-icons.scss": {
     "file": "assets/flag-icons-vR8zoSE6.css",
     "src": "resources/assets/vendor/fonts/flag-icons.scss",
@@ -3207,7 +3366,7 @@
     "isEntry": true
   },
   "resources/assets/vendor/js/template-customizer.js": {
-    "file": "assets/template-customizer-DFKqtbIV.js",
+    "file": "assets/template-customizer-BNah0qr-.js",
     "name": "template-customizer",
     "src": "resources/assets/vendor/js/template-customizer.js",
     "isEntry": true,

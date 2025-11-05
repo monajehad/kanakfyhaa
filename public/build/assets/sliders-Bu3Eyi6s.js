@@ -1,0 +1,1 @@
+new Swiper(".hero-slider",{loop:!0,speed:800,autoplay:{delay:5e3,disableOnInteraction:!1},navigation:{nextEl:".swiper-button-next",prevEl:".swiper-button-prev"},effect:"fade",fadeEffect:{crossFade:!0}});new Swiper(".thumbs-slider",{slidesPerView:"auto",spaceBetween:10,freeMode:!0,autoplay:{delay:0,disableOnInteraction:!1},speed:3e3,loop:!0});

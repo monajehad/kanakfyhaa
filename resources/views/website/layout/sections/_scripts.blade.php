@@ -2,7 +2,6 @@
     'resources/assets/kfa/js/main.js',
     'resources/assets/kfa/libs/news-bar/newsbar.js',
     'resources/assets/kfa/libs/sliders/sliders.js',
-    'resources/assets/kfa/libs/swiper/swiper-bundle.js',
 ])
 
 <script>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0" stop-color="#1c7ed6"/><stop offset="1" stop-color="#1971c2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#g)"/>
+  <g fill="#fff" opacity=".9">
+    <circle cx="1100" cy="100" r="20"/><circle cx="1000" cy="160" r="12"/><circle cx="1050" cy="220" r="8"/>
+  </g>
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" 
+        font-family="Cairo, system-ui" font-weight="700" font-size="64" fill="#ffffffee">Placeholder</text>
+</svg>
