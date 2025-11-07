@@ -18,5 +18,8 @@ class City extends Model
     public function landmarks() {
     return $this->hasMany(Landmark::class);
 }
-
+  public function media()
+    {
+        return $this->morphMany(Media::class, 'mediable');
+    }
 }

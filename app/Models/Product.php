@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
@@ -28,7 +29,16 @@ class Product extends Model
     protected $casts = [
         'sizes' => 'array',
     ];
+     protected static function boot()
+    {
+        parent::boot();
 
+        static::creating(function ($product) {
+            if (!$product->uuid) {
+                $product->uuid = Str::uuid();
+            }
+        });
+    }
  
     public function categories()
     {
