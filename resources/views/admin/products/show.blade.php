@@ -1,7 +1,7 @@
 @php
     use SimpleSoftwareIO\QrCode\Facades\QrCode;
     $configData = Helper::appClasses();
-    $url = route('admin.experience.show', $product->uuid);
+    $url = route('experience.show', $product->uuid);
 @endphp
 
 @extends('layouts/layoutMaster')

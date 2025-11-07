@@ -58,7 +58,6 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
 
-    Route::get(uri: '/experience/{uuid}', action: [App\Http\Controllers\ExperienceController::class, 'show'])->name('experience.show');
 
 
 });
