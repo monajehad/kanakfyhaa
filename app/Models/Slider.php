@@ -7,18 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 
 class Slider extends Model
 {
-    //
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'title',
-        'short_description',
-        'action_href',
-        'action_button_text',
+        'subtitle',
+        'description',
+        'image',
+        'button_text',
+        'button_url',
         'order',
+        'active',
     ];
-    public function image()
+
+    /**
+     * You can define image handling logic here,
+     * such as an accessor for the image path if needed.
+     */
+
+    // Example: If you wish to retrieve the full image url
+    public function getImageUrlAttribute()
     {
-        return $this->morphOne(Media::class, 'mediable');
+        // Assumes image is stored via Laravel's storage system
+        return $this->image ? asset('storage/' . $this->image) : null;
     }
 }

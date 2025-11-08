@@ -56,7 +56,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::resource('landmarks', \App\Http\Controllers\Admin\LandmarkController::class);
 
     Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
-
+});
 
 Route::prefix('admin')->middleware('auth')->name('admin.content.')->group(function () {
     Route::resource('news_bar', \App\Http\Controllers\Admin\NewsBarController::class);
