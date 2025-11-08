@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
             _method: 'PUT'
         };
 
-        axios.post('{{ route('admin.news_bar.update', $newsBar->id) }}', payload)
+        axios.post('{{ route('admin.content.news_bar.update', $newsBar->id) }}', payload)
         .then(response => {
             if (response.data.success) {
                 toastr.success(response.data.message || "تم تحديث الإعدادات بنجاح.", "نجاح");

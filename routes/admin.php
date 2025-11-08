@@ -52,13 +52,18 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     // City Management
     Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
 
-    Route::resource('news_bar', \App\Http\Controllers\Admin\NewsBarController::class);
-  
+
     Route::resource('landmarks', \App\Http\Controllers\Admin\LandmarkController::class);
 
     Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
-
 });
+
+Route::prefix('admin')->middleware('auth')->name('admin.content.')->group(function () {
+    Route::resource('news_bar', \App\Http\Controllers\Admin\NewsBarController::class);
+    Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
+});
+
+
 
 // ============================================
 // Fallback to redirect /admin (not logged) to login
@@ -67,7 +72,7 @@ Route::get('admin', function () {
 })->middleware('guest:admin');
 
 
-Route::get('login',function (){
+Route::get('login', function () {
 
     return redirect()->route('admin.login');
 })->name('login');

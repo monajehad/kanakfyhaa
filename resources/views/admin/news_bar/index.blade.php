@@ -5,7 +5,7 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-3 flex-row-reverse">
     <h4>{{ __('News Bar') }}</h4>
-    <a href="{{ route('admin.news_bar.create') }}" class="btn btn-primary">إضافة شريط أخبار</a>
+    <a href="{{ route('admin.content.news_bar.create') }}" class="btn btn-primary">إضافة شريط أخبار</a>
 </div>
 
 @if (session('success'))
@@ -54,7 +54,7 @@
                             <i class="icon-base ri ri-more-2-fill icon-18px"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ route('admin.news_bar.edit', $newsBar->id) }}">
+                            <a class="dropdown-item" href="{{ route('admin.content.news_bar.edit', $newsBar->id) }}">
                                 <i class="icon-base ri ri-pencil-line icon-18px me-1"></i>{{ __('Edit') }}
                             </a>
                             <a class="dropdown-item" href="javascript:void(0);" onclick="deleteNewsBar({{ $newsBar->id }})">
@@ -91,7 +91,7 @@
             cancelButtonText: 'إلغاء'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.delete(`/admin/news_bar/${id}`)
+                axios.delete(`/admin/news-bar/${id}`)
                     .then(response => {
                         if (response.data.success) {
                             Swal.fire('تم الحذف!', response.data.message, 'success').then(() => {
