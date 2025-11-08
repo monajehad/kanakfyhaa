@@ -20,6 +20,7 @@ return [
     | Application Environment
     |--------------------------------------------------------------------------
     |
+    
     | This value determines the "environment" your application is currently
     | running in. This may determine how you prefer to configure various
     | services the application utilizes. Set this in your ".env" file.
@@ -126,6 +127,8 @@ return [
     'aliases' => [
         // Other aliases...
         'Helper' => App\Helpers\Helpers::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+
     ],
 
 ];
