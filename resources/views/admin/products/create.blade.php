@@ -21,14 +21,34 @@
                     <input class="form-control" type="text" id="title" name="title" placeholder="عنوان مختصر للمنتج">
                 </div>
 
+                <div class="col-md-6">
+                    <label class="form-label" for="name_ar">اسم المنتج (عربي)</label>
+                    <input class="form-control" type="text" id="name_ar" name="name_ar" placeholder="اسم المنتج بالعربية">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="name_en">اسم المنتج (إنجليزي)</label>
+                    <input class="form-control" type="text" id="name_en" name="name_en" placeholder="Product Name in English">
+                </div>
+
                 <div class="col-md-12">
                     <label class="form-label" for="short_description">وصف قصير</label>
                     <input class="form-control" type="text" id="short_description" name="short_description" maxlength="255" placeholder="نبذة سريعة عن المنتج">
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label class="form-label" for="description">وصف تفصيلي</label>
                     <textarea class="form-control" id="description" name="description" rows="3" placeholder="تفاصيل عن المنتج..."></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="description_ar">وصف تفصيلي (عربي)</label>
+                    <textarea class="form-control" id="description_ar" name="description_ar" rows="3" placeholder="الوصف بالعربية..."></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="description_en">وصف تفصيلي (إنجليزي)</label>
+                    <textarea class="form-control" id="description_en" name="description_en" rows="3" placeholder="Description in English..."></textarea>
                 </div>
 
                 <div class="col-md-4">
@@ -37,8 +57,23 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label" for="colors">الألوان <small>(أكواد hex مثل: #000000,#FFFFFF)</small></label>
+                    <input class="form-control" type="text" id="colors" name="colors" placeholder="#000000, #FFFFFF, #C8D400">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="sizes">المقاسات <small>(افصل القيم بفاصلة)</small></label>
                     <input class="form-control" type="text" id="sizes" name="sizes" placeholder="S, M, L, XL">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="city_id">المدينة</label>
+                    <select class="form-select" id="city_id" name="city_id">
+                        <option value="">-- اختر المدينة --</option>
+                        @foreach($cities ?? [] as $city)
+                            <option value="{{ $city->id }}">{{ $city->name_ar ?? $city->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="col-md-4">
@@ -52,8 +87,18 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label" for="price">السعر</label>
+                    <input class="form-control" type="number" id="price" name="price" min="0" step="0.01" value="0">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="discount">الخصم (%)</label>
                     <input class="form-control" type="number" id="discount" name="discount" min="0" max="100" step="0.01" value="0">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="image">رابط الصورة (URL)</label>
+                    <input class="form-control" type="url" id="image" name="image" placeholder="https://example.com/image.jpg">
                 </div>
 
                 <div class="col-md-4">
@@ -66,10 +111,17 @@
                     <input class="form-control" type="file" id="sub_images" name="sub_images[]" accept="image/*" multiple>
                 </div>
 
-                <div class="col-md-2 mt-2">
+                <div class="col-md-3 mt-2">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="published" name="published" value="1">
                         <label class="form-check-label" for="published">نشر المنتج</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mt-2">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_package" name="is_package" value="1">
+                        <label class="form-check-label" for="is_package">بكج كامل</label>
                     </div>
                 </div>
             </div>
@@ -165,8 +217,21 @@ document.addEventListener("DOMContentLoaded", function() {
             formData.delete('sizes');
         }
 
+        let colorsRaw = form.colors?.value.trim();
+        if (colorsRaw) {
+            let arrColors = colorsRaw.split(',').map(c => c.trim()).filter(Boolean);
+            formData.delete('colors');
+            arrColors.forEach((clr, i) => formData.append('colors[' + i + ']', clr));
+        } else {
+            formData.delete('colors');
+        }
+
         if (form.published) {
             formData.set('published', form.published.checked ? 1 : 0);
+        }
+
+        if (form.is_package) {
+            formData.set('is_package', form.is_package.checked ? 1 : 0);
         }
 
         submitBtn.innerText = 'يتم الحفظ...';

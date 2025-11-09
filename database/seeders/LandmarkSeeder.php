@@ -6,43 +6,56 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\{City, Landmark};
 use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class LandmarkSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     */public function run(): void
-{
-   $cities = City::all();
+     */
+    public function run(): void
+    {
+        $count = 100; // Create exactly 100 landmarks
+        $faker = Faker::create('ar_SA');
+        
+        $this->command->info("🏛️ Creating {$count} landmarks...");
 
-    // افترض أن لديك $cities جاهزة وعداد $i
-    foreach ($cities as $city) {
-        for ($i = 1; $i <= 10; $i++) { // مثال: إنشاء 10 معالم لكل مدينة
-            $name = "معلم $i في " . $city->name;
+        $cities = City::all();
+        
+        if ($cities->isEmpty()) {
+            $this->command->error('❌ Please run CitySeeder first!');
+            return;
+        }
 
-            // إنشاء slug أساسي
-            $slugBase = \Illuminate\Support\Str::slug($name);
+        $landmarkTypes = ['مسجد', 'كنيسة', 'متحف', 'قلعة', 'سوق', 'مدرسة', 'مكتبة', 'حديقة', 'نصب تذكاري', 'قصر'];
 
-            // التأكد من تفرد slug
+        for ($i = 1; $i <= $count; $i++) {
+            $city = $cities->random();
+            $name = $faker->randomElement($landmarkTypes) . ' ' . $city->name;
+
+            // Create unique slug
+            $slugBase = Str::slug($name);
             $slug = $slugBase;
             $counter = 1;
-            while (\App\Models\Landmark::where('slug', $slug)->exists()) {
+            while (Landmark::where('slug', $slug)->exists()) {
                 $slug = $slugBase . '-' . $counter;
                 $counter++;
             }
 
-            // إنشاء المعلم
             Landmark::create([
                 'city_id' => $city->id,
                 'name' => $name,
                 'slug' => $slug,
-                'type' => 'مسجد', 
-
+                'type' => $faker->randomElement($landmarkTypes),
                 'short_description' => 'أحد المعالم الشهيرة في ' . $city->name,
-                'description' => 'تفاصيل المعلم التاريخي ' . $name,
+                'description' => $faker->paragraph(3),
             ]);
-        }
-    }
-}
 
+            if ($i % 10 == 0) {
+                $this->command->info("  ✓ {$i} landmarks created");
+            }
+        }
+
+        $this->command->info("✅ {$count} landmarks created successfully!");
+    }
 }

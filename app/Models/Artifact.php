@@ -21,8 +21,16 @@ class Artifact extends Model
     public function landmark() {
         return $this->belongsTo(Landmark::class);
     }
-      public function media()
+    public function media()
     {
         return $this->morphMany(Media::class, 'mediable');
+    }
+
+    /**
+     * Scope to get artifacts by landmark
+     */
+    public function scopeForLandmark($query, $landmarkId)
+    {
+        return $query->where('landmark_id', $landmarkId);
     }
 }

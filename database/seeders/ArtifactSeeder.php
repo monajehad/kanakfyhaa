@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\{Landmark, Artifact};
+use Faker\Factory as Faker;
 
 class ArtifactSeeder extends Seeder
 {
@@ -13,17 +14,36 @@ class ArtifactSeeder extends Seeder
      */
     public function run(): void
     {
-         $landmarks = Landmark::all();
+        $count = 100; // Create exactly 100 artifacts
+        $faker = Faker::create('ar_SA');
+        
+        $this->command->info("🎨 Creating {$count} artifacts...");
 
-        foreach ($landmarks as $landmark) {
-            for ($i = 1; $i <= 2; $i++) {
-                Artifact::create([
-                    'landmark_id' => $landmark->id,
-                    'title' => "تحفة {$i} من {$landmark->name}",
-                    'short_description' => 'قطعة فنية  ',
-                    'description' => 'تفاصيل عن هذه التحفة .',
-                ]);
+        $landmarks = Landmark::all();
+        
+        if ($landmarks->isEmpty()) {
+            $this->command->error('❌ Please run LandmarkSeeder first!');
+            return;
+        }
+
+        $artifactTypes = ['تمثال', 'لوحة', 'مخطوطة', 'عملة', 'سيف', 'خنجر', 'خاتم', 'قلادة', 'سجادة', 'مزهرية'];
+
+        for ($i = 1; $i <= $count; $i++) {
+            $landmark = $landmarks->random();
+            $artifactType = $faker->randomElement($artifactTypes);
+
+            Artifact::create([
+                'landmark_id' => $landmark->id,
+                'title' => "{$artifactType} من {$landmark->name}",
+                'short_description' => $faker->sentence(8),
+                'description' => $faker->paragraph(3),
+            ]);
+
+            if ($i % 10 == 0) {
+                $this->command->info("  ✓ {$i} artifacts created");
             }
         }
+
+        $this->command->info("✅ {$count} artifacts created successfully!");
     }
 }

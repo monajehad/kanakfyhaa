@@ -32,14 +32,34 @@
                     <input class="form-control" type="text" id="title" name="title" placeholder="عنوان مختصر للمنتج" value="{{ old('title', $product->title) }}">
                 </div>
 
+                <div class="col-md-6">
+                    <label class="form-label" for="name_ar">اسم المنتج (عربي)</label>
+                    <input class="form-control" type="text" id="name_ar" name="name_ar" placeholder="اسم المنتج بالعربية" value="{{ old('name_ar', $product->name_ar) }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="name_en">اسم المنتج (إنجليزي)</label>
+                    <input class="form-control" type="text" id="name_en" name="name_en" placeholder="Product Name in English" value="{{ old('name_en', $product->name_en) }}">
+                </div>
+
                 <div class="col-md-12">
                     <label class="form-label" for="short_description">وصف قصير</label>
                     <input class="form-control" type="text" id="short_description" name="short_description" maxlength="255" placeholder="نبذة سريعة عن المنتج" value="{{ old('short_description', $product->short_description) }}">
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <label class="form-label" for="description">وصف تفصيلي</label>
                     <textarea class="form-control" id="description" name="description" rows="3" placeholder="تفاصيل عن المنتج...">{{ old('description', $product->description) }}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="description_ar">وصف تفصيلي (عربي)</label>
+                    <textarea class="form-control" id="description_ar" name="description_ar" rows="3" placeholder="الوصف بالعربية...">{{ old('description_ar', $product->description_ar) }}</textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="description_en">وصف تفصيلي (إنجليزي)</label>
+                    <textarea class="form-control" id="description_en" name="description_en" rows="3" placeholder="Description in English...">{{ old('description_en', $product->description_en) }}</textarea>
                 </div>
 
                 <div class="col-md-4">
@@ -48,10 +68,28 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label" for="colors">الألوان <small>(أكواد hex مثل: #000000,#FFFFFF)</small></label>
+                    <input class="form-control" type="text" id="colors" name="colors" placeholder="#000000, #FFFFFF, #C8D400"
+                        value="{{ old('colors', is_array($product->colors) ? implode(', ', $product->colors) : ($product->colors ?? '')) }}">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="sizes">المقاسات <small>(افصل القيم بفاصلة)</small></label>
                     <input class="form-control" type="text" id="sizes" name="sizes"
                         placeholder="S, M, L, XL"
                         value="{{ old('sizes', is_array($product->sizes) ? implode(', ', $product->sizes) : $product->sizes) }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="city_id">المدينة</label>
+                    <select class="form-select" id="city_id" name="city_id">
+                        <option value="">-- اختر المدينة --</option>
+                        @foreach($cities ?? [] as $city)
+                            <option value="{{ $city->id }}" {{ old('city_id', $product->city_id) == $city->id ? 'selected' : '' }}>
+                                {{ $city->name_ar ?? $city->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="col-md-4">
@@ -67,9 +105,21 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label" for="price">السعر</label>
+                    <input class="form-control" type="number" id="price" name="price" min="0" step="0.01"
+                        value="{{ old('price', $product->price ?? 0) }}">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="discount">الخصم (%)</label>
                     <input class="form-control" type="number" id="discount" name="discount" min="0" max="100" step="0.01"
                         value="{{ old('discount', $product->discount ?? 0) }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="image">رابط الصورة (URL)</label>
+                    <input class="form-control" type="url" id="image" name="image" placeholder="https://example.com/image.jpg"
+                        value="{{ old('image', $product->image) }}">
                 </div>
             </div>
 
@@ -136,11 +186,19 @@
             </div>
 
             <div class="row">
-                <div class="col-md-2 mt-4">
+                <div class="col-md-3 mt-4">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="published" name="published" value="1"
                             {{ old('published', $product->published) ? 'checked' : '' }}>
                         <label class="form-check-label" for="published">نشر المنتج</label>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_package" name="is_package" value="1"
+                            {{ old('is_package', $product->is_package) ? 'checked' : '' }}>
+                        <label class="form-check-label" for="is_package">بكج كامل</label>
                     </div>
                 </div>
             </div>
@@ -234,8 +292,21 @@ document.addEventListener("DOMContentLoaded", function() {
             formData.delete('sizes');
         }
 
+        let colorsRaw = form.colors?.value.trim();
+        if (colorsRaw) {
+            let arrColors = colorsRaw.split(',').map(c => c.trim()).filter(Boolean);
+            formData.delete('colors');
+            arrColors.forEach((clr, i) => formData.append('colors[' + i + ']', clr));
+        } else {
+            formData.delete('colors');
+        }
+
         if (form.published) {
             formData.set('published', form.published.checked ? 1 : 0);
+        }
+
+        if (form.is_package) {
+            formData.set('is_package', form.is_package.checked ? 1 : 0);
         }
 
         submitBtn.innerText = 'يتم التحديث...';

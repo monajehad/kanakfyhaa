@@ -6,7 +6,11 @@ use App\Http\Controllers\Website\HomeController;
 
 // Main Page Route
 Route::get('/', HomeController::class)->name('pages-home');
- Route::get(uri: '/experience/{uuid}', action: [App\Http\Controllers\ExperienceController::class, 'show'])->name('experience.show');
+
+// Checkout Route
+Route::get('/checkout', \App\Http\Controllers\Website\CheckoutController::class)->name('checkout');
+
+Route::get(uri: '/experience/{uuid}', action: [App\Http\Controllers\ExperienceController::class, 'show'])->name('experience.show');
 
 
 require __DIR__ . '/admin.php';

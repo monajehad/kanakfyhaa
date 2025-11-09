@@ -29,15 +29,43 @@ class CitySeeder extends Seeder
             return;
         }
 
-        // Create Gaza first (essential data)
+        // Create essential Palestinian cities first
         City::firstOrCreate(
             ['name' => 'غزة', 'country_id' => 1],
             [
+                'name_ar' => 'غزة',
+                'name_en' => 'Gaza',
                 'native_name' => 'Gaza',
                 'region' => 'غزة',
                 'subregion' => 'غزة',
                 'latitude' => 31.5,
                 'longitude' => 34.47,
+            ]
+        );
+
+        City::firstOrCreate(
+            ['name' => 'القدس', 'country_id' => 1],
+            [
+                'name_ar' => 'القدس',
+                'name_en' => 'Jerusalem',
+                'native_name' => 'Jerusalem',
+                'region' => 'القدس',
+                'subregion' => 'القدس',
+                'latitude' => 31.7683,
+                'longitude' => 35.2137,
+            ]
+        );
+
+        City::firstOrCreate(
+            ['name' => 'الخليل', 'country_id' => 1],
+            [
+                'name_ar' => 'الخليل',
+                'name_en' => 'Hebron',
+                'native_name' => 'Hebron',
+                'region' => 'الخليل',
+                'subregion' => 'الخليل',
+                'latitude' => 31.5326,
+                'longitude' => 35.0998,
             ]
         );
 
@@ -50,9 +78,12 @@ class CitySeeder extends Seeder
             $cities = [];
 
             for ($j = 0; $j < $remaining; $j++) {
+                $cityName = $faker->city();
                 $cities[] = [
                     'country_id' => $faker->randomElement($countryIds),
-                    'name' => $faker->city(),
+                    'name' => $cityName,
+                    'name_ar' => $cityName,
+                    'name_en' => $cityName,
                     'native_name' => $faker->city(),
                     // Fix: use $faker->city() for 'region' to avoid unknown "state" format error
                     'region' => $faker->city(),

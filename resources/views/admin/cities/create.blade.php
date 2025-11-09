@@ -19,6 +19,16 @@
                 </div>
 
                 <div class="col-md-6">
+                    <label class="form-label">اسم المدينة (عربي)</label>
+                    <input type="text" name="name_ar" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">اسم المدينة (إنجليزي)</label>
+                    <input type="text" name="name_en" class="form-control">
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label">الاسم المحلي</label>
                     <input type="text" name="native_name" class="form-control">
                 </div>

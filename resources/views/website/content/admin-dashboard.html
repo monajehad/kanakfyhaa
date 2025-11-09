@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - متجر الهوديهات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(31, 38, 135, 0.4);
+        }
+
+        table {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 700;
+            padding: 16px;
+            text-align: right;
+        }
+
+        td {
+            color: white;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .badge {
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 12px 24px;
+            color: white;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <!-- Header -->
+    <header class="glass rounded-3xl mb-8">
+        <div class="flex items-center justify-between p-4">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                    H
+                </div>
+                <span class="text-white font-bold text-xl">لوحة التحكم الإدارية</span>
+            </a>
+            <a href="index.html" class="text-white hover:text-purple-200 transition font-medium">← العودة للمتجر</a>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-5xl font-bold text-white mb-8 text-center">إدارة الطلبات</h1>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-white/80 font-medium">إجمالي الطلبات</span>
+                    <span class="text-3xl">📦</span>
+                </div>
+                <div class="text-4xl font-bold text-white" id="totalOrders">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-white/80 font-medium">قيد المعالجة</span>
+                    <span class="text-3xl">⏳</span>
+                </div>
+                <div class="text-4xl font-bold text-white" id="processingOrders">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-white/80 font-medium">مكتملة</span>
+                    <span class="text-3xl">✅</span>
+                </div>
+                <div class="text-4xl font-bold text-white" id="completedOrders">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-white/80 font-medium">إجمالي المبيعات</span>
+                    <span class="text-3xl">💰</span>
+                </div>
+                <div class="text-3xl font-bold text-white" id="totalSales">$0</div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="glass rounded-3xl p-6 mb-6">
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 البحث برقم الطلب أو الاسم أو البريد الإلكتروني..." onkeyup="searchOrders()">
+                <div class="flex gap-3">
+                    <select id="statusFilter" class="search-box" onchange="filterOrders()">
+                        <option value="">جميع الحالات</option>
+                        <option value="Processing">قيد المعالجة</option>
+                        <option value="Shipped">تم الشحن</option>
+                        <option value="Delivered">تم التوصيل</option>
+                        <option value="Cancelled">ملغى</option>
+                    </select>
+                    <button onclick="exportOrders()" class="btn btn-primary">
+                        📊 تصدير Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="glass rounded-3xl p-6 overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>العميل</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>الهاتف</th>
+                        <th>الدولة</th>
+                        <th>المدينة</th>
+                        <th>المبلغ</th>
+                        <th>الدفع</th>
+                        <th>الحالة</th>
+                        <th>التاريخ</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                    <tr>
+                        <td colspan="11" class="text-center py-8 text-white/70">لا توجد طلبات</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4" onclick="closeModal(event)">
+        <div class="glass rounded-3xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-3xl font-bold text-white">تفاصيل الطلب</h3>
+                <button onclick="closeModal()" class="text-white hover:text-red-300 transition">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="orderDetails" class="text-white">
+                <!-- Order details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        let filteredOrders = [...orders];
+
+        // Load Orders
+        function loadOrders() {
+            updateStatistics();
+            renderOrders(filteredOrders);
+        }
+
+        // Update Statistics
+        function updateStatistics() {
+            document.getElementById('totalOrders').textContent = orders.length;
+            
+            const processing = orders.filter(o => o.orderStatus === 'Processing').length;
+            document.getElementById('processingOrders').textContent = processing;
+            
+            const completed = orders.filter(o => o.orderStatus === 'Delivered').length;
+            document.getElementById('completedOrders').textContent = completed;
+            
+            const totalSales = orders.reduce((sum, order) => sum + order.total, 0);
+            document.getElementById('totalSales').textContent = `$${totalSales.toFixed(2)}`;
+        }
+
+        // Render Orders
+        function renderOrders(ordersToRender) {
+            const tbody = document.getElementById('ordersTableBody');
+            
+            if (ordersToRender.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" class="text-center py-8 text-white/70">لا توجد طلبات</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = ordersToRender.map(order => `
+                <tr>
+                    <td class="font-mono font-bold">${order.orderId}</td>
+                    <td>${order.customerName}</td>
+                    <td>${order.email}</td>
+                    <td dir="ltr">${order.phone}</td>
+                    <td>${order.country}</td>
+                    <td>${order.city}</td>
+                    <td class="font-bold">${order.currency.symbol}${(order.total * order.currency.rate).toFixed(2)}</td>
+                    <td>
+                        <span class="badge ${order.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}">
+                            ${order.paymentStatus === 'Paid' ? 'مدفوع' : 'غير مدفوع'}
+                        </span>
+                    </td>
+                    <td>
+                        <select onchange="updateOrderStatus('${order.orderId}', this.value)" 
+                                class="badge ${getStatusBadgeClass(order.orderStatus)} cursor-pointer">
+                            <option value="Processing" ${order.orderStatus === 'Processing' ? 'selected' : ''}>قيد المعالجة</option>
+                            <option value="Shipped" ${order.orderStatus === 'Shipped' ? 'selected' : ''}>تم الشحن</option>
+                            <option value="Delivered" ${order.orderStatus === 'Delivered' ? 'selected' : ''}>تم التوصيل</option>
+                            <option value="Cancelled" ${order.orderStatus === 'Cancelled' ? 'selected' : ''}>ملغى</option>
+                        </select>
+                    </td>
+                    <td>${new Date(order.orderDate).toLocaleDateString('ar-EG')}</td>
+                    <td>
+                        <div class="flex gap-2">
+                            <button onclick="viewOrder('${order.orderId}')" class="btn btn-primary text-sm">
+                                عرض
+                            </button>
+                            <button onclick="deleteOrder('${order.orderId}')" class="btn btn-danger text-sm">
+                                حذف
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Get Status Badge Class
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'Processing': return 'badge-info';
+                case 'Shipped': return 'badge-warning';
+                case 'Delivered': return 'badge-success';
+                case 'Cancelled': return 'badge-danger';
+                default: return 'badge-info';
+            }
+        }
+
+        // Search Orders
+        function searchOrders() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            filteredOrders = orders.filter(order => 
+                order.orderId.toLowerCase().includes(searchTerm) ||
+                order.customerName.toLowerCase().includes(searchTerm) ||
+                order.email.toLowerCase().includes(searchTerm) ||
+                order.phone.includes(searchTerm)
+            );
+            renderOrders(filteredOrders);
+        }
+
+        // Filter Orders
+        function filterOrders() {
+            const status = document.getElementById('statusFilter').value;
+            if (status) {
+                filteredOrders = orders.filter(order => order.orderStatus === status);
+            } else {
+                filteredOrders = [...orders];
+            }
+            renderOrders(filteredOrders);
+        }
+
+        // Update Order Status
+        function updateOrderStatus(orderId, newStatus) {
+            const orderIndex = orders.findIndex(o => o.orderId === orderId);
+            if (orderIndex !== -1) {
+                orders[orderIndex].orderStatus = newStatus;
+                localStorage.setItem('orders', JSON.stringify(orders));
+                loadOrders();
+                alert('تم تحديث حالة الطلب بنجاح! ✓');
+            }
+        }
+
+        // View Order Details
+        function viewOrder(orderId) {
+            const order = orders.find(o => o.orderId === orderId);
+            if (!order) return;
+
+            const detailsHtml = `
+                <div class="space-y-6">
+                    <!-- Customer Info -->
+                    <div class="bg-white/10 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold mb-4">معلومات العميل</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-white/70 text-sm">الاسم</p>
+                                <p class="font-bold">${order.customerName}</p>
+                            </div>
+                            <div>
+                                <p class="text-white/70 text-sm">البريد الإلكتروني</p>
+                                <p class="font-bold">${order.email}</p>
+                            </div>
+                            <div>
+                                <p class="text-white/70 text-sm">الهاتف</p>
+                                <p class="font-bold" dir="ltr">${order.phone}</p>
+                            </div>
+                            <div>
+                                <p class="text-white/70 text-sm">الدولة</p>
+                                <p class="font-bold">${order.country}</p>
+                            </div>
+                            <div>
+                                <p class="text-white/70 text-sm">المدينة</p>
+                                <p class="font-bold">${order.city}</p>
+                            </div>
+                            <div>
+                                <p class="text-white/70 text-sm">الرمز البريدي</p>
+                                <p class="font-bold">${order.postalCode || 'غير متوفر'}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-white/70 text-sm">العنوان</p>
+                            <p class="font-bold">${order.address}</p>
+                        </div>
+                        ${order.notes ? `
+                        <div class="mt-4">
+                            <p class="text-white/70 text-sm">ملاحظات</p>
+                            <p class="font-bold">${order.notes}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="bg-white/10 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold mb-4">المنتجات</h4>
+                        <div class="space-y-3">
+                            ${order.items.map(item => `
+                                <div class="flex gap-4 bg-white/10 rounded-xl p-4">
+                                    <img src="${item.image}" alt="${item.name}" class="w-20 h-20 rounded-lg object-cover">
+                                    <div class="flex-1">
+                                        <h5 class="font-bold">${item.name}</h5>
+                                        <p class="text-white/70 text-sm">المقاس: ${item.selectedSize}</p>
+                                        <p class="text-white/70 text-sm">الكمية: ${item.quantity}</p>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-bold">${order.currency.symbol}${(item.price * item.quantity * order.currency.rate).toFixed(2)}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Payment & Summary -->
+                    <div class="bg-white/10 rounded-2xl p-6">
+                        <h4 class="text-xl font-bold mb-4">ملخص الدفع</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span>المجموع الفرعي:</span>
+                                <span class="font-bold">${order.currency.symbol}${(order.subtotal * order.currency.rate).toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>الشحن:</span>
+                                <span class="font-bold">${order.currency.symbol}${(order.shipping * order.currency.rate).toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between text-xl font-bold border-t border-white/20 pt-3">
+                                <span>الإجمالي:</span>
+                                <span>${order.currency.symbol}${(order.total * order.currency.rate).toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <span>طريقة الدفع:</span>
+                                <span class="font-bold">${order.paymentMethod}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>حالة الدفع:</span>
+                                <span class="badge ${order.paymentStatus === 'Paid' ? 'badge-success' : 'badge-warning'}">
+                                    ${order.paymentStatus === 'Paid' ? 'مدفوع' : 'غير مدفوع'}
+                                </span>
+                            </div>
+                            ${order.transactionId ? `
+                            <div class="flex justify-between">
+                                <span>رقم المعاملة:</span>
+                                <span class="font-mono text-sm">${order.transactionId}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('orderDetails').innerHTML = detailsHtml;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+        }
+
+        // Close Modal
+        function closeModal(event) {
+            if (!event || event.target.id === 'orderModal') {
+                document.getElementById('orderModal').classList.add('hidden');
+                document.getElementById('orderModal').classList.remove('flex');
+            }
+        }
+
+        // Delete Order
+        function deleteOrder(orderId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+                orders = orders.filter(o => o.orderId !== orderId);
+                localStorage.setItem('orders', JSON.stringify(orders));
+                loadOrders();
+                alert('تم حذف الطلب بنجاح! ✓');
+            }
+        }
+
+        // Export Orders to CSV
+        function exportOrders() {
+            if (orders.length === 0) {
+                alert('لا توجد طلبات للتصدير!');
+                return;
+            }
+
+            let csv = 'رقم الطلب,العميل,البريد الإلكتروني,الهاتف,الدولة,المدينة,العنوان,المبلغ,الدفع,الحالة,التاريخ\n';
+            
+            orders.forEach(order => {
+                csv += `${order.orderId},${order.customerName},${order.email},${order.phone},${order.country},${order.city},"${order.address}",${order.total},${order.paymentStatus},${order.orderStatus},${new Date(order.orderDate).toLocaleDateString('ar-EG')}\n`;
+            });
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `orders_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        // Initialize
+        loadOrders();
+    </script>
+</body>
+</html>

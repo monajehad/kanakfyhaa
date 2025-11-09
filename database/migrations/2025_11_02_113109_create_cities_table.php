@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('country_id')->constrained('countries')->cascadeOnDelete();
             $table->string('name');
+            $table->string('name_ar')->nullable();
+            $table->string('name_en')->nullable();
             $table->string('native_name')->nullable();
             $table->string('region')->nullable();
             $table->string('subregion')->nullable();

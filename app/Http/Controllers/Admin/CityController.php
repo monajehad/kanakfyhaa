@@ -17,8 +17,13 @@ class CityController extends Controller
          $cities = City::with('country');
 
         if ($request->filled('search')) {
-            $cities->where('name', 'like', '%' . $request->search . '%')
-                   ->orWhere('native_name', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $cities->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('name_ar', 'like', '%' . $search . '%')
+                  ->orWhere('name_en', 'like', '%' . $search . '%')
+                  ->orWhere('native_name', 'like', '%' . $search . '%');
+            });
         }
 
         $cities = $cities->orderBy('updated_at', 'desc')->paginate(20)->withQueryString();
@@ -44,6 +49,8 @@ class CityController extends Controller
             $validated = $request->validate([
                 'country_id'   => 'required|exists:countries,id',
                 'name'         => 'required|string|max:255',
+                'name_ar'      => 'nullable|string|max:255',
+                'name_en'      => 'nullable|string|max:255',
                 'native_name'  => 'nullable|string|max:255',
                 'region'       => 'nullable|string|max:100',
                 'subregion'    => 'nullable|string|max:100',
@@ -101,6 +108,8 @@ class CityController extends Controller
             $validated = $request->validate([
                 'country_id'   => 'required|exists:countries,id',
                 'name'         => 'required|string|max:255|unique:cities,name,' . $city->id,
+                'name_ar'      => 'nullable|string|max:255',
+                'name_en'      => 'nullable|string|max:255',
                 'native_name'  => 'nullable|string|max:255',
                 'region'       => 'nullable|string|max:100',
                 'subregion'    => 'nullable|string|max:100',

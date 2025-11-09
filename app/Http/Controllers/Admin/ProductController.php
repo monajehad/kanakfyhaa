@@ -57,8 +57,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
-        return response()->view('admin.products.create');
+        $cities = \App\Models\City::select('id', 'name', 'name_ar', 'name_en')->get();
+        return response()->view('admin.products.create', compact('cities'));
     }
 
     /**
@@ -69,20 +69,29 @@ class ProductController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
+                'name_ar' => 'nullable|string|max:255',
+                'name_en' => 'nullable|string|max:255',
                 'title' => 'nullable|string|max:255',
                 'short_description' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
+                'description_ar' => 'nullable|string',
+                'description_en' => 'nullable|string',
                 'color' => 'nullable|string|max:255',
+                'colors' => 'nullable|array',
+                'colors.*' => 'string|max:7',
                 'sizes' => 'nullable|array',
                 'sizes.*' => 'string|max:10',
                 'price_cost' => 'nullable|numeric|min:0',
                 'price_sell' => 'nullable|numeric|min:0',
+                'price' => 'nullable|numeric|min:0',
                 'discount' => 'nullable|numeric|min:0|max:100',
                 'city_id' => 'nullable|exists:cities,id',
+                'image' => 'nullable|string|max:500',
+                'is_package' => 'nullable|boolean',
                 'published' => 'boolean',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
-                'main_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120',
+                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
                 'sub_images' => 'nullable|array',
                 'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
             ]);
@@ -91,6 +100,10 @@ class ProductController extends Controller
 
             if (isset($validated['sizes'])) {
                 $validated['sizes'] = array_values($validated['sizes']);
+            }
+            
+            if (isset($validated['colors'])) {
+                $validated['colors'] = array_values($validated['colors']);
             }
 
             $product = \App\Models\Product::create($validated);
@@ -164,9 +177,10 @@ class ProductController extends Controller
     {
         // Fetch all categories for selection
         $categories = Category::all();
+        $cities = \App\Models\City::select('id', 'name', 'name_ar', 'name_en')->get();
         // Load relationships needed for editing
         $product->load('categories', 'media', 'city');
-        return response()->view('admin.products.edit', compact('product', 'categories'));
+        return response()->view('admin.products.edit', compact('product', 'categories', 'cities'));
     }
 
     /**
@@ -177,16 +191,25 @@ class ProductController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
+                'name_ar' => 'nullable|string|max:255',
+                'name_en' => 'nullable|string|max:255',
                 'title' => 'nullable|string|max:255',
                 'short_description' => 'nullable|string|max:255',
                 'description' => 'nullable|string',
+                'description_ar' => 'nullable|string',
+                'description_en' => 'nullable|string',
                 'color' => 'nullable|string|max:255',
+                'colors' => 'nullable|array',
+                'colors.*' => 'string|max:7',
                 'sizes' => 'nullable|array',
                 'sizes.*' => 'string|max:10',
                 'price_cost' => 'nullable|numeric|min:0',
                 'price_sell' => 'nullable|numeric|min:0',
+                'price' => 'nullable|numeric|min:0',
                 'discount' => 'nullable|numeric|min:0|max:100',
                 'city_id' => 'nullable|exists:cities,id',
+                'image' => 'nullable|string|max:500',
+                'is_package' => 'nullable|boolean',
                 'published' => 'boolean',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
@@ -197,6 +220,10 @@ class ProductController extends Controller
 
             if (isset($validated['sizes'])) {
                 $validated['sizes'] = array_values($validated['sizes']);
+            }
+            
+            if (isset($validated['colors'])) {
+                $validated['colors'] = array_values($validated['colors']);
             }
 
             $product->update($validated);

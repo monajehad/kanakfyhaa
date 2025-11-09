@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تم الطلب بنجاح - متجر الهوديهات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.3);
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            animation: scaleIn 0.5s ease-out;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.5);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .checkmark {
+            width: 60px;
+            height: 60px;
+            stroke: white;
+            stroke-width: 5;
+            stroke-linecap: round;
+            animation: drawCheck 0.8s ease-out 0.3s forwards;
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+        }
+
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        .glow-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .glow-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+    <div class="glass rounded-3xl p-8 md:p-12 max-w-2xl w-full text-center">
+        <div class="success-icon">
+            <svg class="checkmark" viewBox="0 0 52 52">
+                <polyline points="14 27 22 35 38 19" fill="none"/>
+            </svg>
+        </div>
+
+        <h1 class="text-5xl font-bold text-white mb-4">تم الطلب بنجاح! 🎉</h1>
+        <p class="text-2xl text-white/90 mb-8">شكراً لك على طلبك</p>
+
+        <div class="bg-white/10 rounded-2xl p-6 mb-8 text-right">
+            <div class="space-y-3 text-white">
+                <div class="flex justify-between border-b border-white/20 pb-3">
+                    <span class="font-bold">رقم الطلب:</span>
+                    <span id="orderNumber" class="font-mono text-lg"></span>
+                </div>
+                <div class="flex justify-between border-b border-white/20 pb-3">
+                    <span class="font-bold">الاسم:</span>
+                    <span id="customerName"></span>
+                </div>
+                <div class="flex justify-between border-b border-white/20 pb-3">
+                    <span class="font-bold">البريد الإلكتروني:</span>
+                    <span id="customerEmail"></span>
+                </div>
+                <div class="flex justify-between border-b border-white/20 pb-3">
+                    <span class="font-bold">المبلغ الإجمالي:</span>
+                    <span id="totalAmount" class="text-2xl font-bold"></span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-bold">حالة الطلب:</span>
+                    <span class="bg-blue-500 px-4 py-1 rounded-full text-sm font-bold">قيد المعالجة</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white/10 rounded-2xl p-6 mb-8">
+            <h3 class="text-white font-bold text-xl mb-4">ماذا بعد؟</h3>
+            <div class="space-y-3 text-white/90 text-right">
+                <div class="flex gap-3">
+                    <span class="text-2xl">📧</span>
+                    <p>سيتم إرسال تأكيد الطلب إلى بريدك الإلكتروني</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-2xl">📦</span>
+                    <p>سنقوم بتجهيز طلبك وشحنه في أقرب وقت</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-2xl">🚚</span>
+                    <p>يمكنك تتبع حالة الشحن من خلال البريد الإلكتروني</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="index.html" class="glow-button">
+                العودة للمتجر
+            </a>
+            <a href="admin-dashboard.html" class="glow-button">
+                عرض جميع الطلبات
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Get order ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+
+        if (!orderId) {
+            window.location.href = 'index.html';
+        }
+
+        // Load order details
+        const orders = JSON.parse(localStorage.getItem('orders')) || [];
+        const order = orders.find(o => o.orderId === orderId);
+
+        if (order) {
+            document.getElementById('orderNumber').textContent = order.orderId;
+            document.getElementById('customerName').textContent = order.customerName;
+            document.getElementById('customerEmail').textContent = order.email;
+            document.getElementById('totalAmount').textContent = 
+                `${order.currency.symbol}${(order.total * order.currency.rate).toFixed(2)}`;
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
