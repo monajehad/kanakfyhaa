@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    // Payments
+    'stripe' => [
+        'secret' => env('STRIPE_SECRET'),
+        'public' => env('STRIPE_PUBLIC'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
+    'paypal' => [
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+        'mode' => env('PAYPAL_MODE', 'sandbox'), // 'live' for production
+    ],
+
 ];

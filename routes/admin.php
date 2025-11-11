@@ -42,6 +42,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     // ================== [Resources] ===================
     // Product Management
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index','show','update']);
 
     // Category Management
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);

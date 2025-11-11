@@ -307,10 +307,9 @@
                     </label>
                 </div>
 
-                <!-- PayPal Button Container -->
-                <div id="paypal-button-container" class="hidden mb-4"></div>
+                <div id="paypal-button-container" class="mb-4"></div>
 
-                <button type="button" id="placeOrderBtn" onclick="validateAndPay()" class="btn-yellow w-full py-4 text-lg">
+                <button type="button" id="placeOrderBtn" onclick="validateAndPay()" class="btn-yellow w-full py-4 text-lg" style="display:none;">
                     <span data-ar="الدفع الآن" data-en="Pay Now">الدفع الآن</span>
                 </button>
 
@@ -322,12 +321,17 @@
     </div>
 </section>
 
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id={{ config('services.paypal.client_id') ?? 'test' }}&currency=USD"></script>
 <script>
+    (function () {
+    if (window.__CHECKOUT_INIT__) return;
+    window.__CHECKOUT_INIT__ = true;
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let currency = JSON.parse(localStorage.getItem('currency')) || { symbol: '$', rate: 1 };
     const SHIPPING_COST = 10;
-    let currentLang = localStorage.getItem('language') || 'ar';
+    const currentLang = localStorage.getItem('language') || 'ar';
+
 
     // Load Order Items
     function loadOrderItems() {
@@ -416,19 +420,15 @@
         return isValid;
     }
 
-    // Validate and Show PayPal
+    // Validate and pay (PayPal only)
     function validateAndPay() {
         if (!validateForm()) {
             alert(currentLang === 'ar' ? 'الرجاء تعبئة جميع الحقول المطلوبة' : 'Please fill all required fields');
             return;
         }
 
-        // Show PayPal button
-        document.getElementById('paypal-button-container').classList.remove('hidden');
         document.getElementById('placeOrderBtn').disabled = true;
-        document.getElementById('placeOrderBtn').innerHTML = currentLang === 'ar' ? '<span>جاري تحميل PayPal...</span>' : '<span>Loading PayPal...</span>';
-
-        // Initialize PayPal
+        document.getElementById('paypal-button-container').classList.remove('hidden');
         initializePayPal();
     }
 
@@ -438,6 +438,12 @@
         const total = (subtotal + SHIPPING_COST).toFixed(2);
 
         paypal.Buttons({
+            onClick: function(data, actions) {
+                if (!validateForm()) {
+                    return actions.reject();
+                }
+                return actions.resolve();
+            },
             createOrder: function(data, actions) {
                 return actions.order.create({
                     purchase_units: [{
@@ -451,40 +457,17 @@
             },
             onApprove: function(data, actions) {
                 return actions.order.capture().then(function(details) {
-                    // Collect order data
-                    const orderData = {
-                        orderId: 'ORD-' + Date.now(),
-                        customerName: document.getElementById('fullName').value,
-                        email: document.getElementById('email').value,
-                        phone: document.getElementById('phone').value,
-                        country: document.getElementById('country').value,
-                        city: document.getElementById('city').value,
-                        address: document.getElementById('address').value,
-                        postalCode: document.getElementById('postalCode').value,
-                        notes: document.getElementById('notes').value,
-                        items: cart,
-                        subtotal: subtotal,
-                        shipping: SHIPPING_COST,
-                        total: parseFloat(total),
-                        currency: currency,
-                        paymentMethod: 'PayPal',
-                        paymentStatus: 'Paid',
-                        orderStatus: 'Processing',
-                        transactionId: details.id,
-                        payerEmail: details.payer.email_address,
-                        orderDate: new Date().toISOString()
-                    };
-
-                    // Save order to localStorage (in real app, send to server)
-                    let orders = JSON.parse(localStorage.getItem('orders')) || [];
-                    orders.push(orderData);
-                    localStorage.setItem('orders', JSON.stringify(orders));
-
-                    // Clear cart
-                    localStorage.removeItem('cart');
-
-                    // Redirect to success page
-                    window.location.href = '/order-success?orderId=' + orderData.orderId;
+                    const orderPayload = buildOrderPayload('paypal', 'paid', details.id, details.payer.email_address, subtotal, total);
+                    fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                        body: JSON.stringify(orderPayload)
+                    }).then(r => r.json()).then(() => {
+                        localStorage.removeItem('cart');
+                        window.location.href = '/order-success?orderId=' + orderPayload.order_number;
+                    }).catch(() => {
+                        alert(currentLang === 'ar' ? 'تعذر حفظ الطلب.' : 'Failed to save order.');
+                    });
                 });
             },
             onError: function(err) {
@@ -496,10 +479,41 @@
         }).render('#paypal-button-container');
     }
 
+    function buildOrderPayload(method, payStatus, txId, payerMail, subtotal, total) {
+        return {
+            order_number: 'ORD-' + Date.now(),
+            customer_name: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            country: document.getElementById('country').value,
+            city: document.getElementById('city').value,
+            address: document.getElementById('address').value,
+            postal_code: document.getElementById('postalCode').value,
+            notes: document.getElementById('notes').value,
+            items: cart,
+            subtotal: subtotal,
+            shipping: SHIPPING_COST,
+            total: parseFloat(total),
+            currency_symbol: currency.symbol,
+            currency_rate: currency.rate,
+            payment_method: method,
+            payment_status: payStatus,
+            order_status: 'processing',
+            transaction_id: txId || null,
+            payer_email: payerMail || null,
+            order_date: new Date().toISOString()
+        };
+    }
+
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         loadOrderItems();
+        document.getElementById('paypal-button-container').classList.remove('hidden');
+        initializePayPal();
     });
+    // Expose for inline onclick handler
+    window.validateAndPay = validateAndPay;
+    })();
 </script>
 @endsection
 

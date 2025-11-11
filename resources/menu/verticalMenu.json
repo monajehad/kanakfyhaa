@@ -6,9 +6,10 @@
       "icon": "menu-icon icon-base ri ri-home-smile-line",
       "slug": "admin.dashboard"
     },
+    { "menuHeader": "Catalog" },
     {
       "name": "Product Management",
-      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "icon": "menu-icon icon-base ri ri-shopping-bag-3-line",
       "slug": "admin.products",
       "submenu": [
         {
@@ -39,9 +40,10 @@
         }
       ]
     },
+    { "menuHeader": "Geography" },
     {
       "name": "Country Management",
-      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "icon": "menu-icon icon-base ri ri-global-line",
       "slug": "admin.countries",
       "submenu": [
         {
@@ -58,7 +60,7 @@
     },
     {
       "name": "City Management",
-      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "icon": "menu-icon icon-base ri ri-building-2-line",
       "slug": "admin.cities",
       "submenu": [
         {
@@ -73,9 +75,23 @@
         }
       ]
     },
+    { "menuHeader": "Commerce" },
+    {
+      "name": "Orders",
+      "icon": "menu-icon icon-base ri ri-shopping-cart-2-line",
+      "slug": "admin.orders",
+      "submenu": [
+        {
+          "name": "All Orders",
+          "url": "/admin/orders",
+          "slug": "admin.orders.index"
+        }
+      ]
+    },
+    { "menuHeader": "Content" },
      {
       "name": "Landmark Management",
-      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "icon": "menu-icon icon-base ri ri-map-pin-2-line",
       "slug": "admin.landmarks",
       "submenu": [
         {
@@ -92,7 +108,7 @@
     },
     {
       "name": "Artifact Management",
-      "icon": "menu-icon icon-base ri ri-box-3-line",
+      "icon": "menu-icon icon-base ri ri-brush-2-line",
       "slug": "admin.artifacts",
       "submenu": [
         {

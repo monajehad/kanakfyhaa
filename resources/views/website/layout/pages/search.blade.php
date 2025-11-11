@@ -9,7 +9,7 @@
         <h1 class="text-3xl font-bold mb-4" style="color: var(--primary-black); border-bottom: 4px solid var(--primary-yellow); display: inline-block; padding-bottom: 8px;" data-ar="البحث المتقدم" data-en="Advanced Search">البحث المتقدم</h1>
         
         <!-- Search Input -->
-        <div class="flex gap-2 mb-6 max-w-2xl">
+        <div class="flex gap-2 mb-6 max-w-2xl" style="display: none">
             <input 
                 type="text" 
                 id="searchQuery" 

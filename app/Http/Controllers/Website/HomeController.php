@@ -9,44 +9,59 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    private const PRODUCTS_PER_PAGE = 12;
+    private const PRODUCTS_PER_PAGE = 6;
 
     public function __invoke()
     {
-        // Get cities with their published products from database (first page only)
-        $cities = City::with(['products' => function($query) {
-            $query->where('published', true)
-                  ->with(['media' => function($mediaQuery) {
-                      $mediaQuery->where('role', 'main');
-                  }])
-                  ->orderBy('id')
-                  ->limit(self::PRODUCTS_PER_PAGE);
-        }])
-        ->whereHas('products', function($query) {
-            $query->where('published', true);
-        })
-        ->get()
-        ->map(function($city) {
-            $totalProducts = Product::where('city_id', $city->id)
-                ->where('published', true)
-                ->count();
+        // Get cities that have published products
+        // NOTE: We intentionally avoid eager-loading the hasMany products with a limit
+        // because Eloquent cannot apply per-parent limits during eager loading.
+        // We instead fetch the first page per city explicitly.
+        $citiesPaginator = City::whereHas('products', function($query) {
+                $query->where('published', true);
+            })
+            ->orderBy('id')
+            ->paginate(self::PRODUCTS_PER_PAGE);
 
-            return [
-                'id' => $city->id,
-                'name' => [
-                    'ar' => $city->name_ar ?? $city->name,
-                    'en' => $city->name_en ?? $city->name
-                ],
-                'totalProducts' => $totalProducts,
-                'hasMore' => $totalProducts > self::PRODUCTS_PER_PAGE,
-                'products' => $city->products->map(function($product) {
-                    return $this->formatProduct($product);
-                })->toArray()
-            ];
-        })->toArray();
+        $cities = $citiesPaginator->getCollection()
+            ->map(function($city) {
+                // Fetch only the first page of products for this city
+                $products = Product::where('city_id', $city->id)
+                    ->where('published', true)
+                    ->with(['media' => function($mediaQuery) {
+                        $mediaQuery->where('role', 'main');
+                    }])
+                    ->orderBy('id')
+                    ->limit(self::PRODUCTS_PER_PAGE)
+                    ->get();
+
+                $totalProducts = Product::where('city_id', $city->id)
+                    ->where('published', true)
+                    ->count();
+
+                return [
+                    'id' => $city->id,
+                    'name' => [
+                        'ar' => $city->name_ar ?? $city->name,
+                        'en' => $city->name_en ?? $city->name
+                    ],
+                    'totalProducts' => $totalProducts,
+                    'hasMore' => $totalProducts > self::PRODUCTS_PER_PAGE,
+                    'products' => $products->map(function($product) {
+                        return $this->formatProduct($product);
+                    })->toArray()
+                ];
+            })
+            ->values()
+            ->toArray();
 
         return response()->view('website.layout.pages.home', [
             'cities' => $cities,
+            'citiesMeta' => [
+                'currentPage' => $citiesPaginator->currentPage(),
+                'lastPage' => $citiesPaginator->lastPage(),
+                'hasMore' => $citiesPaginator->currentPage() < $citiesPaginator->lastPage(),
+            ],
         ]);
     }
 
@@ -83,6 +98,56 @@ class HomeController extends Controller
             'products' => $formattedProducts,
             'hasMore' => $hasMore,
             'total' => $totalProducts
+        ]);
+    }
+
+    public function loadCities(Request $request)
+    {
+        $page = (int) $request->input('page', 1);
+
+        $citiesPaginator = City::whereHas('products', function($query) {
+                $query->where('published', true);
+            })
+            ->orderBy('id')
+            ->paginate(self::PRODUCTS_PER_PAGE, ['*'], 'page', $page);
+
+        $cities = $citiesPaginator->getCollection()
+            ->map(function($city) {
+                $products = Product::where('city_id', $city->id)
+                    ->where('published', true)
+                    ->with(['media' => function($mediaQuery) {
+                        $mediaQuery->where('role', 'main');
+                    }])
+                    ->orderBy('id')
+                    ->limit(self::PRODUCTS_PER_PAGE)
+                    ->get();
+
+                $totalProducts = Product::where('city_id', $city->id)
+                    ->where('published', true)
+                    ->count();
+
+                return [
+                    'id' => $city->id,
+                    'name' => [
+                        'ar' => $city->name_ar ?? $city->name,
+                        'en' => $city->name_en ?? $city->name
+                    ],
+                    'totalProducts' => $totalProducts,
+                    'hasMore' => $totalProducts > self::PRODUCTS_PER_PAGE,
+                    'products' => $products->map(function($product) {
+                        return $this->formatProduct($product);
+                    })->toArray()
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return response()->json([
+            'success' => true,
+            'cities' => $cities,
+            'currentPage' => $citiesPaginator->currentPage(),
+            'lastPage' => $citiesPaginator->lastPage(),
+            'hasMore' => $citiesPaginator->currentPage() < $citiesPaginator->lastPage(),
         ]);
     }
 
@@ -124,6 +189,7 @@ class HomeController extends Controller
 
         return [
             'id' => $product->id,
+            'uuid' => $product->uuid,
             'name' => [
                 'ar' => $product->name_ar ?? $product->name,
                 'en' => $product->name_en ?? $product->name

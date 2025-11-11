@@ -34,7 +34,7 @@ return [
     'projectCreationDate' => '30-10-2025',
     'projectOwner' => 'نص شركة',
     'defaultLanguage' => 'ar',
-    'supportedLanguages' => ['ar'], // قابل للتوسع مستقبلاً
+    'supportedLanguages' => ['ar','en'], // قابل للتوسع مستقبلاً
     'defaultFont' => 'Cairo', // أو FF Shamel
     'qrCodeType' => 'UUID', // UUID أو Hash
     'publicDomain' => 'https://kaannakfiha.ps',

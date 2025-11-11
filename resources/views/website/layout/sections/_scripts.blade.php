@@ -49,6 +49,10 @@
 
     // Data Structure with translations - Loaded from database
     let cities = @json($cities ?? []);
+    const citiesMeta = @json($citiesMeta ?? null);
+    let citiesPage = citiesMeta ? citiesMeta.currentPage : 1;
+    let citiesLastPage = citiesMeta ? citiesMeta.lastPage : 1;
+    let loadingCities = false;
     
     // Pagination state for each city
     let cityPagination = {};
@@ -79,16 +83,19 @@
         const pName = product.name[currentLang] || product.name.ar || product.name;
         const pDesc = product.description[currentLang] || product.description.ar || product.description;
         const packageText = currentLang === 'ar' ? 'بكج كامل 📦' : 'Full Package 📦';
-        const addToCartText = currentLang === 'ar' ? 'أضف للسلة' : 'Add to Cart';
+        const inCart = cart.some(i => i.id === product.id);
+        const addToCartText = inCart ? (currentLang === 'ar' ? 'إلى الدفع' : 'Checkout') : (currentLang === 'ar' ? 'أضف للسلة' : 'Add to Cart');
         
         return `
             <div class="product-card">
                 <div class="relative">
                     ${product.isPackage ? `<div class="package-badge">${packageText}</div>` : ''}
-                    <img src="${product.image || ''}" alt="${pName}" class="product-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect fill=\'%23ddd\' width=\'400\' height=\'400\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3ENo Image%3C/text%3E%3C/svg%3E'">
+                    <a href="/product/${product.uuid || product.id}">
+                        <img src="${product.image || ''}" alt="${pName}" class="product-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect fill=\'%23ddd\' width=\'400\' height=\'400\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3ENo Image%3C/text%3E%3C/svg%3E'">
+                    </a>
                 </div>
                 <div class="product-info">
-                    <h3 class="product-name">${pName}</h3>
+                    <h3 class="product-name"><a href="/product/${product.uuid || product.id}">${pName}</a></h3>
                     <p class="product-desc">${pDesc}</p>
                     
                     <div class="flex gap-2 mb-3">
@@ -111,9 +118,15 @@
                     </div>
                     
                     <div class="text-xl font-bold mb-3">${currency.symbol}${(product.price * currency.rate).toFixed(2)}</div>
-                    <button onclick="addToCart(${cityId}, ${product.id})" class="btn-yellow">
-                        ${addToCartText}
-                    </button>
+                    ${inCart ? `
+                        <button class="btn-yellow" data-product-id="${product.id}" onclick="proceedToCheckout()">
+                            ${addToCartText}
+                        </button>
+                    ` : `
+                        <button class="btn-yellow" data-product-id="${product.id}" onclick="addToCart(${cityId}, ${product.id})">
+                            ${addToCartText}
+                        </button>
+                    `}
                 </div>
             </div>
         `;
@@ -152,6 +165,36 @@
                 </div>
             `;
         }).join('');
+    }
+
+    // Append newly loaded cities to DOM
+    function appendCities(newCities) {
+        const container = document.getElementById('citiesContainer');
+        if (!container || !newCities || newCities.length === 0) return;
+
+        const html = newCities.map(city => {
+            const productsHtml = city.products.map(product => renderProductCard(product, city.id)).join('');
+            const loadingHtml = city.hasMore ? `
+                <div class="load-more-container text-center mt-8" data-city-id="${city.id}">
+                    <div class="loading-spinner" style="display: none;">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style="border-color: var(--primary-yellow); border-top-color: transparent;"></div>
+                        <p class="mt-2" style="color: var(--gray-text)">${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
+                    </div>
+                </div>
+            ` : '';
+
+            return `
+                <div class="city-section" data-city-id="${city.id}">
+                    <h2 class="city-title">${city.name[currentLang] || city.name.ar}</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid-${city.id}">
+                        ${productsHtml}
+                    </div>
+                    ${loadingHtml}
+                </div>
+            `;
+        }).join('');
+
+        container.insertAdjacentHTML('beforeend', html);
     }
 
     // Load more products for a specific city
@@ -244,6 +287,39 @@
         }
     }
 
+    // Load next page of cities
+    async function loadMoreCities() {
+        if (loadingCities) return;
+        if (citiesPage >= citiesLastPage) return;
+        loadingCities = true;
+        const nextPage = citiesPage + 1;
+
+        try {
+            const response = await fetch(`/api/cities?page=${nextPage}`);
+            const data = await response.json();
+
+            if (data.success && data.cities && data.cities.length > 0) {
+                // Update local state
+                data.cities.forEach(city => {
+                    cityPagination[city.id] = {
+                        currentPage: 1,
+                        hasMore: city.hasMore || false,
+                        loading: false
+                    };
+                });
+                cities = [...cities, ...data.cities];
+                appendCities(data.cities);
+
+                citiesPage = data.currentPage;
+                citiesLastPage = data.lastPage;
+            }
+        } catch (e) {
+            console.error('Error loading more cities', e);
+        } finally {
+            loadingCities = false;
+        }
+    }
+
     // Infinite scroll handler
     function handleScroll() {
         const threshold = 400; // Load when 400px from bottom
@@ -279,8 +355,14 @@
                     const pagination = cityPagination[cityId];
                     if (pagination && pagination.hasMore && !pagination.loading) {
                         loadMoreProducts(cityId);
+                        return;
                     }
                 }
+            }
+
+            // If no city needs more products, try loading more cities
+            if (citiesPage < citiesLastPage && !loadingCities) {
+                loadMoreCities();
             }
         }
     }
@@ -329,7 +411,13 @@
         
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartDisplay();
-        alert(currentLang === 'ar' ? '✅ تمت الإضافة إلى السلة!' : '✅ Added to cart!');
+        // Update button to "Checkout"
+        const btn = document.querySelector(`button[data-product-id="${productId}"]`);
+        if (btn) {
+            btn.textContent = currentLang === 'ar' ? 'إلى الدفع' : 'Checkout';
+            btn.setAttribute('onclick', 'proceedToCheckout()');
+        }
+        // First add: do not open cart or redirect; just switch button to Checkout
     }
 
     function updateCartDisplay() {
@@ -340,12 +428,19 @@
         }
         
         const cartItems = document.getElementById('cartItems');
+        const itemsCountEl = document.getElementById('cartItemsCount');
+        const checkoutBtn = document.getElementById('checkoutBtn');
         if (!cartItems) return;
         
         const emptyText = currentLang === 'ar' ? 'السلة فارغة' : 'Cart is empty';
         
         if (cart.length === 0) {
-            cartItems.innerHTML = `<p class="text-center py-8" style="color: var(--gray-text)">${emptyText}</p>`;
+            cartItems.innerHTML = `<div class="text-center py-12" style="color: var(--gray-text)">
+                <p>${emptyText}</p>
+                <button onclick="closeCart()" class="mt-4 px-4 py-2 rounded" style="background: var(--gray-bg)">
+                    ${currentLang === 'ar' ? 'تابع التسوق' : 'Continue shopping'}
+                </button>
+            </div>`;
         } else {
             cartItems.innerHTML = cart.map(item => {
                 const cityName = item.cityName[currentLang] || item.cityName.ar || item.cityName;
@@ -384,6 +479,13 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             cartTotal.textContent = `${currency.symbol}${(total * currency.rate).toFixed(2)}`;
         }
+        if (itemsCountEl) {
+            const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            itemsCountEl.textContent = itemsCount;
+        }
+        if (checkoutBtn) {
+            checkoutBtn.disabled = cart.length === 0;
+        }
     }
 
     function changeQuantity(productId, color, size, change) {
@@ -405,17 +507,33 @@
         updateCartDisplay();
     }
 
+    function clearCart() {
+        cart = [];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+    }
+
     function openCart() {
         const cartModal = document.getElementById('cartModal');
         if (cartModal) {
             cartModal.classList.add('active');
         }
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', escCloseCartHandler);
     }
 
     function closeCart() {
         const cartModal = document.getElementById('cartModal');
         if (cartModal) {
             cartModal.classList.remove('active');
+        }
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', escCloseCartHandler);
+    }
+
+    function escCloseCartHandler(e) {
+        if (e.key === 'Escape') {
+            closeCart();
         }
     }
 

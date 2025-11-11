@@ -37,6 +37,9 @@ class DatabaseSeeder extends Seeder
 
 
         
+        // Demo orders
+        $this->call(OrderSeeder::class);
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
