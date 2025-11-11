@@ -91,9 +91,10 @@ class ProductController extends Controller
                 'published' => 'boolean',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
-                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+                // All possible common image mimes:
+                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,bmp,tiff,tif,webp,heif,heic,avif|max:5120',
                 'sub_images' => 'nullable|array',
-                'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+                'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,bmp,tiff,tif,webp,heif,heic,avif|max:5120',
             ]);
 
             $validated['uuid'] = \Illuminate\Support\Str::uuid()->toString();
@@ -213,9 +214,10 @@ class ProductController extends Controller
                 'published' => 'boolean',
                 'categories' => 'nullable|array',
                 'categories.*' => 'exists:categories,id',
-                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+                // All possible common image mimes:
+                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,bmp,tiff,tif,webp,heif,heic,avif|max:5120',
                 'sub_images' => 'nullable|array',
-                'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+                'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,bmp,tiff,tif,webp,heif,heic,avif|max:5120',
             ]);
 
             if (isset($validated['sizes'])) {

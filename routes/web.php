@@ -7,6 +7,13 @@ use App\Http\Controllers\Website\HomeController;
 // Main Page Route
 Route::get('/', HomeController::class)->name('pages-home');
 
+// Search Routes
+Route::get('/search', [\App\Http\Controllers\Website\SearchController::class, 'index'])->name('search');
+Route::get('/api/search', [\App\Http\Controllers\Website\SearchController::class, 'search'])->name('search.api');
+
+// Load More Products API
+Route::get('/api/products/load-more', [HomeController::class, 'loadMore'])->name('products.load-more');
+
 // Checkout Route
 Route::get('/checkout', \App\Http\Controllers\Website\CheckoutController::class)->name('checkout');
 

@@ -334,5 +334,106 @@
         background: var(--primary-yellow);
         color: #000;
     }
+
+    /* Filter Styles */
+    .filter-select,
+    .filter-input {
+        width: 100%;
+        padding: 10px 15px;
+        background: var(--primary-white);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--primary-black);
+        font-size: 0.9rem;
+        font-family: 'Cairo', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    [data-theme="dark"] .filter-select,
+    [data-theme="dark"] .filter-input {
+        background: #0A0A0A;
+        border-color: #333333;
+        color: var(--primary-white);
+    }
+
+    .filter-select:focus,
+    .filter-input:focus {
+        outline: none;
+        border-color: var(--primary-yellow);
+        box-shadow: 0 0 0 3px rgba(200, 212, 0, 0.1);
+    }
+
+    .filter-select option {
+        background: var(--primary-white);
+        color: var(--primary-black);
+    }
+
+    [data-theme="dark"] .filter-select option {
+        background: #1A1A1A;
+        color: var(--primary-white);
+    }
+
+    /* Filter Color Buttons */
+    .filter-color-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 3px solid var(--border-color);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .filter-color-btn.active {
+        transform: scale(1.2);
+        border-color: var(--primary-yellow);
+        box-shadow: 0 0 0 2px var(--primary-white), 0 0 0 4px var(--primary-yellow);
+    }
+
+    /* Filter Size Buttons */
+    .filter-size-btn {
+        padding: 8px 14px;
+        border: 2px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--primary-white);
+        color: var(--primary-black);
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    [data-theme="dark"] .filter-size-btn {
+        background: #0A0A0A;
+        border-color: #333;
+    }
+
+    .filter-size-btn:hover,
+    .filter-size-btn.active {
+        background: var(--primary-yellow);
+        border-color: var(--primary-yellow);
+        color: #000;
+        transform: translateY(-2px);
+    }
+
+    /* Checkbox Styling */
+    input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--primary-yellow);
+    }
+
+    /* Results Section */
+    #searchResults {
+        min-height: 400px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .city-section.sticky {
+            position: relative;
+            top: 0;
+        }
+    }
 </style>
 
