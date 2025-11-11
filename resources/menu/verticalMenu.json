@@ -73,23 +73,6 @@
         }
       ]
     },
-    {
-      "name": "Content Management",
-      "icon": "menu-icon icon-base ri ri-file-list-3-line",
-      "slug": "admin.content",
-      "submenu": [
-        {
-          "name": "News Bar",
-          "url": "/admin/news_bar",
-          "slug": "admin.content.news_bar.index"
-        },
-        {
-          "name": "Slider Managment",
-          "url": "/admin/sliders",
-          "slug": "admin.content.sliders.index"
-        }
-      ]
-    },
      {
       "name": "Landmark Management",
       "icon": "menu-icon icon-base ri ri-box-3-line",

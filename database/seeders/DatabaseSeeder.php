@@ -32,7 +32,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ExperienceSeeder::class, false, ['count' => 5000000]); // 5 experiences per product
 
 
-        $this->call(NewsBarSeeder::class);
         $this->call(LandmarkSeeder::class);
         $this->call(ArtifactSeeder::class);
 

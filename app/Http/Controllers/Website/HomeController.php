@@ -11,15 +11,6 @@ class HomeController extends Controller
 {
     public function __invoke()
     {
-        // Use Eloquent to get the news bar settings
-        $newsBar = \App\Models\NewsBar::first();
-
-        // Get all active sliders (not just one)
-        $sliders = \App\Models\Slider::where('active', true)
-            ->orderBy('order')
-            ->orderBy('id')
-            ->get();
-
         // Get cities with their published products from database
         $cities = City::with(['products' => function($query) {
             $query->where('published', true)
@@ -75,8 +66,6 @@ class HomeController extends Controller
         })->toArray();
 
         return response()->view('website.layout.pages.home', [
-            'newsBar' => $newsBar,
-            'sliders' => $sliders,
             'cities' => $cities,
         ]);
     }
