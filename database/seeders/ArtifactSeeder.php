@@ -37,6 +37,8 @@ class ArtifactSeeder extends Seeder
                 'title' => "{$artifactType} من {$landmark->name}",
                 'short_description' => $faker->sentence(8),
                 'description' => $faker->paragraph(3),
+                'image' => 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=500&fit=crop',
+
             ]);
 
             if ($i % 10 == 0) {

@@ -9,15 +9,12 @@ class ExperienceController extends Controller
 {
      public function show($uuid)
     {
-        $product = Product::with(['city.media'])->where('uuid', $uuid)->first();
+       $product = Product::with(['city'])->where('uuid', $uuid)->firstOrFail();
+    $city = $product->city;
 
-        if (!$product) {
-            abort(404, 'الصفحة غير متاحة أو الرابط غير صالح.');
-        }
+    // جلب المعالم مع الآثار ووسائطها
+    $landmarks = $city->landmarks()->with(['media', 'artifacts.media'])->get();
 
-        $city = $product->city;
-        $media = $city->media ?? collect();
-
-        return view('front.experience', compact('product', 'city', 'media'));
-    }
+    return view('website.layout.pages.qr', compact('product', 'city', 'landmarks'));
+}
 }

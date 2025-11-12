@@ -49,6 +49,8 @@ class LandmarkSeeder extends Seeder
                 'type' => $faker->randomElement($landmarkTypes),
                 'short_description' => 'أحد المعالم الشهيرة في ' . $city->name,
                 'description' => $faker->paragraph(3),
+                'image' => 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=500&fit=crop',
+
             ]);
 
             if ($i % 10 == 0) {
