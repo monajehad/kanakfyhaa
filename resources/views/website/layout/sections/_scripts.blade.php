@@ -47,128 +47,90 @@
         document.getElementById('themeBtn').textContent = currentTheme === 'light' ? '🌙' : '☀️';
     }
 
-    // Data Structure with translations
-    let cities = [
-        {
-            id: 1,
-            name: { ar: 'غزة', en: 'Gaza' },
-            products: [
-                {
-                    id: 101,
-                    name: { ar: 'هودي غزة الكلاسيكي', en: 'Gaza Classic Hoodie' },
-                    description: { ar: 'تصميم عصري يعبر عن صمود وجمال غزة', en: 'Modern design expressing Gaza\'s resilience and beauty' },
-                    price: 49.99,
-                    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=500&fit=crop',
-                    colors: ['#000000', '#FFFFFF', '#C8D400'],
-                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                },
-                {
-                    id: 102,
-                    name: { ar: 'هودي غزة العتيقة', en: 'Gaza Heritage Hoodie' },
-                    description: { ar: 'يحمل روح التاريخ والأصالة', en: 'Carries the spirit of history and authenticity' },
-                    price: 54.99,
-                    image: 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=500&h=500&fit=crop',
-                    colors: ['#000000', '#8B4513', '#2F4F4F'],
-                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                },
-                {
-                    id: 103,
-                    name: { ar: 'هودي غزة المودرن', en: 'Gaza Modern Hoodie' },
-                    description: { ar: 'تصميم عصري وجريء', en: 'Contemporary and bold design' },
-                    price: 52.99,
-                    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&h=500&fit=crop',
-                    colors: ['#1E3A8A', '#DC2626', '#C8D400'],
-                    sizes: ['S', 'M', 'L', 'XL'],
-                    isPackage: true
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: { ar: 'القدس', en: 'Jerusalem' },
-            products: [
-                {
-                    id: 201,
-                    name: { ar: 'هودي القدس التراثي', en: 'Jerusalem Heritage Hoodie' },
-                    description: { ar: 'يحمل عبق التاريخ والقدسية', en: 'Carries the fragrance of history and sanctity' },
-                    price: 59.99,
-                    image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=500&fit=crop',
-                    colors: ['#DAA520', '#000000', '#FFFFFF'],
-                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                },
-                {
-                    id: 202,
-                    name: { ar: 'هودي القدس المقدسة', en: 'Jerusalem Sacred Hoodie' },
-                    description: { ar: 'تصميم يليق بأولى القبلتين', en: 'Design worthy of the first qibla' },
-                    price: 64.99,
-                    image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&h=500&fit=crop',
-                    colors: ['#000000', '#C8D400', '#8B4513'],
-                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                },
-                {
-                    id: 203,
-                    name: { ar: 'هودي القدس الذهبية', en: 'Jerusalem Golden Hoodie' },
-                    description: { ar: 'كقبة الصخرة في جمالها', en: 'Like the Dome of the Rock in its beauty' },
-                    price: 69.99,
-                    image: 'https://images.unsplash.com/photo-1620799139652-715e4d5b232d?w=500&h=500&fit=crop',
-                    colors: ['#DAA520', '#1E3A8A', '#FFFFFF'],
-                    sizes: ['M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                },
-                {
-                    id: 204,
-                    name: { ar: 'هودي القدس العريقة', en: 'Jerusalem Ancient Hoodie' },
-                    description: { ar: 'عراقة وأصالة لا تنتهي', en: 'Endless heritage and authenticity' },
-                    price: 62.99,
-                    image: 'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=500&h=500&fit=crop',
-                    colors: ['#8B4513', '#000000', '#C8D400'],
-                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                }
-            ]
-        },
-        {
-            id: 3,
-            name: { ar: 'الخليل', en: 'Hebron' },
-            products: [
-                {
-                    id: 301,
-                    name: { ar: 'هودي الخليل الأصيل', en: 'Hebron Authentic Hoodie' },
-                    description: { ar: 'يعكس عراقة مدينة الخليل', en: 'Reflects Hebron\'s ancient heritage' },
-                    price: 54.99,
-                    image: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=500&h=500&fit=crop',
-                    colors: ['#000000', '#8B4513', '#FFFFFF'],
-                    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                    isPackage: true
-                },
-                {
-                    id: 302,
-                    name: { ar: 'هودي الخليل التراثي', en: 'Hebron Heritage Hoodie' },
-                    description: { ar: 'تراث وتاريخ في قطعة واحدة', en: 'Heritage and history in one piece' },
-                    price: 57.99,
-                    image: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=500&h=500&fit=crop',
-                    colors: ['#2F4F4F', '#C8D400', '#000000'],
-                    sizes: ['S', 'M', 'L', 'XL'],
-                    isPackage: true
-                }
-            ]
-        }
-    ];
-
-    // Load from localStorage if exists
-    const savedCities = localStorage.getItem('cities');
-    if (savedCities) {
-        cities = JSON.parse(savedCities);
-    } else {
+    // Data Structure with translations - Loaded from database
+    let cities = @json($cities ?? []);
+    const citiesMeta = @json($citiesMeta ?? null);
+    let citiesPage = citiesMeta ? citiesMeta.currentPage : 1;
+    let citiesLastPage = citiesMeta ? citiesMeta.lastPage : 1;
+    let loadingCities = false;
+    
+    // Pagination state for each city
+    let cityPagination = {};
+    cities.forEach(city => {
+        cityPagination[city.id] = {
+            currentPage: 1,
+            hasMore: city.hasMore || false,
+            loading: false
+        };
+    });
+    
+    // Save to localStorage for persistence (optional - can be removed if you want fresh data on each page load)
+    if (cities && cities.length > 0) {
         localStorage.setItem('cities', JSON.stringify(cities));
+    } else {
+        // Fallback: Load from localStorage if database is empty
+        const savedCities = localStorage.getItem('cities');
+        if (savedCities) {
+            cities = JSON.parse(savedCities);
+        }
     }
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let currency = JSON.parse(localStorage.getItem('currency')) || { symbol: '$', rate: 1 };
+
+    // Render product card HTML
+    function renderProductCard(product, cityId) {
+        const pName = product.name[currentLang] || product.name.ar || product.name;
+        const pDesc = product.description[currentLang] || product.description.ar || product.description;
+        const packageText = currentLang === 'ar' ? 'بكج كامل 📦' : 'Full Package 📦';
+        const inCart = cart.some(i => i.id === product.id);
+        const addToCartText = inCart ? (currentLang === 'ar' ? 'إلى الدفع' : 'Checkout') : (currentLang === 'ar' ? 'أضف للسلة' : 'Add to Cart');
+        
+        return `
+            <div class="product-card">
+                <div class="relative">
+                    ${product.isPackage ? `<div class="package-badge">${packageText}</div>` : ''}
+                    <a href="/product/${product.uuid || product.id}">
+                        <img src="${product.image || ''}" alt="${pName}" class="product-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'400\'%3E%3Crect fill=\'%23ddd\' width=\'400\' height=\'400\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%23999\'%3ENo Image%3C/text%3E%3C/svg%3E'">
+                    </a>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name"><a href="/product/${product.uuid || product.id}">${pName}</a></h3>
+                    <p class="product-desc">${pDesc}</p>
+                    
+                    <div class="flex gap-2 mb-3">
+                        ${product.colors && product.colors.length > 0 ? product.colors.map((color, index) => `
+                            <button class="color-btn ${index === 0 ? 'active' : ''}" 
+                                    style="background: ${color}"
+                                    onclick="selectColor(${product.id}, '${color}', this)"
+                                    data-color="${color}">
+                            </button>
+                        `).join('') : ''}
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-3" id="sizes-${product.id}">
+                        ${product.sizes && product.sizes.length > 0 ? product.sizes.map((size, index) => `
+                            <button class="size-btn ${index === 0 ? 'active' : ''}" 
+                                    onclick="selectSize(${product.id}, '${size}', this)">
+                                ${size}
+                            </button>
+                        `).join('') : ''}
+                    </div>
+                    
+                    <div class="text-xl font-bold mb-3">${currency.symbol}${(product.price * currency.rate).toFixed(2)}</div>
+                    ${inCart ? `
+                        <button class="btn-yellow" data-product-id="${product.id}" onclick="proceedToCheckout()">
+                            ${addToCartText}
+                        </button>
+                    ` : `
+                        <button class="btn-yellow" data-product-id="${product.id}" onclick="addToCart(${cityId}, ${product.id})">
+                            ${addToCartText}
+                        </button>
+                    `}
+                </div>
+            </div>
+        `;
+    }
 
     // Render Cities and Products
     function renderCities() {
@@ -182,55 +144,227 @@
             return;
         }
 
-        container.innerHTML = cities.map(city => `
-            <div class="city-section">
-                <h2 class="city-title">${city.name[currentLang] || city.name.ar}</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    ${city.products.map(product => {
-                        const pName = product.name[currentLang] || product.name.ar || product.name;
-                        const pDesc = product.description[currentLang] || product.description.ar || product.description;
-                        const packageText = currentLang === 'ar' ? 'بكج كامل 📦' : 'Full Package 📦';
-                        const addToCartText = currentLang === 'ar' ? 'أضف للسلة' : 'Add to Cart';
-                        
-                        return `
-                        <div class="product-card">
-                            <div class="relative">
-                                ${product.isPackage ? `<div class="package-badge">${packageText}</div>` : ''}
-                                <img src="${product.image}" alt="${pName}" class="product-image">
-                            </div>
-                            <div class="product-info">
-                                <h3 class="product-name">${pName}</h3>
-                                <p class="product-desc">${pDesc}</p>
-                                
-                                <div class="flex gap-2 mb-3">
-                                    ${product.colors.map((color, index) => `
-                                        <button class="color-btn ${index === 0 ? 'active' : ''}" 
-                                                style="background: ${color}"
-                                                onclick="selectColor(${product.id}, '${color}', this)"
-                                                data-color="${color}">
-                                        </button>
-                                    `).join('')}
-                                </div>
-                                
-                                <div class="flex flex-wrap gap-2 mb-3" id="sizes-${product.id}">
-                                    ${product.sizes.map((size, index) => `
-                                        <button class="size-btn ${index === 0 ? 'active' : ''}" 
-                                                onclick="selectSize(${product.id}, '${size}', this)">
-                                            ${size}
-                                        </button>
-                                    `).join('')}
-                                </div>
-                                
-                                <div class="text-xl font-bold mb-3">${currency.symbol}${(product.price * currency.rate).toFixed(2)}</div>
-                                <button onclick="addToCart(${city.id}, ${product.id})" class="btn-yellow">
-                                    ${addToCartText}
-                                </button>
-                            </div>
-                        </div>
-                    `}).join('')}
+        container.innerHTML = cities.map(city => {
+            const productsHtml = city.products.map(product => renderProductCard(product, city.id)).join('');
+            const loadingHtml = cityPagination[city.id]?.hasMore ? `
+                <div class="load-more-container text-center mt-8" data-city-id="${city.id}">
+                    <div class="loading-spinner" style="display: none;">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style="border-color: var(--primary-yellow); border-top-color: transparent;"></div>
+                        <p class="mt-2" style="color: var(--gray-text)">${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            ` : '';
+            
+            return `
+                <div class="city-section" data-city-id="${city.id}">
+                    <h2 class="city-title">${city.name[currentLang] || city.name.ar}</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid-${city.id}">
+                        ${productsHtml}
+                    </div>
+                    ${loadingHtml}
+                </div>
+            `;
+        }).join('');
+    }
+
+    // Append newly loaded cities to DOM
+    function appendCities(newCities) {
+        const container = document.getElementById('citiesContainer');
+        if (!container || !newCities || newCities.length === 0) return;
+
+        const html = newCities.map(city => {
+            const productsHtml = city.products.map(product => renderProductCard(product, city.id)).join('');
+            const loadingHtml = city.hasMore ? `
+                <div class="load-more-container text-center mt-8" data-city-id="${city.id}">
+                    <div class="loading-spinner" style="display: none;">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style="border-color: var(--primary-yellow); border-top-color: transparent;"></div>
+                        <p class="mt-2" style="color: var(--gray-text)">${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
+                    </div>
+                </div>
+            ` : '';
+
+            return `
+                <div class="city-section" data-city-id="${city.id}">
+                    <h2 class="city-title">${city.name[currentLang] || city.name.ar}</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="products-grid-${city.id}">
+                        ${productsHtml}
+                    </div>
+                    ${loadingHtml}
+                </div>
+            `;
+        }).join('');
+
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    // Load more products for a specific city
+    async function loadMoreProducts(cityId) {
+        const pagination = cityPagination[cityId];
+        if (!pagination || !pagination.hasMore || pagination.loading) {
+            return;
+        }
+
+        pagination.loading = true;
+        const nextPage = pagination.currentPage + 1;
+        
+        // Show or create loading indicator
+        let loadMoreContainer = document.querySelector(`.load-more-container[data-city-id="${cityId}"]`);
+        if (!loadMoreContainer) {
+            // Create load more container if it doesn't exist
+            const citySection = document.querySelector(`.city-section[data-city-id="${cityId}"]`);
+            if (citySection) {
+                const container = document.createElement('div');
+                container.className = 'load-more-container text-center mt-8';
+                container.setAttribute('data-city-id', cityId);
+                container.innerHTML = `
+                    <div class="loading-spinner">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style="border-color: var(--primary-yellow); border-top-color: transparent;"></div>
+                        <p class="mt-2" style="color: var(--gray-text)">${currentLang === 'ar' ? 'جاري التحميل...' : 'Loading...'}</p>
+                    </div>
+                `;
+                citySection.appendChild(container);
+                loadMoreContainer = container;
+            }
+        }
+        
+        if (loadMoreContainer) {
+            const loadingSpinner = loadMoreContainer.querySelector('.loading-spinner');
+            if (loadingSpinner) {
+                loadingSpinner.style.display = 'block';
+            }
+        }
+
+        try {
+            const response = await fetch(`/api/products/load-more?city_id=${cityId}&page=${nextPage}`);
+            const data = await response.json();
+
+            if (data.success && data.products && data.products.length > 0) {
+                // Find the city in the cities array and append products
+                const city = cities.find(c => c.id === cityId);
+                if (city) {
+                    city.products = [...city.products, ...data.products];
+                }
+
+                // Append products to the grid
+                const productsGrid = document.getElementById(`products-grid-${cityId}`);
+                if (productsGrid) {
+                    const productsHtml = data.products.map(product => renderProductCard(product, cityId)).join('');
+                    productsGrid.insertAdjacentHTML('beforeend', productsHtml);
+                }
+
+                // Update pagination state
+                pagination.currentPage = nextPage;
+                pagination.hasMore = data.hasMore;
+
+                // Hide loading indicator
+                if (loadMoreContainer) {
+                    const loadingSpinner = loadMoreContainer.querySelector('.loading-spinner');
+                    if (loadingSpinner) {
+                        loadingSpinner.style.display = 'none';
+                    }
+                    
+                    // Remove load more container if no more products
+                    if (!data.hasMore) {
+                        loadMoreContainer.remove();
+                    }
+                }
+            } else {
+                pagination.hasMore = false;
+                if (loadMoreContainer) {
+                    loadMoreContainer.remove();
+                }
+            }
+        } catch (error) {
+            console.error('Error loading more products:', error);
+            if (loadMoreContainer) {
+                const loadingSpinner = loadMoreContainer.querySelector('.loading-spinner');
+                if (loadingSpinner) {
+                    loadingSpinner.style.display = 'none';
+                }
+            }
+        } finally {
+            pagination.loading = false;
+        }
+    }
+
+    // Load next page of cities
+    async function loadMoreCities() {
+        if (loadingCities) return;
+        if (citiesPage >= citiesLastPage) return;
+        loadingCities = true;
+        const nextPage = citiesPage + 1;
+
+        try {
+            const response = await fetch(`/api/cities?page=${nextPage}`);
+            const data = await response.json();
+
+            if (data.success && data.cities && data.cities.length > 0) {
+                // Update local state
+                data.cities.forEach(city => {
+                    cityPagination[city.id] = {
+                        currentPage: 1,
+                        hasMore: city.hasMore || false,
+                        loading: false
+                    };
+                });
+                cities = [...cities, ...data.cities];
+                appendCities(data.cities);
+
+                citiesPage = data.currentPage;
+                citiesLastPage = data.lastPage;
+            }
+        } catch (e) {
+            console.error('Error loading more cities', e);
+        } finally {
+            loadingCities = false;
+        }
+    }
+
+    // Infinite scroll handler
+    function handleScroll() {
+        const threshold = 400; // Load when 400px from bottom
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        
+        // Check if we're near the bottom of the page
+        const distanceFromBottom = documentHeight - (scrollTop + windowHeight);
+        
+        if (distanceFromBottom <= threshold) {
+            // Find the city section that's closest to the bottom of the viewport
+            let bottomCitySection = null;
+            let maxBottom = -Infinity;
+            
+            document.querySelectorAll('.city-section').forEach(citySection => {
+                const rect = citySection.getBoundingClientRect();
+                // Check if this section is visible and its bottom is in viewport
+                if (rect.bottom > 0 && rect.top < windowHeight) {
+                    // Find the section with the bottommost visible part
+                    const visibleBottom = Math.min(rect.bottom, windowHeight);
+                    if (visibleBottom > maxBottom) {
+                        maxBottom = visibleBottom;
+                        bottomCitySection = citySection;
+                    }
+                }
+            });
+            
+            // Load more products for the bottommost visible city section
+            if (bottomCitySection) {
+                const cityId = parseInt(bottomCitySection.dataset.cityId);
+                if (cityId) {
+                    const pagination = cityPagination[cityId];
+                    if (pagination && pagination.hasMore && !pagination.loading) {
+                        loadMoreProducts(cityId);
+                        return;
+                    }
+                }
+            }
+
+            // If no city needs more products, try loading more cities
+            if (citiesPage < citiesLastPage && !loadingCities) {
+                loadMoreCities();
+            }
+        }
     }
 
     function selectColor(productId, color, btn) {
@@ -277,7 +411,13 @@
         
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartDisplay();
-        alert(currentLang === 'ar' ? '✅ تمت الإضافة إلى السلة!' : '✅ Added to cart!');
+        // Update button to "Checkout"
+        const btn = document.querySelector(`button[data-product-id="${productId}"]`);
+        if (btn) {
+            btn.textContent = currentLang === 'ar' ? 'إلى الدفع' : 'Checkout';
+            btn.setAttribute('onclick', 'proceedToCheckout()');
+        }
+        // First add: do not open cart or redirect; just switch button to Checkout
     }
 
     function updateCartDisplay() {
@@ -288,12 +428,19 @@
         }
         
         const cartItems = document.getElementById('cartItems');
+        const itemsCountEl = document.getElementById('cartItemsCount');
+        const checkoutBtn = document.getElementById('checkoutBtn');
         if (!cartItems) return;
         
         const emptyText = currentLang === 'ar' ? 'السلة فارغة' : 'Cart is empty';
         
         if (cart.length === 0) {
-            cartItems.innerHTML = `<p class="text-center py-8" style="color: var(--gray-text)">${emptyText}</p>`;
+            cartItems.innerHTML = `<div class="text-center py-12" style="color: var(--gray-text)">
+                <p>${emptyText}</p>
+                <button onclick="closeCart()" class="mt-4 px-4 py-2 rounded" style="background: var(--gray-bg)">
+                    ${currentLang === 'ar' ? 'تابع التسوق' : 'Continue shopping'}
+                </button>
+            </div>`;
         } else {
             cartItems.innerHTML = cart.map(item => {
                 const cityName = item.cityName[currentLang] || item.cityName.ar || item.cityName;
@@ -332,6 +479,13 @@
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             cartTotal.textContent = `${currency.symbol}${(total * currency.rate).toFixed(2)}`;
         }
+        if (itemsCountEl) {
+            const itemsCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            itemsCountEl.textContent = itemsCount;
+        }
+        if (checkoutBtn) {
+            checkoutBtn.disabled = cart.length === 0;
+        }
     }
 
     function changeQuantity(productId, color, size, change) {
@@ -353,17 +507,33 @@
         updateCartDisplay();
     }
 
+    function clearCart() {
+        cart = [];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartDisplay();
+    }
+
     function openCart() {
         const cartModal = document.getElementById('cartModal');
         if (cartModal) {
             cartModal.classList.add('active');
         }
+        document.body.style.overflow = 'hidden';
+        document.addEventListener('keydown', escCloseCartHandler);
     }
 
     function closeCart() {
         const cartModal = document.getElementById('cartModal');
         if (cartModal) {
             cartModal.classList.remove('active');
+        }
+        document.body.style.overflow = '';
+        document.removeEventListener('keydown', escCloseCartHandler);
+    }
+
+    function escCloseCartHandler(e) {
+        if (e.key === 'Escape') {
+            closeCart();
         }
     }
 
@@ -395,6 +565,18 @@
         });
     }
 
+    // Throttle scroll events for better performance
+    let scrollTimeout;
+    function throttledScrollHandler() {
+        if (scrollTimeout) {
+            return;
+        }
+        scrollTimeout = setTimeout(() => {
+            handleScroll();
+            scrollTimeout = null;
+        }, 200);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('searchInput');
         const searchInputMobile = document.getElementById('searchInputMobile');
@@ -410,6 +592,14 @@
         // Initialize
         renderCities();
         updateCartDisplay();
+
+        // Add scroll event listener for infinite scroll
+        window.addEventListener('scroll', throttledScrollHandler);
+        
+        // Also check on initial load if we need to load more (in case page is already scrolled)
+        setTimeout(() => {
+            handleScroll();
+        }, 500);
     });
 </script>
 

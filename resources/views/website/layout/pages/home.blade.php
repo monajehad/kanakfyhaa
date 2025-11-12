@@ -9,17 +9,13 @@
     <!-- Cities & Products Section -->
     <section id="cities" class="container mx-auto px-4 py-12">
         <div id="citiesContainer">
-            @if(isset($cities) && count($cities) > 0)
-                @foreach($cities as $city)
-                    @include('website.layout.components.city-section', ['city' => $city])
-                @endforeach
-            @else
-                <p class="text-center py-12" style="color: var(--gray-text)">
-                    <span data-ar="لا توجد مدن متاحة حالياً" data-en="No cities available currently">
-                        لا توجد مدن متاحة حالياً
-                    </span>
+            <!-- Cities and products will be loaded dynamically via JavaScript -->
+            <div class="text-center py-12" style="color: var(--gray-text)">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2" style="border-color: var(--primary-yellow); border-top-color: transparent;"></div>
+                <p class="mt-2">
+                    <span data-ar="جاري التحميل..." data-en="Loading...">جاري التحميل...</span>
                 </p>
-            @endif
+            </div>
         </div>
     </section>
 

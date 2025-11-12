@@ -11,6 +11,8 @@
     @include('website.layout.sections._footer')
 
     @include('website.layout.sections._scripts')
+    
+    @stack('scripts')
 </body>
 </html>
 

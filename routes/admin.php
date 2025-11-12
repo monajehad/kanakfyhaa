@@ -42,6 +42,7 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     // ================== [Resources] ===================
     // Product Management
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index','show','update']);
 
     // Category Management
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class);
@@ -58,10 +59,6 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
 });
 
-Route::prefix('admin')->middleware('auth')->name('admin.content.')->group(function () {
-    Route::resource('news_bar', \App\Http\Controllers\Admin\NewsBarController::class);
-    Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
-});
 
 
 

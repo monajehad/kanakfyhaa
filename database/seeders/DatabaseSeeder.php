@@ -32,12 +32,14 @@ class DatabaseSeeder extends Seeder
         $this->call(ExperienceSeeder::class, false, ['count' => 5000000]); // 5 experiences per product
 
 
-        $this->call(NewsBarSeeder::class);
         $this->call(LandmarkSeeder::class);
         $this->call(ArtifactSeeder::class);
 
 
         
+        // Demo orders
+        $this->call(OrderSeeder::class);
+
         // Re-enable foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
