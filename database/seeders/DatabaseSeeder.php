@@ -35,8 +35,9 @@ class DatabaseSeeder extends Seeder
         $this->call(LandmarkSeeder::class);
         $this->call(ArtifactSeeder::class);
 
+        // Test product with full QR features
+        $this->call(TestProductQRSeeder::class);
 
-        
         // Demo orders
         $this->call(OrderSeeder::class);
 

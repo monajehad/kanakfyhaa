@@ -52,6 +52,7 @@ class CityController extends Controller
                 'name_ar'      => 'nullable|string|max:255',
                 'name_en'      => 'nullable|string|max:255',
                 'native_name'  => 'nullable|string|max:255',
+                'description'      => 'nullable|string|max:500',
                 'region'       => 'nullable|string|max:100',
                 'subregion'    => 'nullable|string|max:100',
                 'latitude'     => 'nullable|numeric',
