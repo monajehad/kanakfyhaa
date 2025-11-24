@@ -39,25 +39,45 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
 
-        // City landmarks and artifacts
-        $landmarks = Landmark::where('city_id', $product->city_id)
+        // City main landmark (one city post) and artifacts
+        $cityLandmark = Landmark::where('city_id', $product->city_id)
             ->withCount('artifacts')
             ->with('media')
-            ->orderBy('id', 'desc')
-            ->limit(6)
-            ->get();
+            ->orderBy('id', 'asc')
+            ->first();
 
-        $artifacts = Artifact::whereIn('landmark_id', $landmarks->pluck('id'))
+        $artifacts = Artifact::whereHas('landmark', function ($q) use ($product) {
+                $q->where('city_id', $product->city_id);
+            })
             ->with('media', 'landmark')
             ->orderBy('id', 'desc')
             ->limit(8)
             ->get();
 
+        // Normalize city image and landmarks count for the view
+        $cityImage = null;
+        $landmarksCount = 0;
+        if ($product->city) {
+            $city = $product->city;
+            $cityMedia = $city->media ?? collect();
+            // prefer main media (role='main'), then first image-type media, then any media
+            $mainCityMedia = $cityMedia->firstWhere('role', 'main') ?? $cityMedia->firstWhere('type', 'image') ?? $cityMedia->first();
+            if ($mainCityMedia && $mainCityMedia->url) {
+                $cityImage = $mainCityMedia->url;
+            }
+            if (!$cityImage && $city->image) {
+                $cityImage = str_starts_with($city->image, 'http') ? $city->image : asset($city->image);
+            }
+            $landmarksCount = $city->landmarks ? $city->landmarks->count() : Landmark::where('city_id', $city->id)->count();
+        }
+
         return view('website.layout.pages.product', [
             'product' => $product,
             'gallery' => $gallery,
             'relatedProducts' => $relatedProducts,
-            'landmarks' => $landmarks,
+            'cityLandmark' => $cityLandmark,
+            'cityImage' => $cityImage,
+            'landmarksCount' => $landmarksCount,
             'artifacts' => $artifacts,
         ]);
     }

@@ -16,6 +16,15 @@
     <div class="card shadow border-0">
         <div class="card-body">
             <dl class="row mb-0 gy-3">
+                <dt class="col-sm-4">صورة التصنيف</dt>
+                <dd class="col-sm-8">
+                    @if($category->mainImage && $category->mainImage->file)
+                        <img src="{{ asset('storage/' . $category->mainImage->file) }}" alt="صورة التصنيف" style="width: 100px; height: 100px; object-fit: cover;" class="rounded border" />
+                    @else
+                        <span class="text-muted small">لا توجد صورة</span>
+                    @endif
+                </dd>
+
                 <dt class="col-sm-4">ID التصنيف</dt>
                 <dd class="col-sm-8">{{ $category->id }}</dd>
 

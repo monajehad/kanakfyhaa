@@ -42,6 +42,14 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     // ================== [Resources] ===================
     // Product Management
     Route::resource('products', \App\Http\Controllers\Admin\ProductController::class);
+    Route::delete('/products/{product}/media/{media}', [\App\Http\Controllers\Admin\ProductController::class, 'deleteMedia'])->name('products.deleteMedia');
+    
+    // Product Packages Management
+    Route::resource('products.packages', \App\Http\Controllers\Admin\ProductPackageController::class)->except('show')->scoped([
+        'product' => 'id',
+        'package' => 'id',
+    ]);
+    
     Route::resource('orders', \App\Http\Controllers\Admin\OrderController::class)->only(['index','show','update']);
 
     // Category Management

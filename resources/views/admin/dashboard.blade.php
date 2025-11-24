@@ -10,6 +10,10 @@ $configData = Helper::appClasses();
 @php
   use Carbon\Carbon;
   use App\Models\Order;
+  use App\Models\Product;
+  use App\Models\ProductPackage;
+  use Illuminate\Support\Str;
+  
   // Build last 14 days series
   $days = collect(range(0,13))->map(fn($i)=>Carbon::today()->subDays(13-$i));
   $ordersByDay = $days->mapWithKeys(function($day){
@@ -32,6 +36,12 @@ $configData = Helper::appClasses();
   $topCountries = Order::selectRaw('country, COUNT(*) as cnt')
     ->whereNotNull('country')->groupBy('country')->orderByDesc('cnt')->limit(5)->get();
   $recent = Order::latest('order_date')->limit(8)->get();
+  
+  // Package statistics
+  $totalPackages = ProductPackage::count();
+  $activePackages = ProductPackage::where('is_active', true)->count();
+  $packageProducts = Product::where('is_package', true)->count();
+  $recentPackages = ProductPackage::with('product')->latest()->limit(5)->get();
 @endphp
 <h4 class="mb-4">{{ __('Dashboard') }}</h4>
 
@@ -85,6 +95,50 @@ $configData = Helper::appClasses();
         <h3 class="mb-0">${{ number_format(\App\Models\Order::sum('total'), 2) }}</h3>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Product Packages Section -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <span>{{ __('Total Packages') }}</span>
+          <span>📋</span>
+        </div>
+        <h3 class="mb-0">{{ $totalPackages }}</h3>
+        <small class="text-muted">{{ $activePackages }} {{ __('active') }}</small>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <a href="{{ route('admin.products.index', ['filter' => 'packages']) }}" class="text-decoration-none">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <span>{{ __('Package Products') }}</span>
+            <span>🎁</span>
+          </div>
+          <h3 class="mb-0">{{ $packageProducts }}</h3>
+          <small class="text-muted">{{ __('Products with packages') }}</small>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-4">
+    <a href="{{ route('admin.products.index') }}" class="text-decoration-none">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <span>{{ __('All products') }}</span>
+            <span>📦</span>
+          </div>
+          <h3 class="mb-0">{{ Product::count() }}</h3>
+          <small class="text-muted">All products</small>
+        </div>
+      </div>
+    </a>
   </div>
 </div>
 
@@ -160,6 +214,71 @@ $configData = Helper::appClasses();
         </tr>
         @empty
         <tr><td colspan="6" class="text-center text-muted">-</td></tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Recent Packages Section -->
+<div class="card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>{{ __('Recent') }} {{ __('Packages') }}</span>
+    <a href="{{ route('admin.products.index') }}" class="btn btn-sm btn-outline-primary">{{ __('Manage Packages') }}</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>{{ __('Package Name') }}</th>
+          <th>{{ __('Product') }}</th>
+          <th>{{ __('Price') }}</th>
+          <th>{{ __('Discount') }}</th>
+          <th>{{ __('Quantity') }}</th>
+          <th>{{ __('Status') }}</th>
+          <th>{{ __('Actions') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse($recentPackages as $pkg)
+        <tr>
+          <td>
+            <strong>{{ $pkg->name_ar ?? $pkg->name }}</strong>
+            <br>
+            <small class="text-muted">{{ Str::limit($pkg->description_ar ?? $pkg->description ?? '-', 50) }}</small>
+          </td>
+          <td>
+            <a href="{{ route('admin.products.edit', $pkg->product) }}" class="text-decoration-none">
+              {{ $pkg->product->name_ar ?? $pkg->product->name }}
+            </a>
+          </td>
+          <td><strong>${{ number_format($pkg->price, 2) }}</strong></td>
+          <td>{{ $pkg->discount }}%</td>
+          <td>
+            <span class="badge bg-{{ $pkg->quantity > 0 ? 'success' : 'danger' }}">
+              {{ $pkg->quantity }}
+            </span>
+          </td>
+          <td>
+            <span class="badge bg-{{ $pkg->is_active ? 'info' : 'secondary' }}">
+              {{ $pkg->is_active ? __('Active') : __('Inactive') }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ route('admin.products.packages.edit', [$pkg->product, $pkg]) }}" class="btn btn-sm btn-outline-warning">
+              <i class="bx bx-edit"></i>
+            </a>
+            <form action="{{ route('admin.products.packages.destroy', [$pkg->product, $pkg]) }}" method="POST" style="display:inline-block;">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">
+                <i class="bx bx-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        @empty
+        <tr><td colspan="7" class="text-center text-muted">{{ __('No packages yet') }}</td></tr>
         @endforelse
       </tbody>
     </table>

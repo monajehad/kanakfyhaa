@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Routing\Route;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Category;
 
 class MenuServiceProvider extends ServiceProvider
 {
@@ -29,5 +30,13 @@ class MenuServiceProvider extends ServiceProvider
 
     // Share all menuData to all the views
     $this->app->make('view')->share('menuData', [$verticalMenuData, $horizontalMenuData]);
+
+    // Share categories (used in header and home) to all views
+    try {
+      $categories = Category::orderBy('name')->get();
+    } catch (\Exception $e) {
+      $categories = collect();
+    }
+    $this->app->make('view')->share('categories', $categories);
   }
 }

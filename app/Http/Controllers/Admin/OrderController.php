@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderStatusChanged;
 
 class OrderController extends Controller
 {
@@ -83,18 +85,24 @@ class OrderController extends Controller
     {
         return view('admin.orders.show', compact('order'));
     }
+public function update(Request $request, Order $order)
+{
+$request->validate([
+        'order_status' => 'required|in:processing,shipped,delivered,cancelled',
+    ]);
 
-    public function update(Request $request, Order $order)
-    {
-        $request->validate([
-            'order_status' => 'required|in:processing,shipped,delivered,cancelled',
-        ]);
-        $order->update([
-            'order_status' => $request->order_status,
-        ]);
+    $order->update([
+        'order_status' => $request->order_status,
+    ]);
 
-        return redirect()->back()->with('success', 'Order updated');
+    if ($order->email) {
+        Mail::to($order->email)->send(new OrderStatusChanged($order, $request->order_status));
     }
+
+    return redirect()->back()->with('success', 'Order updated and email sent');
+}
+
+
 }
 
 

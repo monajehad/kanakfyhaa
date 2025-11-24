@@ -1,16 +1,23 @@
 <script>
     // Language & Theme Management
-    let currentLang = localStorage.getItem('language') || 'ar';
+    let currentLang = localStorage.getItem('language') || '{{ app()->getLocale() }}';
     let currentTheme = localStorage.getItem('theme') || 'light';
+    const langSwitchEndpoint = @json(url('/lang'));
 
     // Apply saved preferences
     document.documentElement.lang = currentLang;
     document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    localStorage.setItem('language', currentLang);
     document.documentElement.setAttribute('data-theme', currentTheme);
 
+    const langBtnEl = document.getElementById('langBtn');
+    if (langBtnEl) {
+        langBtnEl.textContent = currentLang === 'ar' ? 'EN' : 'ع';
+    }
+
     // Toggle Language
-    function toggleLanguage() {
-        currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    function toggleLanguage(targetLocale = null) {
+        currentLang = targetLocale || (currentLang === 'ar' ? 'en' : 'ar');
         document.documentElement.lang = currentLang;
         document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
         localStorage.setItem('language', currentLang);
@@ -28,9 +35,19 @@
         });
         
         // Update language button
-        document.getElementById('langBtn').textContent = currentLang === 'ar' ? 'EN' : 'ع';
+        if (langBtnEl) {
+            langBtnEl.textContent = currentLang === 'ar' ? 'EN' : 'ع';
+        }
         
-        renderCities();
+        if (typeof renderCities === 'function') {
+            renderCities();
+        }
+
+        fetch(`${langSwitchEndpoint}/${currentLang}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        }).finally(() => window.location.reload());
     }
 
     // Toggle Theme
@@ -83,7 +100,11 @@
         const pName = product.name[currentLang] || product.name.ar || product.name;
         const pDesc = product.description[currentLang] || product.description.ar || product.description;
         const packageText = currentLang === 'ar' ? 'بكج كامل 📦' : 'Full Package 📦';
-        const inCart = cart.some(i => i.id === product.id);
+        
+        // Check if this exact variant is in cart (with first color/size as default)
+        const defaultColor = product.colors && product.colors.length > 0 ? product.colors[0] : null;
+        const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : null;
+        const inCart = cart.some(i => i.id === product.id && i.selectedColor === defaultColor && i.selectedSize === defaultSize);
         const addToCartText = inCart ? (currentLang === 'ar' ? 'إلى الدفع' : 'Checkout') : (currentLang === 'ar' ? 'أضف للسلة' : 'Add to Cart');
         
         return `
@@ -371,12 +392,50 @@
         const colorButtons = btn.parentElement.querySelectorAll('.color-btn');
         colorButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        // Update button state when color changes
+        updateProductButtonState(productId);
     }
 
     function selectSize(productId, size, btn) {
         const sizeButtons = btn.parentElement.querySelectorAll('.size-btn');
         sizeButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        // Update button state when size changes
+        updateProductButtonState(productId);
+    }
+
+    function updateProductButtonState(productId) {
+        // Find the product card
+        const productCard = document.querySelector(`button[data-product-id="${productId}"]`).closest('.product-card');
+        if (!productCard) return;
+        
+        // Get selected variants
+        const colorBtn = productCard.querySelector('.color-btn.active');
+        const sizeBtn = productCard.querySelector('.size-btn.active');
+        
+        const selectedColor = colorBtn ? colorBtn.dataset.color : null;
+        const selectedSize = sizeBtn ? sizeBtn.textContent.trim() : null;
+        
+        // Check if this exact variant is in cart
+        const isInCart = cart.some(item => 
+            item.id === productId && 
+            item.selectedColor === selectedColor && 
+            item.selectedSize === selectedSize
+        );
+        
+        // Update button
+        const btn = document.querySelector(`button[data-product-id="${productId}"]`);
+        if (btn) {
+            if (isInCart) {
+                btn.textContent = currentLang === 'ar' ? 'إلى الدفع' : 'Checkout';
+                btn.setAttribute('onclick', 'proceedToCheckout()');
+            } else {
+                // Need to find cityId - get from product card context
+                const cityId = productCard.closest('.city-section')?.dataset.cityId;
+                btn.textContent = currentLang === 'ar' ? 'أضف للسلة' : 'Add to Cart';
+                btn.setAttribute('onclick', `addToCart(${cityId}, ${productId})`);
+            }
+        }
     }
 
     function addToCart(cityId, productId) {
@@ -445,16 +504,17 @@
             cartItems.innerHTML = cart.map(item => {
                 const cityName = item.cityName[currentLang] || item.cityName.ar || item.cityName;
                 const productName = item.name[currentLang] || item.name.ar || item.name;
+                const productImage = item.image || 'https://placehold.co/80x80/jpg?text=No+Image';
                 
                 return `
                 <div class="flex gap-4 border-b pb-4" style="border-color: var(--border-color)">
-                    <img src="${item.image}" alt="${productName}" class="w-20 h-20 rounded object-cover">
+                    <img src="${productImage}" alt="${productName}" class="w-20 h-20 rounded object-cover flex-shrink-0" onerror="this.src='https://placehold.co/80x80/jpg?text=No+Image';">
                     <div class="flex-1">
                         <h4 class="font-bold text-sm">${productName}</h4>
                         <p class="text-xs" style="color: var(--gray-text)">${cityName}</p>
                         <p class="text-xs">
                             ${currentLang === 'ar' ? 'اللون:' : 'Color:'} 
-                            <span class="inline-block w-4 h-4 rounded-full" style="background: ${item.selectedColor}"></span>
+                            <span class="inline-block w-4 h-4 rounded-full" style="background: ${item.selectedColor}; border: 1px solid #ccc;"></span>
                         </p>
                         <p class="text-xs">${currentLang === 'ar' ? 'المقاس:' : 'Size:'} ${item.selectedSize}</p>
                         <div class="flex items-center gap-2 mt-2">
@@ -497,6 +557,8 @@
             } else {
                 localStorage.setItem('cart', JSON.stringify(cart));
                 updateCartDisplay();
+                // Trigger custom event for product pages to listen
+                window.dispatchEvent(new CustomEvent('cartUpdated', { detail: cart }));
             }
         }
     }
@@ -505,12 +567,21 @@
         cart = cart.filter(item => !(item.id === productId && item.selectedColor === color && item.selectedSize === size));
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartDisplay();
+        // Update button on home page
+        updateProductButtonState(productId);
+        // Trigger custom event for product pages to listen
+        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: cart }));
     }
 
     function clearCart() {
+        const productIds = [...new Set(cart.map(item => item.id))];
         cart = [];
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartDisplay();
+        // Update all product buttons on home page
+        productIds.forEach(id => updateProductButtonState(id));
+        // Trigger custom event for product pages to listen
+        window.dispatchEvent(new CustomEvent('cartUpdated', { detail: cart }));
     }
 
     function openCart() {

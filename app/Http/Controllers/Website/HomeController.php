@@ -187,6 +187,30 @@ class HomeController extends Controller
             }
         }
 
+        // Format package if product is a package (one-to-one relationship)
+        $packages = [];
+        if ($product->is_package && $product->package && $product->package->is_active) {
+            $pkg = $product->package;
+            $packages = [[
+                'id' => $pkg->id,
+                'name' => [
+                    'ar' => $pkg->name_ar ?? $pkg->name,
+                    'en' => $pkg->name_en ?? $pkg->name,
+                ],
+                'description' => [
+                    'ar' => $pkg->description_ar ?? $pkg->description ?? '',
+                    'en' => $pkg->description_en ?? $pkg->description ?? '',
+                ],
+                'items' => $pkg->items ?? [],
+                'price' => $pkg->price,
+                'original_price' => $pkg->original_price,
+                'discount' => $pkg->discount,
+                'final_price' => $pkg->final_price,
+                'shipping_price' => $pkg->shipping_price,
+                'quantity' => $pkg->quantity,
+            ]];
+        }
+
         return [
             'id' => $product->id,
             'uuid' => $product->uuid,
@@ -199,10 +223,12 @@ class HomeController extends Controller
                 'en' => $product->description_en ?? $product->description ?? ''
             ],
             'price' => $product->price ?? $product->price_sell ?? 0,
+            'shipping_price' => $product->shipping_price ?? 0,
             'image' => $imageUrl,
             'colors' => $colors,
             'sizes' => $sizes,
-            'isPackage' => $product->is_package ?? false
+            'isPackage' => $product->is_package ?? false,
+            'packages' => $packages,
         ];
     }
 }

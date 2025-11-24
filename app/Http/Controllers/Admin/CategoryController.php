@@ -6,6 +6,9 @@ use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Media;
+
 class CategoryController extends Controller
 {
     /**
@@ -15,21 +18,20 @@ class CategoryController extends Controller
     {
         $categories = Category::query();
 
-    // 
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $categories->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('slug', 'like', "%{$search}%");
-        });
-    }
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $categories->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
+        }
 
-    $categories = $categories
-        ->orderBy('id', 'desc')
-        ->paginate(10) 
-        ->withQueryString(); 
+        $categories = $categories
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
-    return response()->view('admin.categories.index', compact('categories'));
+        return response()->view('admin.categories.index', compact('categories'));
     }
 
     /**
@@ -37,7 +39,6 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
         return response()->view('admin.categories.create');
     }
 
@@ -47,36 +48,46 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-        ]);
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:categories,name',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
+            ]);
 
-        $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
+            $validated['slug'] = Str::slug($validated['name']);
 
-        $category = \App\Models\Category::create($validated);
+            $category = Category::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => ' تم إضافة التصنيف بنجاح.',
-            'category' => $category,
-            'redirect' => route('admin.categories.index') // رابط صفحة العرض
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $path = $image->store('categories', 'public');
 
-        ], 201);
-    } 
-    catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'message' => ' فشل التحقق من صحة البيانات.',
-            'errors' => $e->errors(),
-        ], 422);
-    } 
-    catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'حدث خطأ غير متوقع أثناء الإضافة.',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
+                // تغيير 'file' إلى 'url'
+                $category->media()->create([
+                    'type' => 'image', // إضافة type لأنه مطلوب في الـ migration
+                    'url' => $path,
+                    'role' => 'main',
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => ' تم إضافة التصنيف بنجاح.',
+                'category' => $category->load('mainImage'),
+                'redirect' => route('admin.categories.index')
+            ], 201);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => ' فشل التحقق من صحة البيانات.',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ غير متوقع أثناء الإضافة.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -92,8 +103,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
-         return response()->view('admin.categories.edit', compact('category'));
-
+        return response()->view('admin.categories.edit', compact('category'));
     }
 
     /**
@@ -101,35 +111,59 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-         try {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
+            ]);
 
-        $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
+            $validated['slug'] = Str::slug($validated['name']);
 
-        $category->update($validated);
+            $category->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => ' تم تحديث التصنيف بنجاح.',
-            'category' => $category,
-          'redirect' => route('admin.categories.index') 
+            // Handle image upload/update
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $path = $image->store('categories', 'public');
 
-        ]);
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        return response()->json([
-            'success' => false,
-            'errors' => $e->errors(),
-            'message' => ' فشل التحقق من صحة البيانات.',
-        ], 422);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => ' حدث خطأ غير متوقع أثناء التحديث.',
-            'error' => $e->getMessage(),
-        ], 500);
-    }
+                // Delete old main image if exists
+                $mainImage = $category->mainImage;
+                if ($mainImage) {
+                    // استخدام attributes['url'] للحصول على القيمة الأصلية بدون الـ accessor
+                    $originalUrl = $mainImage->attributes['url'] ?? null;
+                    if ($originalUrl && Storage::disk('public')->exists($originalUrl)) {
+                        Storage::disk('public')->delete($originalUrl);
+                    }
+                    $mainImage->delete();
+                }
+
+                // Add new image as main - تغيير 'file' إلى 'url'
+                $category->media()->create([
+                    'type' => 'image', // إضافة type لأنه مطلوب
+                    'url' => $path,
+                    'role' => 'main',
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => ' تم تحديث التصنيف بنجاح.',
+                'category' => $category->load('mainImage'),
+                'redirect' => route('admin.categories.index')
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors(),
+                'message' => ' فشل التحقق من صحة البيانات.',
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => ' حدث خطأ غير متوقع أثناء التحديث.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -137,8 +171,19 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-     try {
-       $category->delete();
+        try {
+            // Delete main image file from storage (if exists)
+            $mainImage = $category->mainImage;
+            if ($mainImage) {
+                // استخدام attributes['url'] للحصول على القيمة الأصلية
+                $originalUrl = $mainImage->attributes['url'] ?? null;
+                if ($originalUrl && Storage::disk('public')->exists($originalUrl)) {
+                    Storage::disk('public')->delete($originalUrl);
+                }
+                $mainImage->delete();
+            }
+
+            $category->delete();
 
             return response()->json([
                 'success' => true,
@@ -151,5 +196,5 @@ class CategoryController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
-}
+    }
 }

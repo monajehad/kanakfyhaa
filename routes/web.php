@@ -34,5 +34,8 @@ Route::view('/order-success', 'website.layout.pages.order-success')->name('order
 // Product details
 Route::get('/product/{uuid}', [\App\Http\Controllers\Website\ProductController::class, 'show'])->name('product.show');
 
+// Language switcher
+Route::get('/lang/{locale}', [LanguageController::class, 'swap'])->name('lang.swap');
+
 
 require __DIR__ . '/admin.php';

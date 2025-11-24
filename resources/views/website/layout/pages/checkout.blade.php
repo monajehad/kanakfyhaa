@@ -346,6 +346,34 @@
             const productName = item.name[currentLang] || item.name.ar || item.name;
             const cityName = item.cityName[currentLang] || item.cityName.ar || item.cityName;
             
+            // Check if it's a package item
+            if (item.isPackageItem) {
+                const packageName = item.packageName[currentLang] || item.packageName.ar || item.packageName;
+                const itemsText = item.packageItems && Array.isArray(item.packageItems) 
+                    ? item.packageItems.map(pi => typeof pi === 'object' ? (pi.name[currentLang] || pi.name) : pi).join(', ')
+                    : '';
+                
+                return `
+                    <div class="order-item">
+                        <div class="flex gap-4">
+                            <img src="${item.image}" alt="${productName}" class="w-20 h-20 rounded-lg object-cover">
+                            <div class="flex-1">
+                                <h4 class="font-bold" style="color: var(--primary-black);">${productName}</h4>
+                                <p style="color: var(--gray-text); font-size: 0.85rem;"><strong>${packageName}</strong></p>
+                                <p style="color: var(--gray-text); font-size: 0.85rem;">${cityName}</p>
+                                ${itemsText ? `<p style="color: var(--gray-text); font-size: 0.8rem;">${itemsText}</p>` : ''}
+                                <p style="color: var(--gray-text); font-size: 0.85rem;">
+                                    ${currentLang === 'ar' ? 'الكمية:' : 'Quantity:'} ${item.quantity}
+                                </p>
+                            </div>
+                            <div class="font-bold" style="color: var(--primary-black);">
+                                ${currency.symbol}${(item.price * item.quantity * currency.rate).toFixed(2)}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
             return `
                 <div class="order-item">
                     <div class="flex gap-4">
@@ -372,7 +400,7 @@
     // Update Totals
     function updateTotals() {
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const shipping = SHIPPING_COST;
+        const shipping = cart.reduce((sum, item) => sum + ((item.shipping_price || SHIPPING_COST) * item.quantity), 0);
         const total = subtotal + shipping;
 
         document.getElementById('subtotal').textContent = 

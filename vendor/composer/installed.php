@@ -4,9 +4,13 @@
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
 <<<<<<< HEAD
+<<<<<<< HEAD
         'reference' => '4ac09a9eebec60ab7b3b6d8dc9531bf93c83a3d3',
 =======
         'reference' => 'ebbc3f281fc2f0191c9afa2f4833dd22161d9542',
+>>>>>>> origin/main
+=======
+        'reference' => 'aa085a02a638294dd2aea3520187de851a836da7',
 >>>>>>> origin/main
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
@@ -417,9 +421,13 @@
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
 <<<<<<< HEAD
+<<<<<<< HEAD
             'reference' => '4ac09a9eebec60ab7b3b6d8dc9531bf93c83a3d3',
 =======
             'reference' => 'ebbc3f281fc2f0191c9afa2f4833dd22161d9542',
+>>>>>>> origin/main
+=======
+            'reference' => 'aa085a02a638294dd2aea3520187de851a836da7',
 >>>>>>> origin/main
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',

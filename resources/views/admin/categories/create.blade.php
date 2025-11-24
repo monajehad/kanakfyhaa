@@ -6,18 +6,21 @@
 <div class="card mt-3">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4 class="mb-0">إنشاء تصنيف جديد</h4>
-            <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">الرجوع</a>
-
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">الرجوع</a>
     </div>
    
     <div class="card-body">
-        <form id="categoryForm" autocomplete="off">
+        <form id="categoryForm" autocomplete="off" enctype="multipart/form-data">
             @csrf
 
             <div class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label" for="name">اسم التصنيف <span class="text-danger">*</span></label>
                     <input class="form-control" type="text" id="name" name="name" placeholder="مثل: قمصان " required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="image">صورة التصنيف</label>
+                    <input class="form-control" type="file" id="image" name="image" accept="image/*">
                 </div>
             </div>
 
@@ -41,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Validation بسيطة
         const name = form.name.value.trim();
+        const imageInput = form.querySelector('input[name="image"]');
         if (!name) {
             Swal.fire({ icon: 'error', title: 'تحقق من البيانات', text: 'اسم التصنيف مطلوب.' });
             submitBtn.disabled = false;
@@ -49,7 +53,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         submitBtn.innerText = 'يتم الحفظ...';
 
-        axios.post('{{ route('admin.categories.store') }}', { name: name })
+        let formData = new FormData();
+        formData.append('name', name);
+        if (imageInput && imageInput.files.length > 0) {
+            formData.append('image', imageInput.files[0]);
+        }
+
+        axios.post('{{ route('admin.categories.store') }}', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        })
         .then(response => {
             if (response.data.success) {
                 Swal.fire({ 

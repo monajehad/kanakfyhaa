@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use App\Models\City;
+use App\Models\ProductPackage;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -204,6 +205,33 @@ class ProductSeeder extends Seeder
             );
         }
 
+        // Ensure sample products have packages when flagged
+        foreach ($sampleProducts as $productData) {
+            if (!empty($productData['is_package'])) {
+                $p = Product::where('uuid', $productData['uuid'])->first();
+                if ($p && !$p->package) {
+                    $p->package()->create([
+                        'name' => $productData['name'] . ' Package',
+                        'name_ar' => ($productData['name_ar'] ?? $productData['name']) . ' باقة',
+                        'name_en' => ($productData['name_en'] ?? $productData['name']) . ' Package',
+                        'description' => $productData['description'] ?? null,
+                        'description_ar' => $productData['description_ar'] ?? null,
+                        'description_en' => $productData['description_en'] ?? null,
+                        'items' => json_encode([
+                            ['name' => $productData['name'], 'name_ar' => $productData['name_ar'] ?? $productData['name']]
+                        ]),
+                        'price' => $productData['price'] ?? ($productData['price_sell'] ?? 0),
+                        'original_price' => $productData['price_sell'] ?? ($productData['price'] ?? null),
+                        'discount' => $productData['discount'] ?? 0,
+                        'shipping_price' => $productData['shipping_price'] ?? 0,
+                        'quantity' => 1,
+                        'is_active' => true,
+                        'order' => 0,
+                    ]);
+                }
+            }
+        }
+
         // Arrays for random data
         $colors = ['أسود', 'أبيض', 'أزرق', 'أحمر', 'أخضر', 'رمادي', 'بني', 'بيج', 'وردي'];
         $productTypes = ['هودي', 'تيشيرت', 'بلوفر', 'جاكيت', 'سويت شيرت'];
@@ -263,5 +291,51 @@ class ProductSeeder extends Seeder
         }
 
         $this->command->info("✅ {$count} products created successfully!");
+
+        // Create packages for any products inserted in bulk that are flagged as packages
+        $this->command->info('🔧 Creating packages for seeded products flagged as packages...');
+
+        Product::where('is_package', true)
+            ->doesntHave('package')
+            ->chunk(200, function ($products) use ($faker) {
+                foreach ($products as $product) {
+                    // Build a small items list for the package
+                    $items = [
+                        [
+                            'name' => $product->name,
+                            'name_ar' => $product->name_ar ?? $product->name,
+                        ]
+                    ];
+
+                    // Optionally add 1-2 extra items
+                    if (rand(0, 1) === 1) {
+                        $items[] = [
+                            'name' => $product->name . ' - إضافي',
+                            'name_ar' => ($product->name_ar ?? $product->name) . ' - إضافي',
+                        ];
+                    }
+
+                    $price = $product->price ?? ($product->price_sell ?? 0);
+
+                    $product->package()->create([
+                        'name' => $product->name . ' Package',
+                        'name_ar' => ($product->name_ar ?? $product->name) . ' باقة',
+                        'name_en' => ($product->name_en ?? $product->name) . ' Package',
+                        'description' => $product->description ?? null,
+                        'description_ar' => $product->description_ar ?? null,
+                        'description_en' => $product->description_en ?? null,
+                        'items' => json_encode($items),
+                        'price' => $price,
+                        'original_price' => $product->price_sell ?? $price,
+                        'discount' => $product->discount ?? 0,
+                        'shipping_price' => rand(5, 25),
+                        'quantity' => 1,
+                        'is_active' => true,
+                        'order' => 0,
+                    ]);
+                }
+            });
+
+        $this->command->info('🔧 Packages creation completed.');
     }
 }

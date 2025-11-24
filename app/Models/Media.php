@@ -24,7 +24,7 @@ class Media extends Model
 
     public function getUrlAttribute($value)
     {
-        // Fix: Prevent double 'storage/' in URL if $value already starts with 'storage/'
+        // Prevent double 'storage/' in URL if $value already starts with 'storage/'
         if ($value && (str_starts_with($value, 'http://') || str_starts_with($value, 'https://'))) {
             return $value;
         }

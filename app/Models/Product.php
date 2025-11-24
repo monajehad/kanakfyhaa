@@ -28,6 +28,7 @@ class Product extends Model
         'price_sell',
         'price',
         'discount',
+        'shipping_price',
         'uuid',
         'qr_code',
         'image',
@@ -66,6 +67,12 @@ class Product extends Model
     {
         return $this->hasMany(Experience::class);
     }
+
+    public function package()
+    {
+        return $this->hasOne(ProductPackage::class);
+    }
+
     public function city()
     {
         return $this->belongsTo(City::class);

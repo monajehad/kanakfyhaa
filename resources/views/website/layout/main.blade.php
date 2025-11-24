@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+@php
+    $locale = app()->getLocale();
+@endphp
+<html lang="{{ $locale }}" dir="{{ $locale === 'ar' ? 'rtl' : 'ltr' }}">
 <head>
     @include('website.layout.sections._head')
 </head>

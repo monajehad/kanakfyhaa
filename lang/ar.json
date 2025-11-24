@@ -108,7 +108,49 @@
   "Payment Method": "طريقة الدفع",
   "PayPal": "باي بال",
   "Pay Now": "الدفع الآن",
-  "All transactions are secure and encrypted": "جميع المعاملات آمنة ومشفرة"
-
-  
+  "All transactions are secure and encrypted": "جميع المعاملات آمنة ومشفرة",
+  "Package Management": "إدارة الباقات",
+  "Package": "الباقة",
+  "Packages": "الباقات",
+  "Package Created": "تم إنشاء الباقة",
+  "Package Updated": "تم تحديث الباقة",
+  "Package Deleted": "تم حذف الباقة"
+  ,
+  "Total Packages": "إجمالي الباقات",
+  "Package Products": "منتجات الباقات",
+  "Products with packages": "منتجات تحتوي باقات",
+  "All products": "كل المنتجات",
+  "Manage Packages": "إدارة الباقات",
+  "No packages yet": "لا توجد باقات بعد",
+  "Create one now": "أنشئ واحدة الآن",
+  "Manage packages for this product": "إدارة الباقات لهذا المنتج",
+  "Add Package": "إضافة باقة",
+  "Back to Product": "العودة إلى المنتج",
+  "Package Name": "اسم الباقة",
+  "Included Items": "العناصر المضمنة",
+  "Final Price": "السعر النهائي",
+  "Display Order": "ترتيب العرض",
+  "Stock": "المخزون"
+  ,
+  "Basic Information": "المعلومات الأساسية",
+  "Pricing": "التسعير",
+  "Inventory": "المخزون",
+  "Preview": "المعاينة",
+  "Item Name": "اسم العنصر",
+  "Name (Arabic)": "الاسم (بالعربية)",
+  "Name (English)": "الاسم (بالإنجليزية)",
+  "Create Package": "إنشاء باقة",
+  "Cancel": "إلغاء",
+  "Remove": "إزالة"
+  ,
+  "Available Quantity": "الكمية المتاحة",
+  "Original": "الأصلي",
+  "Shipping Price": "سعر الشحن",
+  "Add Item": "إضافة عنصر"
+  ,
+  "Shipping": "الشحن",
+  "Original Price (Before Discount)": "السعر الأصلي (قبل الخصم)",
+  "Edit Package": "تعديل الباقة",
+  "Update package details for this product": "تحديث تفاصيل الباقة لهذا المنتج",
+  "Update Package": "تحديث الباقة"
 }

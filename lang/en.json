@@ -98,13 +98,49 @@
   "Payment Method": "Payment Method",
   "PayPal": "PayPal",
   "Pay Now": "Pay Now",
-  "All transactions are secure and encrypted": "All transactions are secure and encrypted"
-}
-{
-  "Home": "Home",
-  "Page 2": "Page 2",
-  "Error": "Error",
-  "Login": "Login",
-  "Register": "Register",
-  "Product Management": "Product Management"
+  "All transactions are secure and encrypted": "All transactions are secure and encrypted",
+  "Package Management": "Package Management",
+  "Package": "Package",
+  "Packages": "Packages",
+  "Package Created": "Package created successfully",
+  "Package Updated": "Package updated successfully",
+  "Package Deleted": "Package deleted successfully"
+  ,
+  "Total Packages": "Total Packages",
+  "Package Products": "Package Products",
+  "Products with packages": "Products with packages",
+  "All products": "All products",
+  "Manage Packages": "Manage Packages",
+  "No packages yet": "No packages yet",
+  "Create one now": "Create one now",
+  "Manage packages for this product": "Manage packages for this product",
+  "Add Package": "Add Package",
+  "Back to Product": "Back to Product",
+  "Package Name": "Package Name",
+  "Included Items": "Included Items",
+  "Final Price": "Final Price",
+  "Display Order": "Display Order",
+  "Stock": "Stock"
+  ,
+  "Basic Information": "Basic Information",
+  "Pricing": "Pricing",
+  "Inventory": "Inventory",
+  "Preview": "Preview",
+  "Item Name": "Item Name",
+  "Name (Arabic)": "Name (Arabic)",
+  "Name (English)": "Name (English)",
+  "Create Package": "Create Package",
+  "Cancel": "Cancel",
+  "Remove": "Remove"
+  ,
+  "Available Quantity": "Available Quantity",
+  "Original": "Original",
+  "Shipping Price": "Shipping Price",
+  "Add Item": "Add Item"
+  ,
+  "Shipping": "Shipping",
+  "Original Price (Before Discount)": "Original Price (Before Discount)",
+  "Edit Package": "Edit Package",
+  "Update package details for this product": "Update package details for this product",
+  "Update Package": "Update Package"
 }
