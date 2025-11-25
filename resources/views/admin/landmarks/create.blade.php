@@ -49,17 +49,33 @@
                     <textarea name="description" class="form-control" rows="3"></textarea>
                 </div>
 
-                
+                <!-- Main Media Section -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">الملف الرئيسي (صورة أو فيديو)</h5>
+                    <hr>
+                </div>
 
                 <div class="col-md-6">
-                    <label class="form-label">الصورة الرئيسية *</label>
-                    <input type="file" name="main_image" class="form-control" >
+                    <label class="form-label">الملف الرئيسي (صورة أو فيديو)</label>
+                    <input type="file" name="main_image" class="form-control" accept="image/*,video/*" id="mainMediaInput">
+                    <small class="text-muted">الصيغ المدعومة: JPEG, PNG, GIF, MP4, WebM, AVI (حد أقصى: 5MB)</small>
+                </div>
+
+                <div class="col-md-6" id="mainMediaPreview"></div>
+
+                <!-- Sub Media Section -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">الملفات الإضافية (صور وفيديوهات)</h5>
+                    <hr>
                 </div>
 
                 <div class="col-md-12">
-                    <label class="form-label">الصور الفرعية</label>
-                    <input type="file" name="sub_images[]" class="form-control" multiple>
+                    <label class="form-label">ملفات إضافية</label>
+                    <input type="file" name="sub_images[]" class="form-control" multiple accept="image/*,video/*" id="subMediaInput">
+                    <small class="text-muted">يمكنك تحديد عدة ملفات: صور أو فيديوهات</small>
                 </div>
+
+                <div class="col-12" id="subMediaPreview"></div>
 
             </div>
 
@@ -77,8 +93,40 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById('landmarkForm');
     const submitBtn = document.getElementById('submitBtn');
+    const mainMediaInput = document.getElementById('mainMediaInput');
+    const subMediaInput = document.getElementById('subMediaInput');
+    const mainMediaPreview = document.getElementById('mainMediaPreview');
+    const subMediaPreview = document.getElementById('subMediaPreview');
 
     axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Main media preview
+    mainMediaInput?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const isVideo = file.type.startsWith('video');
+            const preview = isVideo 
+                ? `<video width="150" height="150" style="object-fit: cover; border-radius: 5px;" controls><source src="${URL.createObjectURL(file)}" type="${file.type}"></video>`
+                : `<img src="${URL.createObjectURL(file)}" width="150" height="150" style="object-fit: cover; border-radius: 5px;">`;
+            mainMediaPreview.innerHTML = preview;
+        }
+    });
+
+    // Sub media preview
+    subMediaInput?.addEventListener('change', (e) => {
+        const files = e.target.files;
+        subMediaPreview.innerHTML = '';
+        
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const isVideo = file.type.startsWith('video');
+            const preview = isVideo 
+                ? `<video width="100" height="100" style="object-fit: cover; border-radius: 5px; margin: 5px;" controls><source src="${URL.createObjectURL(file)}" type="${file.type}"></video>`
+                : `<img src="${URL.createObjectURL(file)}" width="100" height="100" style="object-fit: cover; border-radius: 5px; margin: 5px;">`;
+            
+            subMediaPreview.innerHTML += preview;
+        }
+    });
 
     form.addEventListener('submit', e => {
         e.preventDefault();

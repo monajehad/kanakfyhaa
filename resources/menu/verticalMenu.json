@@ -72,6 +72,22 @@
           "name": "Create",
           "url": "/admin/cities/create",
           "slug": "admin.cities.create"
+        },
+        {
+          "name": "Landmark Management",
+          "slug": "admin.landmarks",
+          "submenu": [
+            {
+              "name": "Show",
+              "url": "/admin/landmarks",
+              "slug": "admin.landmarks.index"
+            },
+            {
+              "name": "Create",
+              "url": "/admin/landmarks/create",
+              "slug": "admin.landmarks.create"
+            }
+          ]
         }
       ]
     },
@@ -89,37 +105,20 @@
       ]
     },
     { "menuHeader": "Content" },
-     {
-      "name": "Landmark Management",
-      "icon": "menu-icon icon-base ri ri-map-pin-2-line",
-      "slug": "admin.landmarks",
-      "submenu": [
-        {
-          "name": "Show",
-          "url": "/admin/landmarks",
-          "slug": "admin.landmarks.index"
-        },
-        {
-          "name": "Create",
-          "url": "/admin/landmarks/create",
-          "slug": "admin.landmarks.create"
-        }
-      ]
-    },
     {
-      "name": "Artifact Management",
-      "icon": "menu-icon icon-base ri ri-brush-2-line",
-      "slug": "admin.artifacts",
+      "name": "Slider Management",
+      "icon": "menu-icon icon-base ri ri-image-slider-line",
+      "slug": "admin.sliders",
       "submenu": [
         {
           "name": "Show",
-          "url": "/admin/artifacts",
-          "slug": "admin.artifacts.index"
+          "url": "/admin/sliders",
+          "slug": "admin.sliders.index"
         },
         {
           "name": "Create",
-          "url": "/admin/artifacts/create",
-          "slug": "admin.artifacts.create"
+          "url": "/admin/sliders/create",
+          "slug": "admin.sliders.create"
         }
       ]
     }

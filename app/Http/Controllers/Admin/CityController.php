@@ -48,7 +48,7 @@ class CityController extends Controller
        try {
             $validated = $request->validate([
                 'country_id'   => 'required|exists:countries,id',
-                'name'         => 'required|string|max:255',
+                'name'         => 'required|string|max:255|unique:cities,name',
                 'name_ar'      => 'nullable|string|max:255',
                 'name_en'      => 'nullable|string|max:255',
                 'native_name'  => 'nullable|string|max:255',
@@ -58,13 +58,64 @@ class CityController extends Controller
                 'latitude'     => 'nullable|numeric',
                 'longitude'    => 'nullable|numeric',
                 'population'   => 'nullable|integer|min:0',
+                'main_media'   => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
+                'sub_media'    => 'nullable|array',
+                'sub_media.*'  => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             ]);
 
             $city = City::create($validated);
 
+            // Handle main media upload
+            if ($request->hasFile('main_media')) {
+                $mainFile = $request->file('main_media');
+                $mimeType = $mainFile->getMimeType();
+                
+                // Determine file type
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                // Store file
+                $path = $mainFile->store('cities', 'public');
+                
+                // Create thumbnail for images
+                $thumbnail = null;
+                if ($fileType === 'image') {
+                    $thumbnail = $path;
+                }
+                
+                // Create main media
+                $city->media()->create([
+                    'type' => $fileType,
+                    'role' => 'main',
+                    'url' => $path,
+                    'thumbnail' => $thumbnail,
+                ]);
+            }
+
+            // Handle sub media uploads
+            if ($request->hasFile('sub_media')) {
+                foreach ($request->file('sub_media') as $file) {
+                    $mimeType = $file->getMimeType();
+                    $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                    
+                    $path = $file->store('cities', 'public');
+                    
+                    $thumbnail = null;
+                    if ($fileType === 'image') {
+                        $thumbnail = $path;
+                    }
+                    
+                    $city->media()->create([
+                        'type' => $fileType,
+                        'role' => 'sub',
+                        'url' => $path,
+                        'thumbnail' => $thumbnail,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'تم إنشاء المدينة بنجاح.',
+                'message' => 'تم إنشاء المدينة والملفات بنجاح.',
                 'redirect' => route('admin.cities.index'),
                 'city' => $city
             ]);
@@ -117,13 +168,71 @@ class CityController extends Controller
                 'latitude'     => 'nullable|numeric',
                 'longitude'    => 'nullable|numeric',
                 'population'   => 'nullable|integer|min:0',
+                'main_media'   => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
+                'sub_media'    => 'nullable|array',
+                'sub_media.*'  => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             ]);
 
             $city->update($validated);
 
+            // Handle main media upload
+            if ($request->hasFile('main_media')) {
+                $mainFile = $request->file('main_media');
+                $mimeType = $mainFile->getMimeType();
+                
+                // Determine file type
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                // Store file
+                $path = $mainFile->store('cities', 'public');
+                
+                // Create thumbnail for images
+                $thumbnail = null;
+                if ($fileType === 'image') {
+                    // Simple thumbnail - just store the same path (can be enhanced with image processing)
+                    $thumbnail = $path;
+                }
+                
+                // Delete old main media
+                $city->media()->where('role', 'main')->delete();
+                
+                // Create new main media
+                $city->media()->create([
+                    'type' => $fileType,
+                    'role' => 'main',
+                    'url' => $path,
+                    'thumbnail' => $thumbnail,
+                ]);
+            }
+
+            // Handle sub media uploads
+            if ($request->hasFile('sub_media')) {
+                // Delete old sub media
+                $city->media()->where('role', 'sub')->delete();
+                
+                foreach ($request->file('sub_media') as $file) {
+                    $mimeType = $file->getMimeType();
+                    $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                    
+                    $path = $file->store('cities', 'public');
+                    
+                    $thumbnail = null;
+                    if ($fileType === 'image') {
+                        $thumbnail = $path;
+                    }
+                    
+                    $city->media()->create([
+                        'type' => $fileType,
+                        'role' => 'sub',
+                        'url' => $path,
+                        'thumbnail' => $thumbnail,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'تم تحديث المدينة بنجاح.',
+                'message' => 'تم تحديث المدينة والملفات بنجاح.',
                 'redirect' => route('admin.cities.index'),
                 'city' => $city
             ]);

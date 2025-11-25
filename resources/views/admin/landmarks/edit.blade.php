@@ -64,7 +64,7 @@
             {{-- Main Image Section --}}
             <div class="card mt-4">
                 <div class="card-header">
-                    <strong>الصورة الرئيسية</strong>
+                    <strong>الملف الرئيسي (صورة أو فيديو)</strong>
                 </div>
                 <div class="card-body d-flex align-items-center">
                     @php
@@ -72,16 +72,21 @@
                     @endphp
                     <div class="me-3">
                         @if($main)
-                            <a href="{{ $main->url ? (str_starts_with_any($main->url, ['http://','https://']) ? $main->url : asset($main->url)) : '#' }}" target="_blank">
-                                <img src="{{ $main->thumbnail_url ?? asset($main->url) }}" alt="{{ $main->alt_text ?? 'Main Image' }}" style="max-width:85px; max-height:85px; border-radius:7px;border:1px solid #eee;">
-                            </a>
+                            @if($main->type === 'video')
+                                <video width="85" height="85" style="object-fit: cover; border-radius: 7px; border: 1px solid #eee;" controls>
+                                    <source src="{{ $main->url }}" type="video/mp4">
+                                </video>
+                            @else
+                                <img src="{{ $main->url }}" alt="{{ $main->alt_text ?? 'Main Media' }}" style="max-width:85px; max-height:85px; border-radius:7px;border:1px solid #eee;">
+                            @endif
+                            <button type="button" class="btn btn-sm btn-danger mt-2" onclick="deleteMedia({{ $main->id }})">حذف</button>
                         @else
-                            <span class="text-muted">لا توجد صورة رئيسية حالياً.</span>
+                            <span class="text-muted">لا يوجد ملف رئيسي حالياً.</span>
                         @endif
                     </div>
                     <div class="flex-grow-1">
-                        <input class="form-control" type="file" id="main_image" name="main_image" accept="image/*">
-                        <small class="text-muted">اترك الحقل فارغاً إذا لم ترغب بتغيير الصورة الرئيسية.</small>
+                        <input class="form-control" type="file" id="main_image" name="main_image" accept="image/*,video/*">
+                        <small class="text-muted">الملفات المدعومة: صور أو فيديوهات (JPEG, PNG, GIF, MP4, WebM, AVI)</small>
                     </div>
                 </div>
             </div>
@@ -89,26 +94,31 @@
             {{-- Sub Images Section --}}
             <div class="card mt-4">
                 <div class="card-header">
-                    <strong>صور إضافية</strong> <small class="text-muted">(يمكن تحديد أكثر من صورة)</small>
+                    <strong>ملفات إضافية</strong> <small class="text-muted">(صور وفيديوهات)</small>
                 </div>
                 <div class="card-body">
-                    <input class="form-control mb-2" type="file" id="sub_images" name="sub_images[]" accept="image/*" multiple>
+                    <input class="form-control mb-2" type="file" id="sub_images" name="sub_images[]" accept="image/*,video/*" multiple>
                     @php
-                        $subImages = $landmark->media->where('role','sub');
+                        $subMedias = $landmark->media->where('role','sub');
                     @endphp
-                    @if($subImages->count())
-                        <div class="mt-2 d-flex flex-wrap">
-                            @foreach($subImages as $image)
-                                <div class="me-2 mb-2 position-relative" style="display:inline-block;">
-                                    <a href="{{ $image->url ? (str_starts_with_any($image->url,['http://','https://']) ? $image->url : asset($image->url)) : '#' }}" target="_blank" title="{{ $image->alt_text }}">
-                                        <img src="{{ $image->thumbnail_url ?? asset($image->url) }}" alt="{{ $image->alt_text ?? 'Sub Image' }}" style="max-width:60px; max-height:60px; object-fit:cover; border-radius:4px; border:1px solid #dfdfdf;">
-                                    </a>
+                    @if($subMedias->count())
+                        <div class="mt-2 d-flex flex-wrap" id="existingSubMediaContainer">
+                            @foreach($subMedias as $media)
+                                <div class="me-2 mb-2 position-relative" style="display:inline-block;" id="media-{{ $media->id }}">
+                                    @if($media->type === 'video')
+                                        <video width="60" height="60" style="object-fit: cover; border-radius: 4px; border: 1px solid #dfdfdf;" controls>
+                                            <source src="{{ $media->url }}" type="video/mp4">
+                                        </video>
+                                    @else
+                                        <img src="{{ $media->url }}" alt="{{ $media->alt_text ?? 'Sub Media' }}" style="max-width:60px; max-height:60px; object-fit:cover; border-radius:4px; border:1px solid #dfdfdf;">
+                                    @endif
+                                    <button type="button" class="btn btn-sm btn-danger position-absolute" style="top: 0; right: 0; padding: 2px 6px; font-size: 10px;" onclick="deleteMedia({{ $media->id }})">X</button>
                                 </div>
                             @endforeach
                         </div>
-                        <small class="text-muted d-block mt-2">رفع الصور الإضافية يحل محل جميع الصور الإضافية السابقة.</small>
+                        <small class="text-muted d-block mt-2">رفع ملفات جديدة يحل محل جميع الملفات الإضافية السابقة.</small>
                     @else
-                        <span class="text-muted">لا توجد صور إضافية حالياً.</span>
+                        <span class="text-muted">لا توجد ملفات إضافية حالياً.</span>
                     @endif
                 </div>
             </div>
@@ -128,6 +138,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('landmarkForm');
     const submitBtn = document.getElementById('submitBtn');
+
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -168,6 +180,35 @@ document.addEventListener("DOMContentLoaded", function() {
             submitBtn.innerText = 'تحديث المعلم';
         });
     });
+
+    // Delete media function
+    window.deleteMedia = function(mediaId) {
+        Swal.fire({
+            title: 'هل أنت متأكد؟',
+            text: 'سيتم حذف هذا الملف بشكل نهائي.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'نعم، احذف',
+            cancelButtonText: 'إلغاء'
+        }).then(result => {
+            if (result.isConfirmed) {
+                axios.delete(`/admin/media/${mediaId}`)
+                    .then(res => {
+                        if (res.data.success) {
+                            Swal.fire('تم الحذف', res.data.message, 'success').then(() => {
+                                const element = document.getElementById(`media-${mediaId}`);
+                                if (element) {
+                                    element.remove();
+                                }
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire('خطأ', 'فشل حذف الملف', 'error');
+                    });
+            }
+        });
+    };
 });
 
 </script>

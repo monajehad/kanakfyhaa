@@ -60,13 +60,64 @@ class CountryController extends Controller
                 'longitude' => 'nullable|numeric',
                 'population' => 'nullable|integer|min:0',
                 'area' => 'nullable|numeric|min:0',
+                'main_media' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
+                'sub_media' => 'nullable|array',
+                'sub_media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             ]);
 
             $country = Country::create($validated);
 
+            // Handle main media upload
+            if ($request->hasFile('main_media')) {
+                $mainFile = $request->file('main_media');
+                $mimeType = $mainFile->getMimeType();
+                
+                // Determine file type
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                // Store file
+                $path = $mainFile->store('countries', 'public');
+                
+                // Create thumbnail for images
+                $thumbnail = null;
+                if ($fileType === 'image') {
+                    $thumbnail = $path;
+                }
+                
+                // Create main media
+                $country->media()->create([
+                    'type' => $fileType,
+                    'role' => 'main',
+                    'url' => $path,
+                    'thumbnail' => $thumbnail,
+                ]);
+            }
+
+            // Handle sub media uploads
+            if ($request->hasFile('sub_media')) {
+                foreach ($request->file('sub_media') as $file) {
+                    $mimeType = $file->getMimeType();
+                    $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                    
+                    $path = $file->store('countries', 'public');
+                    
+                    $thumbnail = null;
+                    if ($fileType === 'image') {
+                        $thumbnail = $path;
+                    }
+                    
+                    $country->media()->create([
+                        'type' => $fileType,
+                        'role' => 'sub',
+                        'url' => $path,
+                        'thumbnail' => $thumbnail,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'تم إنشاء الدولة بنجاح.',
+                'message' => 'تم إنشاء الدولة والملفات بنجاح.',
                 'redirect' => route('admin.countries.index'),
                 'country' => $country
             ]);
@@ -127,13 +178,70 @@ class CountryController extends Controller
                 'longitude' => 'nullable|numeric',
                 'population' => 'nullable|integer|min:0',
                 'area' => 'nullable|numeric|min:0',
+                'main_media' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
+                'sub_media' => 'nullable|array',
+                'sub_media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             ]);
 
             $country->update($validated);
 
+            // Handle main media upload
+            if ($request->hasFile('main_media')) {
+                $mainFile = $request->file('main_media');
+                $mimeType = $mainFile->getMimeType();
+                
+                // Determine file type
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                // Store file
+                $path = $mainFile->store('countries', 'public');
+                
+                // Create thumbnail for images
+                $thumbnail = null;
+                if ($fileType === 'image') {
+                    $thumbnail = $path;
+                }
+                
+                // Delete old main media
+                $country->media()->where('role', 'main')->delete();
+                
+                // Create new main media
+                $country->media()->create([
+                    'type' => $fileType,
+                    'role' => 'main',
+                    'url' => $path,
+                    'thumbnail' => $thumbnail,
+                ]);
+            }
+
+            // Handle sub media uploads
+            if ($request->hasFile('sub_media')) {
+                // Delete old sub media
+                $country->media()->where('role', 'sub')->delete();
+                
+                foreach ($request->file('sub_media') as $file) {
+                    $mimeType = $file->getMimeType();
+                    $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                    
+                    $path = $file->store('countries', 'public');
+                    
+                    $thumbnail = null;
+                    if ($fileType === 'image') {
+                        $thumbnail = $path;
+                    }
+                    
+                    $country->media()->create([
+                        'type' => $fileType,
+                        'role' => 'sub',
+                        'url' => $path,
+                        'thumbnail' => $thumbnail,
+                    ]);
+                }
+            }
+
             return response()->json([
                 'success' => true,
-                'message' => 'تم تحديث الدولة بنجاح.',
+                'message' => 'تم تحديث الدولة والملفات بنجاح.',
                 'redirect' => route('admin.countries.index'),
                 'country' => $country
             ]);

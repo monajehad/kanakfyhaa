@@ -60,11 +60,17 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     // City Management
     Route::resource('cities', \App\Http\Controllers\Admin\CityController::class);
+    
+    // Media Management (for deleting media files)
+    Route::delete('/media/{media}', [\App\Http\Controllers\Admin\MediaController::class, 'destroy'])->name('media.destroy');
 
 
     Route::resource('landmarks', \App\Http\Controllers\Admin\LandmarkController::class);
 
     Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
+
+    // Slider Management
+    Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
 });
 
 

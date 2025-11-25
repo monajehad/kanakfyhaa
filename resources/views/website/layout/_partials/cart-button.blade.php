@@ -1,7 +1,5 @@
-<button onclick="openCart()" class="relative p-2 hover:bg-opacity-10 rounded-lg transition">
-    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-    </svg>
-    <span class="cart-badge" id="cartCount">0</span>
+<button onclick="openCart()" class="relative inline-flex items-center justify-center p-2 rounded-lg transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/10" style="color: var(--md-on-surface)">
+    <span class="material-icons-outlined icon-md">shopping_cart</span>
+    <span class="cart-badge absolute top-0 right-0 flex items-center justify-center w-5 h-5 text-xs font-bold rounded-full text-white" id="cartCount" style="background: var(--md-error); font-size: 10px; line-height: 1; display: none;">0</span>
 </button>
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     use HasFactory;
-    protected $fillable = ['country_id', 'name', 'name_ar', 'name_en', 'native_name', 'region', 'subregion', 'latitude', 'longitude', 'population'];
+    protected $fillable = ['country_id', 'name', 'name_ar', 'name_en', 'native_name', 'region', 'subregion', 'latitude', 'longitude', 'population', 'description', 'description_ar', 'description_en'];
     public function country() {
         return $this->belongsTo(Country::class);
     }
@@ -24,6 +24,17 @@ class City extends Model
     }
 
     /**
+     * Get the first media (image or video) for this city
+     */
+    public function getFirstMediaAttribute()
+    {
+        return $this->media()
+            ->orderByRaw("CASE WHEN role='main' THEN 0 ELSE 1 END")
+            ->orderBy('id')
+            ->first();
+    }
+
+    /**
      * Get the city name based on current language
      */
     public function getLocalizedNameAttribute()
@@ -36,6 +47,21 @@ class City extends Model
             return $this->name_en;
         }
         return $this->name;
+    }
+
+    /**
+     * Get the city description based on current language
+     */
+    public function getLocalizedDescriptionAttribute()
+    {
+        $lang = app()->getLocale();
+        if ($lang === 'ar' && $this->description_ar) {
+            return $this->description_ar;
+        }
+        if ($lang === 'en' && $this->description_en) {
+            return $this->description_en;
+        }
+        return $this->description;
     }
 
     /**

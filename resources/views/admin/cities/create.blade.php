@@ -10,7 +10,7 @@
 
 <div class="card shadow border-0">
     <div class="card-body">
-        <form id="cityForm">
+        <form id="cityForm" enctype="multipart/form-data">
             @csrf
             <div class="row g-3">
                 <div class="col-md-6">
@@ -58,6 +58,21 @@
                     <input type="number" name="population" class="form-control" min="0">
                 </div>
 
+                <div class="col-12">
+                    <label class="form-label">الوصف (عام)</label>
+                    <textarea name="description" class="form-control" rows="4" placeholder="وصف المدينة بشكل عام"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">الوصف (عربي)</label>
+                    <textarea name="description_ar" class="form-control" rows="4" placeholder="وصف المدينة بالعربية"></textarea>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">الوصف (إنجليزي)</label>
+                    <textarea name="description_en" class="form-control" rows="4" placeholder="وصف المدينة بالإنجليزية"></textarea>
+                </div>
+
                 <div class="col-md-6">
                     <label class="form-label">خط العرض (Latitude)</label>
                     <input type="number" name="latitude" class="form-control" step="0.0000001">
@@ -66,6 +81,35 @@
                 <div class="col-md-6">
                     <label class="form-label">خط الطول (Longitude)</label>
                     <input type="number" name="longitude" class="form-control" step="0.0000001">
+                </div>
+            </div>
+
+            {{-- Main Media Section (Image or Video) --}}
+            <div class="card mt-4">
+                <div class="card-header d-flex align-items-center">
+                    <strong>الصورة/الفيديو الرئيسي</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <span class="text-muted">لم يتم رفع صورة أو فيديو رئيسي حتى الآن.</span>
+                        </div>
+                        <div class="col-md-9">
+                            <input class="form-control" type="file" id="main_media" name="main_media" accept="image/*,video/*">
+                            <small class="text-muted d-block mt-2">يمكنك رفع صورة أو فيديو رئيسي للمدينة.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Sub Media Section (Images and Videos) --}}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <strong>صور وفيديوهات إضافية</strong> <small class="text-muted">(يمكن تحديد أكثر من ملف)</small>
+                </div>
+                <div class="card-body">
+                    <input class="form-control mb-2" type="file" id="sub_media" name="sub_media[]" accept="image/*,video/*" multiple>
+                    <small class="text-muted d-block">يمكنك رفع صور وفيديوهات إضافية للمدينة.</small>
                 </div>
             </div>
 

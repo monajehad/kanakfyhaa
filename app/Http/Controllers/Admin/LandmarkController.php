@@ -55,9 +55,9 @@ class LandmarkController extends Controller
             'type' => 'nullable|string|max:255',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'main_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             'sub_images' => 'nullable|array',
-            'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+            'sub_images.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
         ]);
         $validated['slug'] = $validated['slug'] ?? \Illuminate\Support\Str::slug($validated['name']);
 
@@ -66,27 +66,36 @@ class LandmarkController extends Controller
         $landmark = Landmark::create($validated);
 
         if ($request->hasFile('main_image')) {
-            $mainImage = $request->file('main_image');
-            $path = $mainImage->store('media/landmarks', 'public');
+            $mainFile = $request->file('main_image');
+            $mimeType = $mainFile->getMimeType();
+            
+            // Determine file type
+            $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+            
+            // Store file
+            $path = $mainFile->store('media/landmarks', 'public');
+            
+            // Create main media
             $landmark->media()->create([
-                'type' => 'image',
+                'type' => $fileType,
                 'role' => 'main',
-                'url' => '/storage/' . $path,
-                'order' => 0,
+                'url' => $path,
                 'alt_text' => $validated['name'],
             ]);
         }
 
       
         if ($request->hasFile('sub_images')) {
-            foreach ($request->file('sub_images') as $index => $subImage) {
-                $path = $subImage->store('media/landmarks', 'public');
+            foreach ($request->file('sub_images') as $index => $subFile) {
+                $mimeType = $subFile->getMimeType();
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                $path = $subFile->store('media/landmarks', 'public');
                 $landmark->media()->create([
-                    'type' => 'image',
+                    'type' => $fileType,
                     'role' => 'sub',
-                    'url' => '/storage/' . $path,
-                    'order' => $index + 1,
-                    'alt_text' => $validated['name'] . ' صورة فرعية ' . ($index + 1),
+                    'url' => $path,
+                    'alt_text' => $validated['name'] . ' ملف فرعي ' . ($index + 1),
                 ]);
             }
         }
@@ -129,39 +138,50 @@ class LandmarkController extends Controller
             'type' => 'nullable|string|max:255',
             'short_description' => 'nullable|string|max:255',
             'description' => 'nullable|string',
-            'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'main_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             'sub_images' => 'nullable|array',
-            'sub_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:5120',
+            'sub_images.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
         ]);
          $validated['slug'] = $validated['slug'] ?? \Illuminate\Support\Str::slug($validated['name']);
 
         $landmark->update($validated);
 
         if ($request->hasFile('main_image')) {
-            $oldMain = $landmark->media()->where('role', 'main')->first();
-            if ($oldMain) {
-                $oldMain->delete();
-            }
-            $mainImage = $request->file('main_image');
-            $path = $mainImage->store('media/landmarks', 'public');
+            $mainFile = $request->file('main_image');
+            $mimeType = $mainFile->getMimeType();
+            
+            // Determine file type
+            $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+            
+            // Store file
+            $path = $mainFile->store('media/landmarks', 'public');
+            
+            // Delete old main media
+            $landmark->media()->where('role', 'main')->delete();
+            
+            // Create new main media
             $landmark->media()->create([
-                'type' => 'image',
+                'type' => $fileType,
                 'role' => 'main',
-                'url' => '/storage/' . $path,
-                'order' => 0,
+                'url' => $path,
                 'alt_text' => $validated['name'],
             ]);
         }
 
         if ($request->hasFile('sub_images')) {
-            foreach ($request->file('sub_images') as $index => $subImage) {
-                $path = $subImage->store('media/landmarks', 'public');
+            // Delete old sub media
+            $landmark->media()->where('role', 'sub')->delete();
+            
+            foreach ($request->file('sub_images') as $index => $subFile) {
+                $mimeType = $subFile->getMimeType();
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                $path = $subFile->store('media/landmarks', 'public');
                 $landmark->media()->create([
-                    'type' => 'image',
+                    'type' => $fileType,
                     'role' => 'sub',
-                    'url' => '/storage/' . $path,
-                    'order' => $index + 1,
-                    'alt_text' => $validated['name'] . ' صورة فرعية ' . ($index + 1),
+                    'url' => $path,
+                    'alt_text' => $validated['name'] . ' ملف فرعي ' . ($index + 1),
                 ]);
             }
         }

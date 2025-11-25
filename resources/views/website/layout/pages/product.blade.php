@@ -3,20 +3,24 @@
 @section('title', $product->localized_name ?? ($product->name_ar ?? $product->name))
 
 @section('content')
-    <section class="container mx-auto px-4 py-10">
-        <nav class="text-sm mb-6" style="color: var(--gray-text)">
-            <a href="{{ route('pages-home') }}" class="hover:underline" style="color: var(--primary-yellow)">{{ app()->getLocale() === 'ar' ? 'الرئيسية' : 'Home' }}</a>
-            <span class="mx-2">/</span>
-            <a href="#city" class="hover:underline">{{ $product->city?->localized_name }}</a>
-            <span class="mx-2">/</span>
-            <span>{{ $product->localized_name ?? ($product->name_ar ?? $product->name) }}</span>
+    <section class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb Navigation (Material Design 3) -->
+        <nav class="flex items-center gap-2 mb-12 text-sm" style="color: var(--md-on-surface-variant);">
+            <a href="{{ route('pages-home') }}" class="flex items-center gap-1 hover:opacity-80 transition" style="color: var(--md-primary);">
+                <span class="material-icons-outlined icon-sm">home</span>
+                <span class="font-medium">{{ app()->getLocale() === 'ar' ? 'الرئيسية' : 'Home' }}</span>
+            </a>
+            <span class="material-icons-outlined icon-sm">chevron_right</span>
+            <a href="#city" class="hover:opacity-80 transition" style="color: var(--md-primary);">{{ $product->city?->localized_name }}</a>
+            <span class="material-icons-outlined icon-sm">chevron_right</span>
+            <span class="font-semibold" style="color: var(--md-on-surface);">{{ $product->localized_name ?? ($product->name_ar ?? $product->name) }}</span>
         </nav>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div class="lg:flex lg:items-start gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <!-- Gallery Section - Larger -->
+            <div class="lg:col-span-3">
                 @php
-                    // Determine main media (could be image or video) with fallbacks
-                    $mainMedia = null; // instance of Media or null
+                    $mainMedia = null;
                     $mainUrl = null;
                     $mainType = 'image';
                     $mediaItems = $product->media ?? collect();
@@ -27,226 +31,367 @@
                         $mainType = $mainMedia->type ?? 'image';
                     }
 
-                    // fallback to gallery array (assume images)
                     if (!$mainUrl && !empty($gallery) && !empty($gallery[0])) {
                         $mainUrl = $gallery[0];
                         $mainType = 'image';
-                        $mainMedia = null;
                     }
 
-                    // fallback to product->image
                     if (!$mainUrl && $product->image) {
                         $mainUrl = str_starts_with($product->image,'http') ? $product->image : asset($product->image);
                         $mainType = 'image';
-                        $mainMedia = null;
-                    }
-
-                    // fallback to city landmark media
-                    if (!$mainUrl && isset($cityLandmark)) {
-                        $cm = optional($cityLandmark->media->first());
-                        if ($cm && $cm->url) {
-                            $mainUrl = $cm->url;
-                            $mainType = $cm->type ?? 'image';
-                            $mainMedia = $cm;
-                        }
                     }
 
                     if (!$mainUrl) {
                         $mainUrl = 'https://placehold.co/800x800/jpg?text=No+Image';
                         $mainType = 'image';
-                        $mainMedia = null;
                     }
                 @endphp
+                
+                <!-- Main Image - Square -->
+                <div class="mb-6 rounded-2xl overflow-hidden" style="background: var(--md-surface-bright); box-shadow: 0 8px 24px rgba(0,0,0,0.12); border: 1px solid var(--md-outline-variant);">
+                    <div class="relative overflow-hidden group" style="aspect-ratio: 1;">
+                        <img id="mainImage" src="{{ $mainType === 'image' ? $mainUrl : 'https://placehold.co/800x800/jpg?text=Video' }}" 
+                             alt="{{ $product->localized_name }}" 
+                             class="w-full h-full object-cover transition-all duration-500 group-hover:scale-110" 
+                             style="display: {{ $mainType === 'image' ? 'block' : 'none' }};">
 
-                <div class="lg:flex-1">
-                    <div class="rounded overflow-hidden bg-black/20 relative" style="border: 1px solid var(--border-color)">
-                        {{-- Image preview --}}
-                        <img id="mainImage" src="{{ $mainType === 'image' ? $mainUrl : 'https://placehold.co/800x800/jpg?text=No+Image' }}" alt="{{ $product->localized_name ?? $product->name }}" class="w-full h-96 object-cover transition-all duration-200" style="display: {{ $mainType === 'image' ? 'block' : 'none' }};"
-                             onerror="this.onerror=null;this.src='https://placehold.co/800x800/jpg?text=No+Image';">
-
-                        {{-- Video preview --}}
-                        <video id="mainVideo" controls class="w-full h-96 object-cover transition-all duration-200" style="display: {{ $mainType === 'video' ? 'block' : 'none' }};">
+                        <video id="mainVideo" controls class="w-full h-full object-cover transition-all duration-300 bg-black" 
+                               style="display: {{ $mainType === 'video' ? 'block' : 'none' }};">
                             @if($mainType === 'video')
                                 <source src="{{ $mainUrl }}" type="video/mp4">
                             @endif
-                            Your browser does not support the video tag.
                         </video>
+
+                        @if($mainType === 'video')
+                            <div class="absolute top-4 right-4 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-1 transition-all duration-300" style="background: var(--md-primary); color: var(--md-on-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                                <span class="material-icons-outlined icon-sm">play_circle</span>
+                                {{ app()->getLocale() === 'ar' ? 'فيديو' : 'Video' }}
+                            </div>
+                        @endif
                     </div>
                 </div>
 
-                @if($mediaItems->count() > 0 || count($gallery) > 1)
-                <div class="mt-3 lg:mt-0 lg:w-20 flex lg:flex-col gap-3">
-                    @if($mediaItems->count() > 0)
-                        @foreach($mediaItems as $i => $m)
-                            @php
-                                $thumb = $m->thumbnail_url ?? $m->url;
-                                $url = $m->url;
-                                $type = $m->type ?? 'image';
-                            @endphp
-                            <button type="button" class="thumb-btn rounded overflow-hidden border transition-all duration-150 {{ ($i === 0) ? 'active-thumb' : '' }}" style="border-color: var(--border-color); width:64px; height:64px;" data-img="{{ $url }}" data-type="{{ $type }}">
-                                @if($type === 'video')
-                                    {{-- show thumbnail if available, otherwise show a video placeholder --}}
-                                    <img src="{{ $thumb ?? 'https://placehold.co/200x200/png?text=Video' }}" class="w-full h-full object-cover" alt="" onerror="this.onerror=null;this.src='https://placehold.co/200x200/png?text=Video';">
-                                @else
-                                    <img src="{{ $thumb }}" class="w-full h-full object-cover" alt="" onerror="this.onerror=null;this.src='https://placehold.co/200x200/jpg?text=No+Image';">
-                                @endif
-                            </button>
-                        @endforeach
-                    @endif
-                    @if($mediaItems->count() === 0 && count($gallery) > 1)
-                        @foreach($gallery as $i => $img)
-                            @if($i === 0) @continue @endif
-                            <button type="button" class="thumb-btn rounded overflow-hidden border transition-all duration-150" style="border-color: var(--border-color); width:64px; height:64px;" data-img="{{ $img }}">
-                                <img src="{{ $img }}" class="w-full h-full object-cover" alt="" onerror="this.onerror=null;this.src='https://placehold.co/200x200/jpg?text=No+Image';">
-                            </button>
-                        @endforeach
-                    @endif
+                <!-- Thumbnails -->
+                @if($mediaItems->count() > 1)
+                <div class="flex gap-3 overflow-x-auto pb-2">
+                    @foreach($mediaItems as $i => $m)
+                        @php
+                            $thumb = $m->thumbnail_url ?? $m->url;
+                            $url = $m->url;
+                            $type = $m->type ?? 'image';
+                        @endphp
+                        <button type="button" class="thumb-btn shrink-0 rounded-xl overflow-hidden border-3 transition-all hover:shadow-lg hover:scale-105" 
+                                style="border-color: {{ $i === 0 ? 'var(--md-primary)' : 'var(--md-outline-variant)' }}; width:80px; height:80px; box-shadow: {{ $i === 0 ? '0 4px 12px rgba(0,0,0,0.12)' : 'none' }};" 
+                                data-img="{{ $url }}" data-type="{{ $type }}">
+                            @if($type === 'video')
+                                <div class="w-full h-full relative flex items-center justify-center" style="background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);">
+                                    <img src="{{ $thumb ?? 'https://placehold.co/200x200/png?text=Video' }}" class="w-full h-full object-cover" alt="">
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <span class="material-icons text-white" style="font-size:24px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">play_circle</span>
+                                    </div>
+                                </div>
+                            @else
+                                <img src="{{ $thumb }}" class="w-full h-full object-cover" alt="">
+                            @endif
+                        </button>
+                    @endforeach
                 </div>
                 @endif
+
+                <!-- Product Description -->
+                <div class="mt-8 p-8 rounded-2xl" style="background: var(--md-surface-container-highest); border: 1px solid var(--md-outline-variant); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="material-icons-outlined icon-sm" style="color: var(--md-primary);">description</span>
+                        <h3 class="text-xl font-bold" style="color: var(--md-on-surface);">{{ app()->getLocale() === 'ar' ? 'الوصف' : 'Description' }}</h3>
+                    </div>
+                    <p class="md-body-medium leading-relaxed" style="color: var(--md-on-surface-variant); line-height: 1.8;">
+                        {{ $product->localized_description ?? ($product->description_ar ?? $product->description) }}
+                    </p>
+                </div>
             </div>
 
-            <div>
-                <h1 class="text-2xl lg:text-3xl font-extrabold mb-3">{{ $product->localized_name ?? ($product->name_ar ?? $product->name) }}</h1>
-                <p class="mb-4" style="color: var(--gray-text)">{{ $product->localized_description ?? ($product->description_ar ?? $product->description) }}</p>
-
-                @php
-                    // Ensure colors and sizes are arrays with data
-                    $colors = is_array($product->colors) && count($product->colors) > 0 ? $product->colors : ['#000000', '#FFFFFF', '#FF0000'];
-                    $sizes = is_array($product->sizes) && count($product->sizes) > 0 ? $product->sizes : ['S', 'M', 'L', 'XL'];
-                @endphp
-
-                <div class="mb-4">
-                    <div class="text-sm font-semibold mb-2" style="color: var(--gray-text)">{{ app()->getLocale()==='ar' ? 'الألوان' : 'Colors' }}</div>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($colors as $i => $c)
-                            <button class="color-btn {{ $i===0 ? 'active ring-2' : '' }}" data-color="{{ $c }}" title="{{ $c }}" style="width:36px;height:36px;border-radius:9999px;background: {{ $c }};border:2px solid #333;cursor:pointer;transition:all 0.2s;"></button>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <div class="text-sm font-semibold mb-2" style="color: var(--gray-text)">{{ app()->getLocale()==='ar' ? 'المقاسات' : 'Sizes' }}</div>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach($sizes as $i => $s)
-                            <button class="size-btn px-4 py-2 rounded border transition-all {{ $i===0 ? 'active ring-2' : '' }}" style="border-color: var(--border-color);cursor:pointer;" data-size="{{ $s }}">{{ $s }}</button>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between mb-6">
-                    <div class="text-2xl font-extrabold">{{ $product->final_price }} $</div>
-                    @if($product->discount)
-                        <div class="text-sm line-through" style="color: var(--gray-text)">{{ ($product->price ?? $product->price_sell) }} $</div>
-                    @endif
-                </div>
-
-                @if($product->is_package && $product->package)
-                    <div class="mb-6 p-4 rounded" style="background: var(--gray-bg); border: 1px solid var(--border-color)">
-                        <h3 class="font-semibold mb-3">{{ app()->getLocale() === 'ar' ? 'معلومات الباقة' : 'Package Information' }}</h3>
+            <!-- Product Details Section - Right Side -->
+            <div class="lg:col-span-2">
+                <!-- Product Header Card -->
+                <div class="rounded-2xl p-8 mb-6" style="background: var(--md-surface-bright); border: 1px solid var(--md-outline-variant); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                    <div class="mb-6 pb-6" style="border-bottom: 1px solid var(--md-outline-variant);">
+                        <h1 class="text-3xl font-bold mb-4" style="color: var(--md-on-surface);">{{ $product->localized_name ?? ($product->name_ar ?? $product->name) }}</h1>
                         
-                        <div class="mb-3">
-                            <div class="font-semibold">{{ app()->getLocale() === 'ar' ? 'اسم الباقة' : 'Package Name' }}</div>
-                            <div>{{ $product->package->name_ar ?? $product->package->name }}</div>
-                        </div>
-
-                        @if($product->package->description_ar || $product->package->description)
-                        <div class="mb-3">
-                            <div class="font-semibold">{{ app()->getLocale() === 'ar' ? 'الوصف' : 'Description' }}</div>
-                            <div class="text-sm" style="color: var(--gray-text)">{{ $product->package->description_ar ?? $product->package->description }}</div>
+                        @if($product->city)
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-icons-outlined icon-sm" style="color: var(--md-primary);">location_on</span>
+                            <span class="text-sm font-medium" style="color: var(--md-on-surface);">{{ $product->city->localized_name ?? $product->city->name }}</span>
                         </div>
                         @endif
 
-                        <div class="grid grid-cols-2 gap-2 mb-3 text-sm">
-                            <div>
-                                <div class="font-semibold">{{ app()->getLocale() === 'ar' ? 'سعر الباقة' : 'Package Price' }}</div>
-                                <div>${{ number_format($product->package->price, 2) }}</div>
-                            </div>
-                            @if($product->package->discount > 0)
-                            <div>
-                                <div class="font-semibold">{{ app()->getLocale() === 'ar' ? 'الخصم' : 'Discount' }}</div>
-                                <div>{{ $product->package->discount }}%</div>
-                            </div>
-                            @endif
-                            <div>
-                                <div class="font-semibold">{{ app()->getLocale() === 'ar' ? 'السعر النهائي' : 'Final Price' }}</div>
-                                <div class="font-bold">${{ number_format($product->package->final_price, 2) }}</div>
-                            </div>
-                            <div>
-                                <div class="font-semibold">{{ app()->getLocale() === 'ar' ? 'الشحن' : 'Shipping' }}</div>
-                                <div>${{ number_format($product->package->shipping_price, 2) }}</div>
-                            </div>
-                        </div>
+                        <!-- Product Short Description -->
+                        @php
+                            $shortDesc = $product->short_description ?? substr($product->localized_description ?? '', 0, 100);
+                        @endphp
+                        @if($shortDesc)
+                        <p class="text-sm leading-relaxed" style="color: var(--md-on-surface-variant);">{{ $shortDesc }}{{ strlen($product->localized_description ?? '') > 100 ? '...' : '' }}</p>
+                        @endif
+                    </div>
 
-                        @if($product->package->items && count($product->package->items) > 0)
-                        <div>
-                            <div class="font-semibold mb-2">{{ app()->getLocale() === 'ar' ? 'محتويات الباقة' : 'Included Items' }}</div>
-                            <ul class="list-disc list-inside text-sm" style="color: var(--gray-text)">
-                                @foreach($product->package->items as $item)
-                                    <li>{{ $item['name_ar'] ?? $item['name'] ?? $item }}</li>
-                                @endforeach
-                            </ul>
+                    <!-- Price Section - Material Design 3 -->
+                    <div class="rounded-2xl p-6 mb-6" style="background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        <div class="mb-4">
+                            <p class="text-sm opacity-90 font-medium">{{ app()->getLocale() === 'ar' ? 'السعر الحالي' : 'Current Price' }}</p>
+                            <p class="text-4xl font-bold mt-1">${{ number_format($product->final_price, 2) }}</p>
+                        </div>
+                        
+                        @php
+                            $originalPrice = $product->price ?? $product->price_sell ?? 0;
+                            $hasDiscount = $product->discount > 0;
+                        @endphp
+
+                        @if($hasDiscount)
+                        <div class="flex items-center gap-3 pt-4" style="border-top: 1px solid rgba(255,255,255,0.3);">
+                            <span class="line-through text-sm opacity-75">${{ number_format($originalPrice, 2) }}</span>
+                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-all duration-300" style="background: var(--md-error); color: var(--md-on-error);">
+                                <span class="material-icons-outlined icon-sm">flash_on</span>
+                                -{{ $product->discount }}%
+                            </span>
+                        </div>
+                        @endif
+
+                        @if($product->shipping_price && $product->shipping_price > 0)
+                        <div class="flex items-center gap-2 text-sm mt-4 pt-4 font-medium" style="border-top: 1px solid rgba(255,255,255,0.3);">
+                            <span class="material-icons-outlined icon-sm">local_shipping</span>
+                            <span>{{ app()->getLocale() === 'ar' ? 'الشحن:' : 'Shipping:' }} ${{ number_format($product->shipping_price, 2) }}</span>
                         </div>
                         @endif
                     </div>
-                @endif
 
-                <div class="flex flex-col sm:flex-row gap-3 mb-6">
-                    <button id="addToCartBtn" class="btn-yellow px-6 py-3 flex-1 sm:flex-auto">
-                        {{ app()->getLocale()==='ar' ? 'أضف للسلة' : 'Add to Cart' }}
+                    @php
+                        // Ensure colors and sizes are arrays - same logic as product card
+                        $colors = $product->colors;
+                        if (is_string($colors)) {
+                            $colors = json_decode($colors, true) ?? [];
+                        }
+                        if (!is_array($colors)) {
+                            $colors = [];
+                        }
+
+                        $sizes = $product->sizes;
+                        if (is_string($sizes)) {
+                            $sizes = json_decode($sizes, true) ?? [];
+                        }
+                        if (!is_array($sizes)) {
+                            $sizes = [];
+                        }
+                    @endphp
+
+                    <!-- Variants Section - Same style as product card -->
+                    @if(!empty($colors) || !empty($sizes))
+                        <div class="flex flex-col gap-3 mb-8 p-6 rounded-2xl" style="background: linear-gradient(135deg, var(--md-surface-container) 0%, var(--md-surface) 100%); border: 1px solid var(--md-outline-variant); box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                            {{-- Colors --}}
+                            @if(!empty($colors))
+                                <div class="flex flex-col gap-2">
+                                    <p class="md-label-medium font-bold flex items-center gap-2" style="color: var(--md-on-surface);">
+                                        <span class="material-icons-outlined icon-sm" style="color: var(--md-primary);">palette</span>
+                                        <span>{{ app()->getLocale() === 'ar' ? 'اختر اللون' : 'Choose Color' }}</span>
+                                    </p>
+                                    <div class="flex gap-2.5 flex-wrap items-center">
+                                        @foreach($colors as $index => $color)
+                                            <button class="color-btn rounded-full transition-all duration-300 shrink-0 hover:scale-125 active:scale-95 group/color"
+                                                    style="width: 40px; height: 40px; background: {{ $color }}; border: 2px solid {{ $index === 0 ? 'var(--md-primary)' : 'var(--md-outline)' }}; box-shadow: {{ $index === 0 ? '0 0 0 2px var(--md-surface-bright), 0 0 8px rgba(200, 212, 0, 0.3)' : '0 1px 3px rgba(0,0,0,0.1)' }};"
+                                                    onclick="this.parentElement.querySelectorAll('.color-btn').forEach(b => b.style.border = '2px solid var(--md-outline)'); this.style.border = '2px solid var(--md-primary)'; updateButtonStates();"
+                                                    title="{{ $color }}"
+                                                    data-color="{{ $color }}"
+                                                    aria-label="Color: {{ $color }}">
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Sizes --}}
+                            @if(!empty($sizes))
+                                <div class="flex flex-col gap-2 {{ !empty($colors) ? 'pt-3 border-t' : '' }}" style="{{ !empty($colors) ? 'border-color: var(--md-outline-variant)' : '' }}">
+                                    <p class="md-label-medium font-bold flex items-center gap-2" style="color: var(--md-on-surface);">
+                                        <span class="material-icons-outlined icon-sm" style="color: var(--md-primary);">straighten</span>
+                                        <span>{{ app()->getLocale() === 'ar' ? 'المقاسات' : 'Sizes' }}</span>
+                                    </p>
+                                    <div class="flex flex-wrap gap-2" id="sizes-group">
+                                        @foreach($sizes as $index => $size)
+                                            <button type="button" class="size-btn md-label-small px-3 py-1.5 rounded-lg border-2 font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+                                                    style="border-color: {{ $index === 0 ? 'var(--md-primary)' : 'var(--md-outline)' }}; background: {{ $index === 0 ? 'var(--md-primary-container)' : 'transparent' }}; color: {{ $index === 0 ? 'var(--md-on-primary-container)' : 'var(--md-on-surface)' }}; font-size: 0.875rem; cursor: pointer;"
+                                                    onclick="document.querySelectorAll('.size-btn').forEach(b => { b.style.borderColor = 'var(--md-outline)'; b.style.background = 'transparent'; b.style.color = 'var(--md-on-surface)'; }); this.style.borderColor = 'var(--md-primary)'; this.style.background = 'var(--md-primary-container)'; this.style.color = 'var(--md-on-primary-container)'; updateButtonStates();"
+                                                    aria-label="Size: {{ $size }}">
+                                                {{ $size }}
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3 mb-6">
+                    <button id="addToCartBtn" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:brightness-110 active:scale-95 flex items-center justify-center gap-2" 
+                            style="background: var(--md-primary); color: var(--md-on-primary); box-shadow: 0 6px 16px rgba(0,0,0,0.18);">
+                        <span class="material-icons-outlined">shopping_cart</span>
+                        {{ app()->getLocale() === 'ar' ? 'أضف للسلة' : 'Add to Cart' }}
                     </button>
-                    <button id="continueShoppingBtn" class="px-6 py-3 rounded flex-1 sm:flex-auto font-semibold transition-all hover:shadow-md" style="background: var(--primary-yellow); color: white; border: 2px solid var(--primary-yellow);">
-                        {{ app()->getLocale()==='ar' ? 'متابعة التسوق' : 'Continue Shopping' }}
+                    <button id="continueShoppingBtn" class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:shadow-lg hover:brightness-95 active:scale-95 flex items-center justify-center gap-2 border-3" 
+                            style="color: var(--md-on-surface); border-color: var(--md-primary); background: transparent;">
+                        <span class="material-icons-outlined">shopping_bag</span>
+                        {{ app()->getLocale() === 'ar' ? 'متابعة التسوق' : 'Continue Shopping' }}
                     </button>
                 </div>
 
-                <div class="mt-6 flex flex-wrap gap-2">
-                    @if($product->city)
-                    <a id="city" class="px-3 py-1 rounded-full text-sm" style="background: var(--gray-bg)" href="#city-posts">
-                        {{ app()->getLocale()==='ar' ? 'مدينة:' : 'City:' }} {{ $product->city->localized_name }}
-                    </a>
-                    @endif
-                    <a class="px-3 py-1 rounded-full text-sm" style="background: var(--gray-bg)" href="#artifact-posts">
-                        {{ app()->getLocale()==='ar' ? 'الآثار' : 'Artifacts' }}
-                    </a>
+                <!-- Info Chips - Material Design 3 -->
+                <div class="flex flex-wrap gap-2">
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300" style="background: var(--md-surface-container-highest); color: var(--md-on-surface-variant); border: 1px solid var(--md-outline-variant);">
+                        <span class="material-icons-outlined icon-sm">inventory_2</span>
+                        <span class="text-sm font-medium">{{ app()->getLocale() === 'ar' ? 'متاح الآن' : 'In Stock' }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300" style="background: var(--md-surface-container-highest); color: var(--md-on-surface-variant); border: 1px solid var(--md-outline-variant);">
+                        <span class="material-icons-outlined icon-sm" style="color: var(--md-primary);">verified</span>
+                        <span class="text-sm font-medium">{{ app()->getLocale() === 'ar' ? 'موثوق' : 'Verified' }}</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        {{-- Related products and artifacts/posts sections removed as requested --}}
-
-        <div id="city-posts" class="mt-14">
-            <h2 class="text-xl font-bold mb-4">{{ app()->getLocale()==='ar' ? 'المدينة' : 'City' }}</h2>
-            <div class="grid grid-cols-1 gap-6">
-                @if($product->city)
-                @php
-                    // use controller-provided cityImage (already normalized) or fallback
-                    $img = $cityImage ?? optional($product->city->media->first())->url ?? $product->city->image;
-                    $img = $img ? (str_starts_with($img,'http') ? $img : asset($img)) : '';
-                    $cityName = $product->city->localized_name ?? $product->city->name;
-                    $landmarksCount = $landmarksCount ?? ($product->city->landmarks ? $product->city->landmarks->count() : 0);
-                @endphp
-                <div class="rounded overflow-hidden" style="background: var(--gray-bg); border: 1px solid var(--border-color)">
-                    @if($img)
-                        {{-- Center the city image inside a responsive square box to preserve square images UX --}}
-                        <div class="city-image-wrapper" style="width:100%;max-width:720px;margin:0 auto;position:relative;padding-top:100%;background:#f7fafc;overflow:hidden;">
-                            <img src="{{ $img }}" alt="{{ $cityName }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.src='https://placehold.co/800x800/jpg?text=No+Image';">
+        <!-- City Section -->
+        <div id="city-posts" class="mt-16 pt-12 border-t" style="border-color: var(--md-outline-variant)">
+            <!-- Section Header -->
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="material-icons-outlined" style="font-size: 32px; color: var(--md-primary);">location_city</span>
+                    <h2 class="text-4xl font-bold" style="color: var(--md-on-surface);">
+                        {{ app()->getLocale() === 'ar' ? 'استكشف المدينة' : 'Discover the City' }}
+                    </h2>
+                </div>
+                <p class="md-body-large mt-2" style="color: var(--md-on-surface-variant); max-width: 600px;">
+                    {{ app()->getLocale() === 'ar' ? 'تعرّف على المعلومات والمعالم السياحية للمدينة التي تشتري منها' : 'Learn more about the city where this product originates from' }}
+                </p>
+            </div>
+            
+            @if($product->city)
+            @php
+                $media = $cityMedia ?? '';
+                $mediaType = $cityMediaType ?? 'image';
+                $media = $media ? (str_starts_with($media, 'http') ? $media : asset($media)) : '';
+                $cityName = $product->city->localized_name ?? $product->city->name;
+                $cityDesc = $product->city->description_ar ?? $product->city->description;
+            @endphp
+            
+            <!-- City Card with Professional Modern Design -->
+            <div class="mb-12" style="border-radius: 24px; overflow: hidden; background: var(--md-surface-bright); box-shadow: 0 8px 24px rgba(0,0,0,0.12); border: 1px solid var(--md-outline-variant);">
+                <!-- Media Section - Full Width Top -->
+                @if($media)
+                <div class="relative overflow-hidden" style="aspect-ratio: 21/9; background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);">
+                    @if($mediaType === 'video')
+                        <video style="width: 100%; height: 100%; object-fit: cover;" controls>
+                            <source src="{{ $media }}" type="video/mp4">
+                        </video>
+                        <div class="absolute top-6 right-6 flex items-center gap-2 px-4 py-2 bg-white/90 text-black rounded-full text-sm font-bold backdrop-filter backdrop-blur-md" style="box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                            <span class="material-icons-outlined" style="font-size: 18px">play_circle</span>
+                            {{ app()->getLocale() === 'ar' ? 'فيديو' : 'Video' }}
                         </div>
                     @else
-                        <div class="w-full" style="max-width:720px;margin:0 auto;">
-                            <div class="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">{{ app()->getLocale()==='ar' ? 'لا توجد صورة' : 'No image' }}</div>
-                        </div>
+                        <img src="{{ $media }}" alt="{{ $cityName }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" style="cursor: pointer;">
                     @endif
-                    <div class="p-4 text-center lg:text-right">
-                        <div class="font-bold text-lg">{{ $cityName }}</div>
-                        <div class="text-xs mt-1" style="color: var(--gray-text)">
-                            {{ app()->getLocale()==='ar' ? 'عدد المعالم:' : 'Landmarks:' }} {{ $landmarksCount }}
+                </div>
+                @endif
+
+                <!-- Info Section - Bottom -->
+                <div class="p-8 md:p-12">
+                    <div class="max-w-4xl">
+                        <!-- City Header -->
+                        <div class="mb-8">
+                            <div class="flex items-end gap-4 mb-4">
+                                <div>
+                                    <h3 class="text-5xl font-bold mb-3" style="color: var(--md-on-surface);">{{ $cityName }}</h3>
+                                    <div class="flex items-center gap-3">
+                                        <div style="width: 60px; height: 4px; background: linear-gradient(90deg, var(--md-primary) 0%, var(--md-secondary) 100%); border-radius: 2px;"></div>
+                                        <span class="md-label-large font-semibold" style="color: var(--md-primary);">{{ app()->getLocale() === 'ar' ? 'وجهة فريدة' : 'Unique Destination' }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Brief Description -->
+                        @if($cityDesc)
+                            <div class="mb-8">
+                                <p class="md-body-large leading-relaxed" style="color: var(--md-on-surface-variant); line-height: 1.8; font-size: 16px;">
+                                    {{ substr($cityDesc, 0, 200) }}{{ strlen($cityDesc) > 200 ? '...' : '' }}
+                                </p>
+                            </div>
+                        @endif
+
+                        <!-- City Features Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8" style="border-top: 2px solid var(--md-outline-variant);">
+                            <!-- Feature 1 -->
+                            <div class="flex gap-4">
+                                <div class="shrink-0">
+                                    <div class="flex items-center justify-center w-14 h-14 rounded-lg" style="background: var(--md-primary); color: var(--md-on-primary);">
+                                        <span class="material-icons-outlined">location_on</span>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-lg mb-1" style="color: var(--md-on-surface);">{{ app()->getLocale() === 'ar' ? 'موقع استراتيجي' : 'Strategic Location' }}</h4>
+                                    <p class="md-body-small" style="color: var(--md-on-surface-variant);">{{ app()->getLocale() === 'ar' ? 'تقع في موقع جغرافي مهم وحيوي' : 'Located in a vital geographic position' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Feature 2 -->
+                            <div class="flex gap-4">
+                                <div class="shrink-0">
+                                    <div class="flex items-center justify-center w-14 h-14 rounded-lg" style="background: var(--md-secondary); color: var(--md-on-secondary);">
+                                        <span class="material-icons-outlined">shopping_bag</span>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-lg mb-1" style="color: var(--md-on-surface);">{{ app()->getLocale() === 'ar' ? 'منتجات أصلية' : 'Authentic Products' }}</h4>
+                                    <p class="md-body-small" style="color: var(--md-on-surface-variant);">{{ app()->getLocale() === 'ar' ? 'جودة عالية وأصالة مضمونة' : 'Premium quality guaranteed' }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Feature 3 -->
+                            <div class="flex gap-4">
+                                <div class="shrink-0">
+                                    <div class="flex items-center justify-center w-14 h-14 rounded-lg" style="background: var(--md-tertiary); color: var(--md-on-tertiary);">
+                                        <span class="material-icons-outlined">history</span>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-lg mb-1" style="color: var(--md-on-surface);">{{ app()->getLocale() === 'ar' ? 'تراث غني' : 'Rich Heritage' }}</h4>
+                                    <p class="md-body-small" style="color: var(--md-on-surface-variant);">{{ app()->getLocale() === 'ar' ? 'ثقافة وتاريخ عريق' : 'Deep culture & history' }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- About the City Section -->
+            <div style="background: var(--md-surface-container-highest); border-radius: 16px; padding: 3rem; border: 1px solid var(--md-outline-variant);">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="material-icons-outlined" style="font-size: 28px; color: var(--md-primary);">info</span>
+                    <h3 class="text-2xl font-bold" style="color: var(--md-on-surface);">
+                        {{ app()->getLocale() === 'ar' ? 'عن المدينة' : 'About the City' }}
+                    </h3>
+                </div>
+
+                @if($cityDesc)
+                    <div class="space-y-4">
+                        <p class="md-body-large leading-relaxed" style="color: var(--md-on-surface); line-height: 1.8;">
+                            {{ $cityDesc }}
+                        </p>
+                    </div>
                 @else
-                <p class="text-center col-span-full" style="color: var(--gray-text)">{{ app()->getLocale()==='ar' ? 'لا توجد بيانات' : 'No data' }}</p>
+                    <p class="md-body-large" style="color: var(--md-on-surface-variant);">
+                        {{ app()->getLocale() === 'ar' ? 'لا توجد معلومات متاحة عن هذه المدينة حالياً' : 'No information available about this city at the moment' }}
+                    </p>
                 @endif
             </div>
+            @endif
         </div>
 
 
@@ -259,6 +404,27 @@
     // Minimal product-page cart handling using existing cart format
     (function(){
         @php
+            // Check if product has a valid active package
+            $hasValidPackage = $product->is_package && $product->package && $product->package->is_active;
+            $packages = $hasValidPackage ? [[
+                'id' => $product->package->id,
+                'name' => [
+                    'ar' => $product->package->name_ar ?? $product->package->name,
+                    'en' => $product->package->name_en ?? $product->package->name,
+                ],
+                'description' => [
+                    'ar' => $product->package->description_ar ?? $product->package->description ?? '',
+                    'en' => $product->package->description_en ?? $product->package->description ?? '',
+                ],
+                'items' => $product->package->items ?? [],
+                'price' => (float)$product->package->price,
+                'original_price' => (float)$product->package->original_price,
+                'discount' => (int)$product->package->discount,
+                'final_price' => (float)$product->package->final_price,
+                'shipping_price' => (float)$product->package->shipping_price,
+                'quantity' => (int)$product->package->quantity,
+            ]] : [];
+
             $productPayload = [
                 'id' => $product->id,
                 'name' => [
@@ -274,25 +440,8 @@
                 'image' => $gallery[0] ?? '',
                 'colors' => is_array($product->colors) ? $product->colors : [],
                 'sizes' => is_array($product->sizes) ? $product->sizes : [],
-                'isPackage' => (bool) $product->is_package,
-                'packages' => $product->is_package && $product->package && $product->package->is_active ? [[
-                    'id' => $product->package->id,
-                    'name' => [
-                        'ar' => $product->package->name_ar ?? $product->package->name,
-                        'en' => $product->package->name_en ?? $product->package->name,
-                    ],
-                    'description' => [
-                        'ar' => $product->package->description_ar ?? $product->package->description ?? '',
-                        'en' => $product->package->description_en ?? $product->package->description ?? '',
-                    ],
-                    'items' => $product->package->items ?? [],
-                    'price' => (float)$product->package->price,
-                    'original_price' => (float)$product->package->original_price,
-                    'discount' => (int)$product->package->discount,
-                    'final_price' => (float)$product->package->final_price,
-                    'shipping_price' => (float)$product->package->shipping_price,
-                    'quantity' => (int)$product->package->quantity,
-                ]] : [],
+                'isPackage' => $hasValidPackage,
+                'packages' => $packages,
             ];
             $cityNamePayload = [
                 'ar' => $product->city?->name_ar ?? $product->city?->name,
@@ -304,22 +453,42 @@
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
         function getSelectedColor(){
-            const active = document.querySelector('.color-btn.active');
-            return active ? active.getAttribute('data-color') : (product.colors[0] || null);
+            // Get the currently selected color from the first color button with primary border
+            const colorBtns = document.querySelectorAll('.color-btn');
+            if (colorBtns.length === 0) return null;
+            
+            // Find button with primary border (selected state)
+            for (let btn of colorBtns) {
+                if (btn.style.border && btn.style.border.includes('var(--md-primary)')) {
+                    return btn.getAttribute('data-color');
+                }
+            }
+            
+            // Fallback to first color if no selection found
+            return colorBtns[0]?.getAttribute('data-color') || (product.colors?.[0] || null);
         }
+
         function getSelectedSize(){
-            const active = document.querySelector('.size-btn.active');
-            return active ? active.textContent.trim() : (product.sizes[0] || null);
+            // Get the currently selected size from the size button with primary background
+            const sizeBtns = document.querySelectorAll('.size-btn');
+            if (sizeBtns.length === 0) return null;
+            
+            // Find button with primary background (selected state)
+            for (let btn of sizeBtns) {
+                if (btn.style.background && btn.style.background.includes('var(--md-primary-container)')) {
+                    return btn.textContent.trim();
+                }
+            }
+            
+            // Fallback to first size if no selection found
+            return sizeBtns[0]?.textContent.trim() || (product.sizes?.[0] || null);
         }
 
         document.querySelectorAll('.color-btn').forEach(btn => btn.addEventListener('click', function(){
-            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
             updateButtonStates(); // Update button when color changes
         }));
+        
         document.querySelectorAll('.size-btn').forEach(btn => btn.addEventListener('click', function(){
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
             updateButtonStates(); // Update button when size changes
         }));
 
@@ -456,8 +625,14 @@
                 return;
             }
 
-            const selectedColor = getSelectedColor();
-            const selectedSize = getSelectedSize();
+            // Check if product has variants (colors or sizes)
+            const hasColors = product.colors && product.colors.length > 0;
+            const hasSizes = product.sizes && product.sizes.length > 0;
+            
+            // Get selected variants (or null if no variants)
+            const selectedColor = hasColors ? getSelectedColor() : null;
+            const selectedSize = hasSizes ? getSelectedSize() : null;
+            
             const existing = cart.find(i => i.id === product.id && i.selectedColor === selectedColor && i.selectedSize === selectedSize);
             if (existing) {
                 existing.quantity += 1;

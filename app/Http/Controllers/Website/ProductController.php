@@ -54,19 +54,19 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
 
-        // Normalize city image and landmarks count for the view
-        $cityImage = null;
+        // Normalize city media and landmarks count for the view
+        $cityMedia = null;
+        $cityMediaType = 'image'; // Default type
         $landmarksCount = 0;
         if ($product->city) {
             $city = $product->city;
-            $cityMedia = $city->media ?? collect();
-            // prefer main media (role='main'), then first image-type media, then any media
-            $mainCityMedia = $cityMedia->firstWhere('role', 'main') ?? $cityMedia->firstWhere('type', 'image') ?? $cityMedia->first();
-            if ($mainCityMedia && $mainCityMedia->url) {
-                $cityImage = $mainCityMedia->url;
-            }
-            if (!$cityImage && $city->image) {
-                $cityImage = str_starts_with($city->image, 'http') ? $city->image : asset($city->image);
+            $allMedia = $city->media ?? collect();
+            // prefer main media (role='main'), then first media regardless of type
+            $firstMedia = $allMedia->firstWhere('role', 'main') ?? $allMedia->first();
+            if ($firstMedia && $firstMedia->url) {
+                $url = $firstMedia->url;
+                $cityMedia = str_starts_with($url, 'http') ? $url : asset($url);
+                $cityMediaType = $firstMedia->type ?? 'image';
             }
             $landmarksCount = $city->landmarks ? $city->landmarks->count() : Landmark::where('city_id', $city->id)->count();
         }
@@ -76,7 +76,8 @@ class ProductController extends Controller
             'gallery' => $gallery,
             'relatedProducts' => $relatedProducts,
             'cityLandmark' => $cityLandmark,
-            'cityImage' => $cityImage,
+            'cityMedia' => $cityMedia,
+            'cityMediaType' => $cityMediaType,
             'landmarksCount' => $landmarksCount,
             'artifacts' => $artifacts,
         ]);

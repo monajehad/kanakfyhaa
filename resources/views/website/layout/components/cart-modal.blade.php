@@ -1,43 +1,53 @@
 <div id="cartModal" class="modal" role="dialog" aria-modal="true" onclick="if(event.target.id==='cartModal'){ closeCart(); }" >
-    <div class="modal-content animate-in" >
-        <div class="p-6 max-h-[80vh] overflow-y-auto" style="padding: 1.5rem 1.5rem 0 1.5rem;">
-            <div class="flex justify-between items-center mb-6" >
+    <div class="modal-content animate-in md-card elevation-5" style="background: var(--md-surface); border-radius: 28px; max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;">
+        <!-- Header -->
+        <div class="p-6 border-b" style="border-color: var(--md-surface-variant);">
+            <div class="flex justify-between items-start mb-2">
                 <div>
-                    <h3 class="text-2xl font-bold" data-ar="سلة التسوق" data-en="Shopping Cart">سلة التسوق</h3>
-                    <p class="text-sm mt-1" style="color: var(--gray-text)">
+                    <h2 class="md-headline-medium" data-ar="سلة التسوق" data-en="Shopping Cart">سلة التسوق</h2>
+                    <p class="md-body-small text-md-on-surface-variant mt-1">
                         <span data-ar="عدد العناصر:" data-en="Items:">عدد العناصر:</span>
-                        <span id="cartItemsCount">0</span>
+                        <span id="cartItemsCount" class="font-semibold">0</span>
                     </p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="clearCart()" class="text-sm px-3 py-2 rounded" style="background: var(--gray-bg)">
-                        <span data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</span>
-                    </button>
-                    <button onclick="closeCart()" class="rounded p-2" style="color: var(--gray-text); background: var(--gray-bg);" aria-label="Close">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div id="cartItems" class="space-y-4 mb-6">
-                <!-- Cart items will be loaded here dynamically -->
-            </div>
-            
-            <div class="border-t pt-6 sticky bottom-0" style="background-color: var(--border-color); border-color: var(--border-color); box-shadow: 0 -2px 10px rgba(0,0,0,0.1); padding: 1.5rem; margin-top: 1rem;">
-                <div class="flex justify-between items-center mb-4 text-xl font-bold">
-                    <span data-ar="الإجمالي:" data-en="Total:">الإجمالي:</span>
-                    <span id="cartTotal">$0.00</span>
-                </div>
-                <button id="checkoutBtn" onclick="proceedToCheckout()" class="w-full py-4 text-lg disabled:opacity-60 disabled:cursor-not-allowed" style="background: var(--primary-yellow); color: white; border: none; border-radius: 0.375rem; font-weight: 600; cursor: pointer;"
-                        data-ar="إتمام الشراء" data-en="Checkout">
-                    إتمام الشراء
+                <button onclick="closeCart()" class="inline-flex items-center justify-center p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition" style="color: var(--md-on-surface);" aria-label="Close">
+                    <span class="material-icons-outlined icon-md">close</span>
                 </button>
-                <p class="text-xs mt-3 text-center" style="color: var(--gray-text); background: var(--gray-bg); padding: 0.75rem; border-radius: 0.375rem;">
-                    <span data-ar="سيتم حساب الشحن عند الدفع" data-en="Shipping calculated at checkout">سيتم حساب الشحن عند الدفع</span>
-                </p>
             </div>
+        </div>
+
+        <!-- Cart Items -->
+        <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <!-- Cart items will be loaded here dynamically -->
+        </div>
+
+        <!-- Footer/Checkout Section -->
+        <div class="border-t p-6 space-y-4" style="border-color: var(--md-surface-variant); background: var(--md-surface-variant);">
+            <!-- Total -->
+            <div class="flex justify-between items-center">
+                <span class="md-headline-small" data-ar="الإجمالي:" data-en="Total:">الإجمالي:</span>
+                <span id="cartTotal" class="md-headline-medium" style="color: var(--md-primary);">$0.00</span>
+            </div>
+
+            <!-- Clear Cart Button -->
+            <button onclick="clearCart()" class="w-full btn-md btn-outlined" style="color: var(--md-error); border-color: var(--md-error); background: transparent;">
+                <span class="material-icons-outlined icon-sm">delete_outline</span>
+                <span data-ar="تفريغ السلة" data-en="Clear cart">تفريغ السلة</span>
+            </button>
+
+            <!-- Checkout Button -->
+            <button id="checkoutBtn" onclick="proceedToCheckout()" class="w-full btn-md btn-filled" style="background: var(--md-primary); color: var(--md-on-primary);" data-ar="إتمام الشراء" data-en="Checkout">
+                <span class="material-icons-outlined icon-sm">payment</span>
+                <span data-ar="إتمام الشراء" data-en="Checkout">إتمام الشراء</span>
+            </button>
+
+            <!-- Info Message -->
+            <p class="md-label-small text-center text-md-on-surface-variant px-4 py-3 rounded-lg" style="background: var(--md-surface);">
+                <span class="flex items-center justify-center gap-2">
+                    <span class="material-icons-outlined icon-sm">info</span>
+                    <span data-ar="سيتم حساب الشحن عند الدفع" data-en="Shipping calculated at checkout">سيتم حساب الشحن عند الدفع</span>
+                </span>
+            </p>
         </div>
     </div>
 </div>
