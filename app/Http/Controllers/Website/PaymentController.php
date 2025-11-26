@@ -4,45 +4,69 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\ProductPackage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
     public function storeOrder(Request $request)
-    {
-        $validated = $request->validate([
-            'order_number' => 'required|string|unique:orders,order_number',
-            'customer_name' => 'required|string',
-            'email' => 'required|email',
-            'phone' => 'nullable|string',
-            'country' => 'nullable|string|max:2',
-            'city' => 'nullable|string',
-            'address' => 'nullable|string',
-            'postal_code' => 'nullable|string',
-            'notes' => 'nullable|string',
-            'items' => 'required|array',
-            'subtotal' => 'required|numeric',
-            'shipping' => 'required|numeric',
-            'total' => 'required|numeric',
-            'currency_symbol' => 'required|string|max:5',
-            'currency_rate' => 'required|numeric',
-            'payment_method' => 'required|string|in:paypal,stripe',
-            'payment_status' => 'required|string|in:paid,pending,failed,refunded',
-            'order_status' => 'nullable|string|in:processing,shipped,delivered,cancelled',
-            'transaction_id' => 'nullable|string',
-            'payer_email' => 'nullable|email',
-            'order_date' => 'nullable|date',
-        ]);
+{
+    $validated = $request->validate([
+        'order_number' => 'required|string|unique:orders,order_number',
+        'customer_name' => 'required|string',
+        'email' => 'required|email',
+        'phone' => 'nullable|string',
+        'country' => 'nullable|string|max:2',
+        'city' => 'nullable|string',
+        'address' => 'nullable|string',
+        'postal_code' => 'nullable|string',
+        'notes' => 'nullable|string',
+        'items' => 'required|array',
+        'items.*.product_package_id' => 'required|integer|exists:product_packages,id',
+        'items.*.quantity' => 'required|integer|min:1',
 
-        $order = Order::create($validated);
+        'payment_method' => 'required|string|in:paypal,stripe',
+        'payment_status' => 'required|string|in:paid,pending,failed,refunded',
+        'order_status' => 'nullable|string|in:processing,shipped,delivered,cancelled',
+        'transaction_id' => 'nullable|string',
+        'payer_email' => 'nullable|email',
+        'order_date' => 'nullable|date',
+        'currency_symbol' => 'required|string|max:5',
+        'currency_rate' => 'required|numeric',
+    ]);
 
-        return response()->json([
-            'success' => true,
-            'order_id' => $order->id,
-        ]);
+    $subtotal = 0;
+    $shipping = 0;
+
+    foreach ($validated['items'] as $item) {
+
+        $package = ProductPackage::find($item['product_package_id']);
+
+        $item_price = $package->price * $item['quantity'];
+        $item_shipping = $package->shipping_cost * $item['quantity'];
+
+        $subtotal += $item_price;
+        $shipping += $item_shipping;
     }
 
+    $total = $subtotal + $shipping;
+
+    // أضيف القيم المحسوبة قبل الحفظ
+    $validated['subtotal'] = $subtotal;
+    $validated['shipping'] = $shipping;
+    $validated['total'] = $total;
+
+    // حفظ الطلب
+    $order = Order::create($validated);
+
+    return response()->json([
+        'success' => true,
+        'order_id' => $order->id,
+        'total' => $total,
+        'shipping' => $shipping
+    ]);
+}
     public function stripeCreatePaymentIntent(Request $request)
     {
         $data = $request->validate([
