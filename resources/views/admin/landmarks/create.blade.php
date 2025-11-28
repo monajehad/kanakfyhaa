@@ -14,6 +14,7 @@
             @csrf
             <div class="row g-3">
 
+                <!-- Names -->
                 <div class="col-md-6">
                     <label class="form-label">اسم المعلم *</label>
                     <input type="text" name="name" class="form-control" required>
@@ -24,9 +25,19 @@
                     <input type="text" name="slug" class="form-control">
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label">الاسم بالعربية</label>
+                    <input type="text" name="name_ar" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">الاسم بالإنجليزية</label>
+                    <input type="text" name="name_en" class="form-control">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label">النوع</label>
-                    <input type="text" name="type" class="form-control">
+                    <input type="text" name="type" class="form-control" placeholder="مثال: مسجد، سوق، متحف">
                 </div>
 
                 <div class="col-md-6">
@@ -39,14 +50,73 @@
                     </select>
                 </div>
 
-                <div class="col-md-6">
+                <!-- Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">الوصف</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label">الوصف المختصر</label>
                     <input type="text" name="short_description" class="form-control">
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label">الوصف المختصر (عربي)</label>
+                    <input type="text" name="short_description_ar" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">الوصف المختصر (إنجليزي)</label>
+                    <input type="text" name="short_description_en" class="form-control">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label">الوصف الكامل</label>
                     <textarea name="description" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">الوصف الكامل (عربي)</label>
+                    <textarea name="description_ar" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">الوصف الكامل (إنجليزي)</label>
+                    <textarea name="description_en" class="form-control" rows="3"></textarea>
+                </div>
+
+                <!-- Ambient Description -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">وصف التجربة الحسية (Ambient)</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف التجربة الحسية</label>
+                    <textarea name="ambient_description" class="form-control" rows="3" placeholder="اكتب وصفاً حسياً للمكان..."></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف التجربة الحسية (عربي)</label>
+                    <textarea name="ambient_description_ar" class="form-control" rows="3" placeholder="اكتب وصفاً حسياً بالعربية..."></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف التجربة الحسية (إنجليزي)</label>
+                    <textarea name="ambient_description_en" class="form-control" rows="3" placeholder="Write sensory description in English..."></textarea>
+                </div>
+
+                <!-- Timeline -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">خط الزمن (Timeline)</h5>
+                    <hr>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">خط الزمن (JSON أو نص مفصول بفواصل)</label>
+                    <textarea name="timeline" class="form-control" rows="4" placeholder="مثال: [&#10;  &quot;الفترة الأولى: وصف المرحلة&quot;,&#10;  &quot;الفترة الثانية: وصف المرحلة&quot;,&#10;  &quot;الفترة الثالثة: وصف المرحلة&quot;&#10;]"></textarea>
+                    <small class="text-muted">أدخل JSON array أو استخدم جيسون منسقاً بشكل صحيح</small>
                 </div>
 
                 <!-- Main Media Section -->

@@ -11,9 +11,6 @@
         $cityName = $city?->localized_name ?? ($city?->name_ar ?? $city?->name ?? '');
         $experienceUrl = url('/experience/' . $product->uuid);
         $landmarkCount = $landmarks->count();
-        $artifactCount = $landmarks->sum(function ($landmark) {
-            return $landmark->artifacts?->count() ?? 0;
-        });
         $colors = is_array($product->colors) ? array_values(array_filter($product->colors)) : [];
         $sizes = is_array($product->sizes) ? array_values(array_filter($product->sizes)) : [];
         $steps = [
@@ -32,6 +29,331 @@
         ];
     @endphp
 
+    <!-- Immersive City Experience Section -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+        <!-- Hero Background -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none">
+            <svg class="absolute top-0 right-0 w-96 h-96 text-blue-400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50,-50 Q150,0 100,150 Q0,100 50,-50" fill="currentColor"/>
+            </svg>
+        </div>
+
+        <div class="container mx-auto px-4 py-12 relative z-10">
+            <!-- City Header -->
+            <div class="mb-12">
+                <div class="flex items-start gap-4 mb-6">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xl flex-shrink-0">
+                        📍
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-blue-600 mb-1">@lang('qr.city.label')</p>
+                        <h2 class="text-4xl md:text-5xl font-bold text-gray-900">{{ $cityName }}</h2>
+                        <p class="text-lg text-gray-600 mt-3 max-w-2xl leading-relaxed">
+                            {{ $city?->localized_description ?? $city?->description ?? __('qr.city.no_description') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Landmarks Section -->
+            @if($landmarkCount > 0)
+                <div class="mb-12">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-lg">🏛️</div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">@lang('qr.city.landmarks.title')</h3>
+                            <p class="text-sm text-gray-600 mt-1">@lang('qr.city.landmarks.description')</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach($landmarks as $landmark)
+                            @php
+                                $landmarkCover = optional($landmark->media->first())->url ?? $landmark->image ?? '';
+                                $timelineData = $landmark->timeline ?? [
+                                    __('qr.timeline.phase_one'),
+                                    __('qr.timeline.phase_two'),
+                                    __('qr.timeline.phase_three'),
+                                ];
+                                $immersivePayload = [
+                                    'name' => $landmark->localized_name ?? $landmark->name,
+                                    'type' => $landmark->type ?? __('qr.landmarks.type_fallback'),
+                                    'city' => $cityName,
+                                    'image' => $landmarkCover,
+                                    'history' => $landmark->localized_description ?? $landmark->description ?? $landmark->localized_short_description ?? $landmark->short_description,
+                                    'short' => \Illuminate\Support\Str::limit($landmark->localized_short_description ?? $landmark->short_description ?? $landmark->localized_description ?? $landmark->description, 140),
+                                    'timeline' => is_array($timelineData) ? $timelineData : json_decode($timelineData ?? '[]', true),
+                                    'ambient' => $landmark->localized_ambient_description ?? $landmark->ambient_description ?? __('qr.landmarks.ambient_default'),
+                                ];
+                            @endphp
+                            <button
+                                type="button"
+                                class="group relative rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 bg-white"
+                                data-landmark-trigger
+                                data-landmark='@json($immersivePayload)'
+                            >
+                                <!-- Image Container -->
+                                <div class="relative h-64 overflow-hidden">
+                                    <img src="{{ $landmarkCover }}" alt="{{ $landmark->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.style.display='none'">
+                                    <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/0 group-hover:from-black/80"></div>
+
+                                    <!-- Type Badge -->
+                                    <div class="absolute top-4 {{ $isArabic ? 'left-4' : 'right-4' }} flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 text-xs font-semibold text-gray-900 backdrop-blur-sm">
+                                        <span class="text-lg">🏛️</span>
+                                        {{ $landmark->type ?? trans('qr.landmarks.type_fallback') }}
+                                    </div>
+
+                                    <!-- Bottom Info -->
+                                    <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
+                                        <h3 class="text-xl font-bold">{{ $landmark->localized_name ?? $landmark->name }}</h3>
+                                    </div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="p-5">
+                                    <p class="text-sm text-gray-600 line-clamp-2">
+                                        {{ \Illuminate\Support\Str::limit($landmark->localized_short_description ?? $landmark->short_description ?? $landmark->localized_description ?? $landmark->description, 80) }}
+                                    </p>
+                                    <div class="mt-4 flex items-center justify-between">
+                                        <span class="inline-flex items-center gap-2 text-xs font-semibold text-orange-600">
+                                            <span>🔍</span>
+                                            @lang('qr.city.explore_landmark')
+                                        </span>
+                                        <span class="text-lg opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                                    </div>
+                                </div>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
+            @else
+                <div class="rounded-2xl border-2 border-dashed border-gray-300 p-12 text-center mb-12">
+                    <div class="text-5xl mb-4">🗺️</div>
+                    <p class="text-gray-600">@lang('qr.city.no_landmarks')</p>
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <!-- City Map Section -->
+    <section class="relative bg-gradient-to-b from-white via-blue-50 to-white py-12 overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 opacity-5 pointer-events-none">
+            <svg class="absolute bottom-0 left-0 w-96 h-96" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="80" fill="currentColor" class="text-blue-400"/>
+            </svg>
+        </div>
+
+        <div class="container mx-auto px-4 relative z-10">
+            <!-- Map Header -->
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-lg">🗺️</div>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900">@lang('qr.city.map.title')</h3>
+                    <p class="text-sm text-gray-600 mt-1">@lang('qr.city.map.description')</p>
+                </div>
+            </div>
+
+            <!-- Map Container - Material 3 Card -->
+            <div class="rounded-3xl overflow-hidden shadow-lg border border-blue-200 bg-white">
+                @if($city?->latitude && $city?->longitude)
+                    <!-- OpenStreetMap Embed -->
+                    <div class="relative w-full h-96 md:h-[500px] bg-blue-50">
+                        <iframe
+                            class="w-full h-full border-0"
+                            src="https://www.openstreetmap.org/export/embed.html?bbox={{ $city->longitude - 0.05 }},{{ $city->latitude - 0.05 }},{{ $city->longitude + 0.05 }},{{ $city->latitude + 0.05 }}&layer=mapnik&marker={{ $city->latitude }},{{ $city->longitude }}"
+                            style="border: 0;"
+                            allowfullscreen=""
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+
+                    <!-- Map Info Footer -->
+                    <div class="p-6 bg-gradient-to-r from-blue-50 to-blue-100/50 border-t border-blue-200">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Coordinates -->
+                            <div class="flex items-start gap-3">
+                                <div class="text-2xl">📍</div>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-700">@lang('qr.city.map.coordinates')</p>
+                                    <p class="text-sm text-gray-600 font-mono">{{ number_format($city->latitude, 4) }}, {{ number_format($city->longitude, 4) }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Region Info -->
+                            @if($city?->region)
+                                <div class="flex items-start gap-3">
+                                    <div class="text-2xl">🌍</div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-700">@lang('qr.city.map.region')</p>
+                                        <p class="text-sm text-gray-600">{{ $city->region }}</p>
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Population Info -->
+                            @if($city?->population)
+                                <div class="flex items-start gap-3">
+                                    <div class="text-2xl">👥</div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-700">@lang('qr.city.map.population')</p>
+                                        <p class="text-sm text-gray-600">{{ number_format($city->population) }}</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @else
+                    <!-- No Coordinates Available -->
+                    <div class="w-full h-96 md:h-[500px] bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="text-6xl mb-4">🗺️</div>
+                            <p class="text-gray-600 font-medium">@lang('qr.city.map.no_coordinates')</p>
+                            <p class="text-sm text-gray-500 mt-2">@lang('qr.city.map.location_info_unavailable')</p>
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
+        <div class="grid grid-cols-1 gap-8">
+            <div class="space-y-8">
+                <div class="rounded-3xl border p-6 lg:p-8" style="border-color: var(--border-color, #e5e7eb);">
+                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">@lang('qr.product.info_label')</p>
+                            <h2 class="text-2xl font-extrabold">{{ $productName }}</h2>
+                        </div>
+                        <span class="text-3xl font-black text-emerald-600">${{ number_format($product->final_price, 2) }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-3">
+                                @lang('qr.product.colors_label')
+                            </h3>
+                            <div class="flex flex-wrap gap-3">
+                                @forelse($colors as $color)
+                                    <div class="flex items-center gap-2 px-3 py-2 rounded-xl border" style="border-color: var(--border-color, #e5e7eb);">
+                                        <span class="w-6 h-6 rounded-full border" style="background: {{ $color }}"></span>
+                                        <span class="text-sm font-semibold">{{ $color }}</span>
+                                    </div>
+                                @empty
+                                    <p class="text-sm text-gray-500">
+                                        @lang('qr.product.no_colors')
+                                    </p>
+                                @endforelse
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-3">
+                                @lang('qr.product.sizes_label')
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                @forelse($sizes as $size)
+                                    <span class="px-4 py-2 rounded-xl border font-semibold"
+                                          style="border-color: var(--border-color, #e5e7eb);">
+                                        {{ $size }}
+                                    </span>
+                                @empty
+                                    <p class="text-sm text-gray-500">
+                                        @lang('qr.product.no_sizes')
+                                    </p>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-sm leading-relaxed text-gray-600">
+                        {{ $productDescription ?? __('qr.product.fallback_story') }}
+                    </div>
+                </div>
+
+                <!-- Product Media Gallery - Material 3 -->
+                @php
+                    $productMedia = $product->media->where('role', 'product_image')->values();
+                    $hasProductMedia = $productMedia->count() > 0;
+                @endphp
+                @if($hasProductMedia)
+                    <div class="rounded-3xl overflow-hidden shadow-lg border" style="border-color: var(--border-color, #e5e7eb); background: #fafafa;">
+                        <!-- Gallery Header -->
+                        <div class="px-6 lg:px-8 pt-6 pb-4">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="text-2xl">📸</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">@lang('qr.product.gallery_title', ['count' => $productMedia->count()] ?? 'Product Gallery')</h3>
+                                    <p class="text-sm text-gray-600 mt-0.5">{{ $productMedia->count() }} @lang('qr.product.gallery_images', ['count' => $productMedia->count()] ?? 'images')</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gallery Container -->
+                        <div class="px-6 lg:px-8 pb-8">
+                            <!-- Main Image Viewer -->
+                            <div class="relative rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-gray-100 to-gray-50 aspect-square group shadow-md">
+                                <img 
+                                    id="productMainImage" 
+                                    src="{{ $productMedia->first()?->url ?? 'https://placehold.co/600x600?text=' . urlencode($productName) }}" 
+                                    alt="{{ $productName }}"
+                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                >
+                                <!-- Image Counter Badge -->
+                                <div class="absolute top-4 {{ $isArabic ? 'left-4' : 'right-4' }} px-4 py-2 rounded-full bg-black/50 backdrop-blur-md text-white text-sm font-semibold">
+                                    <span id="imageCounter">1</span> / {{ $productMedia->count() }}
+                                </div>
+
+                                <!-- Loading State -->
+                                <div class="absolute inset-0 bg-black/0 transition-colors duration-300" id="imageLoadingState"></div>
+                            </div>
+
+                            <!-- Thumbnail Carousel -->
+                            <div class="relative">
+                                <div class="overflow-x-auto scrollbar-hide pb-2">
+                                    <div class="flex gap-3 min-w-max px-0.5">
+                                        @foreach($productMedia as $index => $media)
+                                            <button
+                                                type="button"
+                                                class="group relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
+                                                style="border-color: {{ $index === 0 ? 'var(--primary-yellow, #eab308)' : 'var(--border-color, #e5e7eb)' }};"
+                                                data-image-index="{{ $index }}"
+                                                data-image-url="{{ $media->url }}"
+                                            >
+                                                <img 
+                                                    src="{{ $media->url }}" 
+                                                    alt="Thumbnail {{ $index + 1 }}"
+                                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                                                >
+                                                <!-- Active Indicator -->
+                                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors"></div>
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Scroll Indicators (if needed) -->
+                                @if($productMedia->count() > 4)
+                                    <div class="absolute right-0 top-0 bottom-0 w-8 pointer-events-none bg-gradient-to-l from-[#fafafa] to-[#fafafa]/0"></div>
+                                @endif
+                            </div>
+
+                            <!-- Image Info -->
+                            <div class="mt-6 p-4 rounded-xl bg-white border" style="border-color: var(--border-color, #e5e7eb);">
+                                <div class="flex items-start gap-3">
+                                    <div class="text-2xl flex-shrink-0">ℹ️</div>
+                                    <div class="text-sm text-gray-700 leading-relaxed">
+                                        <p class="font-semibold mb-1">@lang('qr.product.gallery_tip_title')</p>
+                                        <p class="text-gray-600">@lang('qr.product.gallery_tip_body')</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Hero Section and QR Preview at Bottom -->
     <section class="relative overflow-hidden" style="background: radial-gradient(circle at top, #0f172a, #020617);">
         <div class="absolute inset-0 opacity-50 pointer-events-none">
             <div class="w-72 h-72 bg-[#e6b800]/40 blur-3xl rounded-full absolute -top-16 {{ $isArabic ? '-right-10' : '-left-10' }}"></div>
@@ -59,14 +381,10 @@
                             {{ $productDescription ?? __('qr.hero_fallback') }}
                         </p>
                     </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
                         <div class="py-4 rounded-2xl bg-white/5 border border-white/10">
                             <div class="text-2xl font-extrabold">{{ $landmarkCount }}</div>
                             <p class="text-xs text-white/70 mt-1">@lang('qr.stats.linked_landmarks')</p>
-                        </div>
-                        <div class="py-4 rounded-2xl bg-white/5 border border-white/10">
-                            <div class="text-2xl font-extrabold">{{ $artifactCount }}</div>
-                            <p class="text-xs text-white/70 mt-1">@lang('qr.stats.artifacts')</p>
                         </div>
                         <div class="py-4 rounded-2xl bg-white/5 border border-white/10">
                             <div class="text-2xl font-extrabold">{{ number_format($product->final_price, 0) }} $</div>
@@ -146,154 +464,7 @@
         </div>
     </section>
 
-    <section class="container mx-auto px-4 pb-16">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-2 space-y-8">
-                <div class="rounded-3xl border p-6 lg:p-8" style="border-color: var(--border-color, #e5e7eb);">
-                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                        <div>
-                            <p class="text-sm text-gray-500 mb-1">@lang('qr.product.info_label')</p>
-                            <h2 class="text-2xl font-extrabold">{{ $productName }}</h2>
-                        </div>
-                        <span class="text-3xl font-black text-emerald-600">${{ number_format($product->final_price, 2) }}</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-3">
-                                @lang('qr.product.colors_label')
-                            </h3>
-                            <div class="flex flex-wrap gap-3">
-                                @forelse($colors as $color)
-                                    <div class="flex items-center gap-2 px-3 py-2 rounded-xl border" style="border-color: var(--border-color, #e5e7eb);">
-                                        <span class="w-6 h-6 rounded-full border" style="background: {{ $color }}"></span>
-                                        <span class="text-sm font-semibold">{{ $color }}</span>
-                                    </div>
-                                @empty
-                                    <p class="text-sm text-gray-500">
-                                        @lang('qr.product.no_colors')
-                                    </p>
-                                @endforelse
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-3">
-                                @lang('qr.product.sizes_label')
-                            </h3>
-                            <div class="flex flex-wrap gap-2">
-                                @forelse($sizes as $size)
-                                    <span class="px-4 py-2 rounded-xl border font-semibold"
-                                          style="border-color: var(--border-color, #e5e7eb);">
-                                        {{ $size }}
-                                    </span>
-                                @empty
-                                    <p class="text-sm text-gray-500">
-                                        @lang('qr.product.no_sizes')
-                                    </p>
-                                @endforelse
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 text-sm leading-relaxed text-gray-600">
-                        {{ $productDescription ?? __('qr.product.fallback_story') }}
-                    </div>
-                </div>
-
-                <div class="rounded-3xl border p-6 lg:p-8" style="border-color: var(--border-color, #e5e7eb);">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold">@lang('qr.landmarks.section_title')</h2>
-                        <span class="text-sm text-gray-500">{{ $landmarkCount }} @lang('qr.landmarks.count_label')</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        @forelse($landmarks->take(4) as $landmark)
-                            @php
-                                $landmarkCover = optional($landmark->media->first())->url ?? $landmark->image ?? '';
-                                $artifactsCount = $landmark->artifacts?->count() ?? 0;
-                                $immersivePayload = [
-                                    'name' => $landmark->name,
-                                    'type' => $landmark->type ?? __('qr.landmarks.type_fallback'),
-                                    'city' => $cityName,
-                                    'image' => $landmarkCover,
-                                    'history' => $landmark->description ?? $landmark->short_description,
-                                    'short' => \Illuminate\Support\Str::limit($landmark->short_description ?? $landmark->description, 140),
-                                    'timeline' => [
-                                        __('qr.timeline.phase_one'),
-                                        __('qr.timeline.phase_two'),
-                                        __('qr.timeline.phase_three'),
-                                    ],
-                                    'artifacts' => $landmark->artifacts?->take(3)->map(function($artifact){
-                                        $artifactImage = optional($artifact->media->first())->url ?? $artifact->image ?? '';
-                                        return [
-                                            'title' => $artifact->title,
-                                            'image' => $artifactImage,
-                                            'excerpt' => \Illuminate\Support\Str::limit($artifact->description, 110),
-                                            'details' => strip_tags($artifact->description) ?? '',
-                                        ];
-                                    })->values() ?? [],
-                                    'ambient' => __('qr.landmarks.ambient_default'),
-                                ];
-                            @endphp
-                            <button
-                                type="button"
-                                class="rounded-2xl border overflow-hidden text-start landmark-card focus:outline-none focus:ring-2 focus:ring-offset-2"
-                                style="border-color: var(--border-color, #e5e7eb);"
-                                data-landmark-trigger
-                                data-landmark='@json($immersivePayload)'
-                            >
-                                <div class="relative">
-                                    <img src="{{ $landmarkCover }}" alt="{{ $landmark->name }}" class="w-full h-40 object-cover"
-                                         onerror="this.style.display='none'">
-                                    <span class="absolute top-4 {{ $isArabic ? 'left-4' : 'right-4' }} bg-white/80 text-xs font-semibold px-3 py-1 rounded-full">
-                                        {{ $landmark->type ?? trans('qr.landmarks.type_fallback') }}
-                                    </span>
-                                </div>
-                                <div class="p-4 space-y-2">
-                                    <h3 class="text-lg font-semibold">{{ $landmark->name }}</h3>
-                                    <p class="text-sm text-gray-500">
-                                        {{
-                                            \Illuminate\Support\Str::limit(
-                                                $landmark->short_description ?? $landmark->description,
-                                                90
-                                            )
-                                        }}
-                                    </p>
-                                    <div class="flex items-center gap-2 text-xs text-gray-400">
-                                        <span>⏳ @lang('qr.landmarks.card_action')</span>
-                                        <span>•</span>
-                                        <span>{{ $artifactsCount }} @lang('qr.landmarks.pieces_label')</span>
-                                    </div>
-                                </div>
-                            </button>
-                        @empty
-                            <p class="text-gray-500 text-sm">@lang('qr.landmarks.empty')</p>
-                        @endforelse
-                    </div>
-                </div>
-            </div>
-            <div class="rounded-3xl border p-6 lg:p-8 h-fit" style="border-color: var(--border-color, #e5e7eb); background: var(--gray-bg, #f8fafc);">
-                <h2 class="text-xl font-bold mb-4">@lang('qr.why.title')</h2>
-                <ul class="space-y-4 text-sm text-gray-700 leading-relaxed">
-                    <li>
-                        <span class="font-semibold">@lang('qr.why.consistent_title')</span>
-                        @lang('qr.why.consistent_body')
-                    </li>
-                    <li>
-                        <span class="font-semibold">@lang('qr.why.performance_title')</span>
-                        @lang('qr.why.performance_body')
-                    </li>
-                    <li>
-                        <span class="font-semibold">@lang('qr.why.print_title')</span>
-                        @lang('qr.why.print_body')
-                    </li>
-                    <li>
-                        <span class="font-semibold">@lang('qr.why.guided_title')</span>
-                        @lang('qr.why.guided_body')
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <div id="landmarkExperienceModal" class="fixed inset-0 hidden z-[1200]">
+    <div id="landmarkExperienceModal" class="fixed inset-0 hidden z-50" style="z-index: 9999;">
         <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" data-close-modal></div>
         <div class="relative mx-auto my-8 md:my-12 w-full max-w-5xl px-4">
             <div class="rounded-3xl overflow-hidden shadow-2xl bg-white max-h-[90vh] flex flex-col">
@@ -307,10 +478,10 @@
                             <p class="text-sm text-white/80 mt-1" id="landmarkExperienceCity"></p>
                         </div>
                     </div>
-                    <div class="p-6 lg:p-8 space-y-6 overflow-y-auto">
-                        <div class="flex items-center justify-between sticky top-0 bg-white pb-4">
-                            <p class="text-sm font-semibold text-gray-800">@lang('qr.modal.header_label')</p>
-                            <button type="button" class="w-10 h-10 rounded-full border hover:bg-gray-100 text-gray-600" data-close-modal>✕</button>
+                    <div class="p-6 lg:p-8 space-y-5 overflow-y-auto">
+                        <div class="flex items-center justify-between sticky top-0 bg-white z-10 pb-4 mb-4 border-b">
+                            <p class="text-sm font-semibold text-gray-800 flex-1">@lang('qr.modal.header_label')</p>
+                            <button type="button" class="w-10 h-10 rounded-full border hover:bg-gray-100 text-gray-600 shrink-0" data-close-modal>✕</button>
                         </div>
                         <p class="text-base text-gray-900 leading-relaxed" id="landmarkExperienceHistory"></p>
                         <div class="rounded-2xl bg-white border p-4" style="border-color: var(--border-color, #e5e7eb);">
@@ -320,18 +491,6 @@
                         <div>
                             <p class="text-xs font-semibold tracking-wide text-gray-500 mb-2">@lang('qr.modal.timeline_label')</p>
                             <ul class="space-y-3 text-sm text-gray-800" id="landmarkExperienceTimeline"></ul>
-                        </div>
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <p class="text-xs font-semibold tracking-wide text-gray-500">@lang('qr.modal.artifacts_label')</p>
-                                <span class="text-xs text-gray-400">@lang('qr.modal.artifacts_hint')</span>
-                            </div>
-                            <div class="space-y-3" id="landmarkExperienceArtifacts"></div>
-                            <div class="rounded-2xl border p-4 mt-4" style="border-color: var(--border-color, #e5e7eb);" id="landmarkArtifactDetail">
-                                <p class="text-sm text-gray-500">
-                                    @lang('qr.modal.artifact_detail_hint')
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -360,6 +519,66 @@
         });
     });
 
+    // Product Gallery Functionality
+    (function() {
+        const mainImage = document.getElementById('productMainImage');
+        const imageCounter = document.getElementById('imageCounter');
+        const imageLoadingState = document.getElementById('imageLoadingState');
+
+        if (!mainImage) return;
+
+        const thumbnails = document.querySelectorAll('[data-image-index]');
+        let currentIndex = 0;
+
+        const updateImage = (index) => {
+            const thumbnail = thumbnails[index];
+            if (!thumbnail) return;
+
+            const imageUrl = thumbnail.getAttribute('data-image-url');
+            currentIndex = index;
+
+            // Loading state
+            imageLoadingState.classList.add('bg-black/10');
+
+            // Preload image
+            const img = new Image();
+            img.onload = () => {
+                mainImage.src = imageUrl;
+                imageCounter.textContent = index + 1;
+                
+                // Update border
+                thumbnails.forEach((thumb, idx) => {
+                    const borderColor = idx === index ? 'var(--primary-yellow, #eab308)' : 'var(--border-color, #e5e7eb)';
+                    thumb.style.borderColor = borderColor;
+                });
+
+                imageLoadingState.classList.remove('bg-black/10');
+            };
+            img.src = imageUrl;
+        };
+
+        // Thumbnail click handler
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', () => {
+                const index = parseInt(thumbnail.getAttribute('data-image-index'));
+                updateImage(index);
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                const newIndex = Math.max(0, currentIndex - 1);
+                updateImage(newIndex);
+                thumbnails[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else if (e.key === 'ArrowRight') {
+                const newIndex = Math.min(thumbnails.length - 1, currentIndex + 1);
+                updateImage(newIndex);
+                thumbnails[newIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        });
+    })();
+
     (function(){
         const modal = document.getElementById('landmarkExperienceModal');
         if (!modal) return;
@@ -371,13 +590,6 @@
         const historyEl = document.getElementById('landmarkExperienceHistory');
         const ambientEl = document.getElementById('landmarkExperienceAmbient');
         const timelineEl = document.getElementById('landmarkExperienceTimeline');
-        const artifactsEl = document.getElementById('landmarkExperienceArtifacts');
-        const artifactDetailEl = document.getElementById('landmarkArtifactDetail');
-
-        const artifactDetailEmptyText = @json(__('qr.modal.artifact_detail_hint'));
-        const artifactShareText = @json(__('qr.modal.artifact_share_cta'));
-        const artifactShareSuccess = @json(__('qr.modal.artifact_share_success'));
-        const artifactExploreHint = @json(__('qr.modal.artifact_explore_hint'));
 
         const renderList = (container, items) => {
             container.innerHTML = '';
@@ -386,83 +598,6 @@
                 li.className = 'flex items-start gap-3';
                 li.innerHTML = `<span>•</span><p class="flex-1">${item}</p>`;
                 container.appendChild(li);
-            });
-        };
-
-        const setArtifactDetail = (artifact = null) => {
-            if (!artifactDetailEl) return;
-            if (!artifact) {
-                artifactDetailEl.innerHTML = `<p class="text-sm text-gray-500">${artifactDetailEmptyText}</p>`;
-                return;
-            }
-
-            artifactDetailEl.innerHTML = `
-                <div class="flex gap-3 mb-4">
-                    <img src="${artifact.image || 'https://placehold.co/96'}" alt="${artifact.title || ''}" class="w-20 h-20 rounded-2xl object-cover" onerror="this.src='https://placehold.co/96'">
-                    <div>
-                        <p class="text-sm font-semibold text-gray-900">${artifact.title || ''}</p>
-                        <p class="text-sm text-gray-600 mt-2">${artifact.details || artifact.excerpt || artifact.title || ''}</p>
-                    </div>
-                </div>
-                <button type="button" class="w-full px-4 py-3 rounded-2xl text-sm font-semibold text-white" style="background: var(--primary-yellow, #eab308);" data-artifact-share>
-                    ${artifactShareText}
-                </button>
-            `;
-
-            const shareBtn = artifactDetailEl.querySelector('[data-artifact-share]');
-            if (shareBtn) {
-                shareBtn.addEventListener('click', () => {
-                    const payload = `${artifact.title || ''} - ${artifact.details || artifact.excerpt || ''}`.trim();
-                    navigator.clipboard.writeText(payload).then(() => {
-                        shareBtn.textContent = artifactShareSuccess;
-                        setTimeout(() => shareBtn.textContent = artifactShareText, 2000);
-                    });
-                });
-            }
-        };
-
-        const renderArtifacts = (container, items) => {
-            container.innerHTML = '';
-            let activeButton = null;
-
-            const activate = (button, artifact) => {
-                if (activeButton) {
-                    activeButton.classList.remove('ring-2', 'ring-amber-300', 'border-transparent', 'shadow-md');
-                    activeButton.style.borderColor = 'var(--border-color, #e5e7eb)';
-                }
-                activeButton = button;
-                button.classList.add('ring-2', 'ring-amber-300', 'border-transparent', 'shadow-md');
-                button.style.borderColor = 'transparent';
-                setArtifactDetail(artifact);
-            };
-
-            if (!(items || []).length) {
-                setArtifactDetail();
-                return;
-            }
-
-            (items || []).forEach((artifact, index) => {
-                const button = document.createElement('button');
-                button.type = 'button';
-                button.setAttribute('data-artifact-item', 'true');
-                button.className = 'flex w-full text-left gap-3 rounded-2xl border p-3 transition hover:border-amber-300 focus:outline-none';
-                button.style.borderColor = 'var(--border-color, #e5e7eb)';
-                button.innerHTML = `
-                    <img src="${artifact.image || 'https://placehold.co/96'}" alt="${artifact.title || ''}" class="w-16 h-16 rounded-xl object-cover" onerror="this.src='https://placehold.co/96'">
-                    <div>
-                        <p class="font-semibold text-sm text-gray-900">${artifact.title || ''}</p>
-                        <p class="text-xs text-gray-500 mt-1">${artifact.excerpt || ''}</p>
-                        <span class="text-[11px] text-amber-600 mt-1 inline-flex items-center gap-1">
-                            <span>↗</span> ${artifactExploreHint}
-                        </span>
-                    </div>
-                `;
-                button.addEventListener('click', () => activate(button, artifact));
-                container.appendChild(button);
-
-                if (index === 0) {
-                    activate(button, artifact);
-                }
             });
         };
 
@@ -476,7 +611,6 @@
             ambientEl.textContent = payload.ambient || '';
 
             renderList(timelineEl, payload.timeline);
-            renderArtifacts(artifactsEl, payload.artifacts);
 
             modal.classList.remove('hidden');
             document.body.classList.add('overflow-hidden');

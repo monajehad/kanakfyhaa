@@ -121,6 +121,19 @@
           "slug": "admin.sliders.create"
         }
       ]
+    },
+    { "menuHeader": "System" },
+    {
+      "name": "Settings",
+      "icon": "menu-icon icon-base ri ri-settings-3-line",
+      "url": "/admin/settings",
+      "slug": "admin.settings.index"
+    },
+    {
+      "name": "System Backup",
+      "icon": "menu-icon icon-base ri ri-database-backup-line",
+      "url": "/admin/backup",
+      "slug": "admin.backup.index"
     }
   ]
 }

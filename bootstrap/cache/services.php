@@ -31,8 +31,10 @@
     27 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     28 => 'Termwind\\Laravel\\TermwindServiceProvider',
     29 => 'SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider',
-    30 => 'App\\Providers\\AppServiceProvider',
-    31 => 'App\\Providers\\MenuServiceProvider',
+    30 => 'App\\Providers\\SettingsServiceProvider',
+    31 => 'App\\Providers\\AppServiceProvider',
+    32 => 'App\\Providers\\MenuServiceProvider',
+    33 => 'App\\Providers\\MailConfigServiceProvider',
   ),
   'eager' => 
   array (
@@ -51,8 +53,10 @@
     12 => 'NunoMaduro\\Collision\\Adapters\\Laravel\\CollisionServiceProvider',
     13 => 'Termwind\\Laravel\\TermwindServiceProvider',
     14 => 'SimpleSoftwareIO\\QrCode\\QrCodeServiceProvider',
-    15 => 'App\\Providers\\AppServiceProvider',
-    16 => 'App\\Providers\\MenuServiceProvider',
+    15 => 'App\\Providers\\SettingsServiceProvider',
+    16 => 'App\\Providers\\AppServiceProvider',
+    17 => 'App\\Providers\\MenuServiceProvider',
+    18 => 'App\\Providers\\MailConfigServiceProvider',
   ),
   'deferred' => 
   array (

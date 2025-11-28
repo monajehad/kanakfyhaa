@@ -33,15 +33,36 @@
                     {{ app()->getLocale() === 'ar' ? 'تواصل معنا' : 'Contact Us' }}
                 </h3>
                 <div class="flex gap-3">
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
-                        <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">facebook</span>
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
-                        <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">language</span>
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
-                        <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">mail</span>
-                    </a>
+                    @if($socialLinks && isset($socialLinks['facebook']))
+                        <a href="{{ $socialLinks['facebook'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                            <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">facebook</span>
+                        </a>
+                    @endif
+                    @if($socialLinks && isset($socialLinks['twitter']))
+                        <a href="{{ $socialLinks['twitter'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                            <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">language</span>
+                        </a>
+                    @endif
+                    @if($socialLinks && isset($socialLinks['instagram']))
+                        <a href="{{ $socialLinks['instagram'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                            <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">photo_camera</span>
+                        </a>
+                    @endif
+                    @if($socialLinks && isset($socialLinks['youtube']))
+                        <a href="{{ $socialLinks['youtube'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                            <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">play_circle</span>
+                        </a>
+                    @endif
+                    @if($socialLinks && isset($socialLinks['linkedin']))
+                        <a href="{{ $socialLinks['linkedin'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                            <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">work</span>
+                        </a>
+                    @endif
+                    @if($socialLinks && isset($socialLinks['tiktok']))
+                        <a href="{{ $socialLinks['tiktok'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition">
+                            <span class="material-icons-outlined icon-md" style="color: var(--md-on-surface)">music_note</span>
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>

@@ -321,7 +321,7 @@
     </div>
 </section>
 
-<script src="https://www.paypal.com/sdk/js?client-id={{ config('services.paypal.client_id') ?? 'test' }}&currency=USD"></script>
+<script src="https://www.paypal.com/sdk/js?client-id={{ $paymentConfig['paypal']['client_id'] ?? 'test' }}&currency=USD"></script>
 <script>
     (function () {
     if (window.__CHECKOUT_INIT__) return;

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Website;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Services\PaymentService;
+use App\Services\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -37,6 +39,13 @@ class PaymentController extends Controller
 
         $order = Order::create($validated);
 
+        // Send order notification email using EmailService
+        try {
+            $this->sendOrderNotificationEmail($order);
+        } catch (\Exception $e) {
+            Log::error('Failed to send order notification: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'order_id' => $order->id,
@@ -50,7 +59,10 @@ class PaymentController extends Controller
             'currency' => 'required|string|size:3',
         ]);
 
-        $secret = config('services.stripe.secret');
+        // Get Stripe config from PaymentService
+        $config = PaymentService::getStripeConfig();
+        $secret = $config['secret'] ?? config('services.stripe.secret');
+
         if (empty($secret)) {
             return response()->json(['error' => 'Stripe not configured'], 400);
         }
@@ -99,6 +111,23 @@ class PaymentController extends Controller
 
         return response()->json(['received' => true]);
     }
+
+    /**
+     * Send order notification email
+     */
+    private function sendOrderNotificationEmail(Order $order)
+    {
+        $emailConfig = EmailService::getConfig();
+        $notificationEmail = $emailConfig['order_notification_email'];
+
+        if (empty($notificationEmail)) {
+            return;
+        }
+
+        // Send email notification (you can use Laravel's Mail or a mailable class)
+        // \Mail::to($notificationEmail)->send(new \App\Mail\OrderStatusChanged($order));
+    }
 }
+
 
 

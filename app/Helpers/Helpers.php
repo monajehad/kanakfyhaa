@@ -274,6 +274,170 @@ class Helpers
   }
 
   /**
+   * Get a setting value by key
+   *
+   * @param string $key Setting key
+   * @param mixed $default Default value if setting not found
+   * @return mixed Setting value
+   */
+  public static function getSetting($key, $default = null)
+  {
+    try {
+      $setting = \App\Models\Setting::where('key', $key)->first();
+      return $setting ? $setting->value : $default;
+    } catch (\Exception $e) {
+      return $default;
+    }
+  }
+
+  /**
+   * Get all settings by group
+   *
+   * @param string $group Group name
+   * @return array Settings in the group
+   */
+  public static function getSettingsByGroup($group)
+  {
+    try {
+      $settings = \App\Models\Setting::where('group', $group)->get();
+      return $settings->pluck('value', 'key')->toArray();
+    } catch (\Exception $e) {
+      return [];
+    }
+  }
+
+  /**
+   * Get all settings as associative array
+   *
+   * @return array All settings
+   */
+  public static function getAllSettings()
+  {
+    try {
+      $settings = \App\Models\Setting::all();
+      return $settings->pluck('value', 'key')->toArray();
+    } catch (\Exception $e) {
+      return [];
+    }
+  }
+
+  /**
+   * Get payment gateway configuration from settings
+   *
+   * @return array Payment gateway config
+   */
+  public static function getPaymentConfig()
+  {
+    return [
+      'gateway' => static::getSetting('payment_gateway', 'paypal'),
+      'paypal' => [
+        'mode' => static::getSetting('paypal_mode', 'sandbox'),
+        'client_id' => static::getSetting('paypal_client_id', ''),
+        'secret' => static::getSetting('paypal_secret', ''),
+      ],
+      'stripe' => [
+        'key' => static::getSetting('stripe_key', ''),
+        'secret' => static::getSetting('stripe_secret', ''),
+      ],
+    ];
+  }
+
+  /**
+   * Get email configuration from settings
+   *
+   * @return array Email config
+   */
+  public static function getEmailConfig()
+  {
+    return [
+      'from_name' => static::getSetting('mail_from_name', 'Kanak Fyhaa'),
+      'from_address' => static::getSetting('mail_from_address', 'noreply@kanakfyhaa.com'),
+      'contact_email' => static::getSetting('contact_email', 'contact@kanakfyhaa.com'),
+      'support_email' => static::getSetting('support_email', 'support@kanakfyhaa.com'),
+      'order_notification_email' => static::getSetting('order_notification_email', 'orders@kanakfyhaa.com'),
+    ];
+  }
+
+  /**
+   * Get SEO configuration from settings
+   *
+   * @return array SEO config
+   */
+  public static function getSeoConfig()
+  {
+    return [
+      'title' => static::getSetting('seo_title', 'Kanak Fyhaa - Experience Cultural Heritage'),
+      'description' => static::getSetting('seo_description', 'Discover the beauty and culture of our city through immersive experiences'),
+      'keywords' => static::getSetting('seo_keywords', 'culture, heritage, experience, tourism, city'),
+      'google_analytics_id' => static::getSetting('google_analytics_id', ''),
+      'robots_txt' => static::getSetting('robots_txt', "User-agent: *\nAllow: /\nSitemap: /sitemap.xml"),
+    ];
+  }
+
+  /**
+   * Get social media configuration from settings
+   *
+   * @return array Social media config
+   */
+  public static function getSocialConfig()
+  {
+    return [
+      'facebook' => static::getSetting('facebook_url', ''),
+      'twitter' => static::getSetting('twitter_url', ''),
+      'instagram' => static::getSetting('instagram_url', ''),
+      'linkedin' => static::getSetting('linkedin_url', ''),
+      'youtube' => static::getSetting('youtube_url', ''),
+      'tiktok' => static::getSetting('tiktok_url', ''),
+    ];
+  }
+
+  /**
+   * Get API configuration from settings
+   *
+   * @return array API config
+   */
+  public static function getApiConfig()
+  {
+    return [
+      'rate_limit' => static::getSetting('api_rate_limit', 100),
+      'timeout' => static::getSetting('api_timeout', 30),
+      'openai_key' => static::getSetting('openai_api_key', ''),
+    ];
+  }
+
+  /**
+   * Get security configuration from settings
+   *
+   * @return array Security config
+   */
+  public static function getSecurityConfig()
+  {
+    return [
+      'force_https' => static::getSetting('force_https', true),
+      'password_min_length' => static::getSetting('password_min_length', 8),
+      'session_timeout' => static::getSetting('session_timeout', 120),
+      'enable_two_factor' => static::getSetting('enable_two_factor', false),
+      'max_login_attempts' => static::getSetting('max_login_attempts', 5),
+    ];
+  }
+
+  /**
+   * Get appearance configuration from settings
+   *
+   * @return array Appearance config
+   */
+  public static function getAppearanceConfig()
+  {
+    return [
+      'primary_color' => static::getSetting('primary_color', '#eab308'),
+      'secondary_color' => static::getSetting('secondary_color', '#0ea5e9'),
+      'accent_color' => static::getSetting('accent_color', '#10b981'),
+      'dark_mode_enabled' => static::getSetting('dark_mode_enabled', false),
+      'logo_width' => static::getSetting('site_logo_width', 200),
+    ];
+  }
+
+  /**
    * Generate CSS for primary color
    *
    * @param string $color Hex color code for primary color

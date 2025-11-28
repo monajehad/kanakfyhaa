@@ -51,10 +51,20 @@ class LandmarkController extends Controller
             $validated = $request->validate([
             'city_id' => 'required|exists:cities,id',
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
+            'name_en' => 'nullable|string|max:255',
             'slug' => 'nullable|string|max:255|unique:landmarks,slug',
             'type' => 'nullable|string|max:255',
             'short_description' => 'nullable|string|max:255',
+            'short_description_ar' => 'nullable|string|max:255',
+            'short_description_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'ambient_description' => 'nullable|string',
+            'ambient_description_ar' => 'nullable|string',
+            'ambient_description_en' => 'nullable|string',
+            'timeline' => 'nullable|json',
             'main_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             'sub_images' => 'nullable|array',
             'sub_images.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
@@ -62,6 +72,11 @@ class LandmarkController extends Controller
         $validated['slug'] = $validated['slug'] ?? \Illuminate\Support\Str::slug($validated['name']);
 
         $validated['uuid'] = \Illuminate\Support\Str::uuid()->toString();
+
+        // Parse timeline if it's a string
+        if (isset($validated['timeline']) && is_string($validated['timeline'])) {
+            $validated['timeline'] = json_decode($validated['timeline'], true) ?? [];
+        }
 
         $landmark = Landmark::create($validated);
 
@@ -134,15 +149,30 @@ class LandmarkController extends Controller
         $validated = $request->validate([
             'city_id' => 'required|exists:cities,id',
             'name' => 'required|string|max:255',
+            'name_ar' => 'nullable|string|max:255',
+            'name_en' => 'nullable|string|max:255',
            'slug' => 'nullable|string|max:255|unique:landmarks,slug,' . $landmark->id,
             'type' => 'nullable|string|max:255',
             'short_description' => 'nullable|string|max:255',
+            'short_description_ar' => 'nullable|string|max:255',
+            'short_description_en' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
+            'ambient_description' => 'nullable|string',
+            'ambient_description_ar' => 'nullable|string',
+            'ambient_description_en' => 'nullable|string',
+            'timeline' => 'nullable|json',
             'main_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
             'sub_images' => 'nullable|array',
             'sub_images.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,webm,avi|max:102400',
         ]);
          $validated['slug'] = $validated['slug'] ?? \Illuminate\Support\Str::slug($validated['name']);
+
+        // Parse timeline if it's a string
+        if (isset($validated['timeline']) && is_string($validated['timeline'])) {
+            $validated['timeline'] = json_decode($validated['timeline'], true) ?? [];
+        }
 
         $landmark->update($validated);
 

@@ -27,9 +27,7 @@ Route::prefix('admin')->middleware('guest:admin')->name('admin.')->group(functio
 Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     // Dashboard
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     // Logout
     Route::post('/logout', [AuthController::class, 'adminLogout'])->name('logout');
@@ -67,10 +65,19 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::resource('landmarks', \App\Http\Controllers\Admin\LandmarkController::class);
 
-    Route::resource('artifacts', \App\Http\Controllers\Admin\ArtifactController::class);
-
     // Slider Management
     Route::resource('sliders', \App\Http\Controllers\Admin\SliderController::class);
+
+    // Settings Management
+    Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('settings.store');
+    Route::get('/settings/group/{group}', [\App\Http\Controllers\Admin\SettingsController::class, 'getByGroup'])->name('settings.group');
+
+    // Backup Management
+    Route::get('/backup', [\App\Http\Controllers\Admin\BackupController::class, 'index'])->name('backup.index');
+    Route::post('/backup/export', [\App\Http\Controllers\Admin\BackupController::class, 'export'])->name('backup.export');
+    Route::post('/backup/import', [\App\Http\Controllers\Admin\BackupController::class, 'import'])->name('backup.import');
+    Route::delete('/backup/{filename}', [\App\Http\Controllers\Admin\BackupController::class, 'delete'])->name('backup.delete');
 });
 
 

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Website;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Landmark;
-use App\Models\Artifact;
 
 class ProductController extends Controller
 {
@@ -39,21 +38,6 @@ class ProductController extends Controller
             ->limit(8)
             ->get();
 
-        // City main landmark (one city post) and artifacts
-        $cityLandmark = Landmark::where('city_id', $product->city_id)
-            ->withCount('artifacts')
-            ->with('media')
-            ->orderBy('id', 'asc')
-            ->first();
-
-        $artifacts = Artifact::whereHas('landmark', function ($q) use ($product) {
-                $q->where('city_id', $product->city_id);
-            })
-            ->with('media', 'landmark')
-            ->orderBy('id', 'desc')
-            ->limit(8)
-            ->get();
-
         // Normalize city media and landmarks count for the view
         $cityMedia = null;
         $cityMediaType = 'image'; // Default type
@@ -75,11 +59,9 @@ class ProductController extends Controller
             'product' => $product,
             'gallery' => $gallery,
             'relatedProducts' => $relatedProducts,
-            'cityLandmark' => $cityLandmark,
             'cityMedia' => $cityMedia,
             'cityMediaType' => $cityMediaType,
             'landmarksCount' => $landmarksCount,
-            'artifacts' => $artifacts,
         ]);
     }
 }

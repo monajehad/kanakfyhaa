@@ -58,7 +58,8 @@ class ProductController extends Controller
     public function create()
     {
         $cities = \App\Models\City::select('id', 'name', 'name_ar', 'name_en')->get();
-        return response()->view('admin.products.create', compact('cities'));
+        $categories = Category::all();
+        return response()->view('admin.products.create', compact('cities', 'categories'));
     }
 
     /**

@@ -8,7 +8,6 @@ return [
 
     'stats' => [
         'linked_landmarks' => 'Linked landmarks',
-        'artifacts' => 'Artifacts',
         'final_price' => 'Final price',
         'experience_type' => 'Experience type',
         'package_yes' => 'Yes',
@@ -50,7 +49,7 @@ return [
         'colors_label' => 'Color palette',
         'no_colors' => 'No color variations provided.',
         'sizes_label' => 'Available sizes',
-        'no_sizes' => 'Sizing varies per artifact.',
+        'no_sizes' => 'Contact for sizing options.',
         'fallback_story' => 'This experience ties the product to living stories from the city.',
     ],
 
@@ -86,12 +85,6 @@ return [
         'header_label' => 'Immersive tour',
         'ambient_label' => 'Ambient cue',
         'timeline_label' => 'Timeline',
-        'artifacts_label' => 'Field artifacts',
-        'artifacts_hint' => 'Handpicked in situ',
-        'artifact_detail_hint' => 'Tap any piece to reveal its story.',
-        'artifact_share_cta' => 'Copy this story to share',
-        'artifact_share_success' => 'Copied ✅',
-        'artifact_explore_hint' => 'Tap to explore details',
     ],
 ];
 

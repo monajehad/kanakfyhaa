@@ -92,6 +92,16 @@
                 </div>
 
                 <div class="col-md-4">
+                    <label class="form-label" for="categories">الفئات</label>
+                    <select class="form-select select2" id="categories" name="categories[]" multiple data-placeholder="اختر الفئات">
+                        @foreach($categories ?? [] as $category)
+                            <option value="{{ $category->id }}" @if(in_array($category->id, old('categories', []))) selected @endif>{{ $category->name_ar ?? $category->name }}</option>
+                        @endforeach
+                    </select>
+                    <small class="text-muted d-block mt-1">اختر فئة أو أكثر للمنتج</small>
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="price_cost">سعر التكلفة</label>
                     <input class="form-control" type="number" id="price_cost" name="price_cost" min="0" step="0.01" value="{{ old('price_cost', 0) }}">
                 </div>
@@ -642,4 +652,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+
+</script>
+
+@include('admin.products.select2-init')
 @endsection

@@ -24,6 +24,7 @@
             @method('PUT')
 
             <div class="row g-3">
+                <!-- Names -->
                 <div class="col-md-6">
                     <label class="form-label" for="name">اسم المعلم <span class="text-danger">*</span></label>
                     <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $landmark->name) }}">
@@ -33,19 +34,88 @@
                     <input class="form-control" type="text" id="slug" name="slug" value="{{ old('slug', $landmark->slug) }}">
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label" for="type">نوع المعلم</label>
-                    <input class="form-control" type="text" id="type" name="type" value="{{ old('type', $landmark->type) }}">
+                <div class="col-md-4">
+                    <label class="form-label" for="name_ar">الاسم بالعربية</label>
+                    <input class="form-control" type="text" id="name_ar" name="name_ar" value="{{ old('name_ar', $landmark->name_ar) }}">
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-4">
+                    <label class="form-label" for="name_en">الاسم بالإنجليزية</label>
+                    <input class="form-control" type="text" id="name_en" name="name_en" value="{{ old('name_en', $landmark->name_en) }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="type">نوع المعلم</label>
+                    <input class="form-control" type="text" id="type" name="type" value="{{ old('type', $landmark->type) }}" placeholder="مثال: مسجد، سوق، متحف">
+                </div>
+
+                <!-- Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">الوصف</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="short_description">وصف قصير</label>
                     <input class="form-control" type="text" id="short_description" name="short_description" maxlength="255" value="{{ old('short_description', $landmark->short_description) }}">
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-4">
+                    <label class="form-label" for="short_description_ar">وصف قصير (عربي)</label>
+                    <input class="form-control" type="text" id="short_description_ar" name="short_description_ar" maxlength="255" value="{{ old('short_description_ar', $landmark->short_description_ar) }}">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="short_description_en">وصف قصير (إنجليزي)</label>
+                    <input class="form-control" type="text" id="short_description_en" name="short_description_en" maxlength="255" value="{{ old('short_description_en', $landmark->short_description_en) }}">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label" for="description">وصف تفصيلي</label>
                     <textarea class="form-control" id="description" name="description" rows="3">{{ old('description', $landmark->description) }}</textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="description_ar">وصف تفصيلي (عربي)</label>
+                    <textarea class="form-control" id="description_ar" name="description_ar" rows="3">{{ old('description_ar', $landmark->description_ar) }}</textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="description_en">وصف تفصيلي (إنجليزي)</label>
+                    <textarea class="form-control" id="description_en" name="description_en" rows="3">{{ old('description_en', $landmark->description_en) }}</textarea>
+                </div>
+
+                <!-- Ambient Description -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">وصف التجربة الحسية (Ambient)</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="ambient_description">وصف التجربة الحسية</label>
+                    <textarea class="form-control" id="ambient_description" name="ambient_description" rows="3" placeholder="اكتب وصفاً حسياً للمكان...">{{ old('ambient_description', $landmark->ambient_description) }}</textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="ambient_description_ar">وصف التجربة الحسية (عربي)</label>
+                    <textarea class="form-control" id="ambient_description_ar" name="ambient_description_ar" rows="3" placeholder="اكتب وصفاً حسياً بالعربية...">{{ old('ambient_description_ar', $landmark->ambient_description_ar) }}</textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label" for="ambient_description_en">وصف التجربة الحسية (إنجليزي)</label>
+                    <textarea class="form-control" id="ambient_description_en" name="ambient_description_en" rows="3" placeholder="Write sensory description in English...">{{ old('ambient_description_en', $landmark->ambient_description_en) }}</textarea>
+                </div>
+
+                <!-- Timeline -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">خط الزمن (Timeline)</h5>
+                    <hr>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label" for="timeline">خط الزمن (JSON)</label>
+                    <textarea class="form-control" id="timeline" name="timeline" rows="4" placeholder="مثال: [&#10;  &quot;الفترة الأولى: وصف المرحلة&quot;,&#10;  &quot;الفترة الثانية: وصف المرحلة&quot;,&#10;  &quot;الفترة الثالثة: وصف المرحلة&quot;&#10;]">{{ old('timeline', json_encode($landmark->timeline ?? [], JSON_UNESCAPED_UNICODE)) }}</textarea>
+                    <small class="text-muted">أدخل JSON array</small>
                 </div>
 
                 <div class="col-md-6">

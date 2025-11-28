@@ -8,7 +8,6 @@ return [
 
     'stats' => [
         'linked_landmarks' => 'معْلم مرتبط',
-        'artifacts' => 'قطع أثرية',
         'final_price' => 'السعر الفعلي',
         'experience_type' => 'نوع التجربة',
         'package_yes' => 'نعم',
@@ -50,7 +49,7 @@ return [
         'colors_label' => 'لوحة الألوان',
         'no_colors' => 'لا توجد ألوان محددة لهذا المنتج.',
         'sizes_label' => 'المقاسات المتوفرة',
-        'no_sizes' => 'المقاس يعتمد على القطعة المعروضة.',
+        'no_sizes' => 'يرجى التواصل للاستفسار عن المقاسات.',
         'fallback_story' => 'هذه التجربة مصممة لربطك بقصص المدينة عبر منتج واحد.',
     ],
 
@@ -86,12 +85,6 @@ return [
         'header_label' => 'غوص داخل المعلم',
         'ambient_label' => 'الأجواء الحسية',
         'timeline_label' => 'خط الزمن',
-        'artifacts_label' => 'قطع ميدانية',
-        'artifacts_hint' => 'مختارات من المكان',
-        'artifact_detail_hint' => 'انقر على أي قطعة لمعرفة قصتها.',
-        'artifact_share_cta' => 'انسخ قصة القطعة لمشاركتها',
-        'artifact_share_success' => 'تم النسخ ✅',
-        'artifact_explore_hint' => 'اضغط لاستكشاف التفاصيل',
     ],
 ];
 

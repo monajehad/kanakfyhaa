@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Product;
 use App\Models\City;
 use App\Models\Landmark;
-use App\Models\Artifact;
 use App\Models\Media;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -14,7 +13,7 @@ class TestProductQRSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     * Creates a complete test product with city, landmarks, artifacts, and media.
+     * Creates a complete test product with city, landmarks, and media.
      * 
      * After seeding, you'll see a link in your terminal output like:
      *   🔗 Test URL: /experience/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
@@ -42,6 +41,9 @@ class TestProductQRSeeder extends Seeder
                 'latitude' => 31.9454,
                 'longitude' => 35.2338,
                 'population' => 2000000,
+                'description' => 'مدينة ساحلية عريقة على البحر المتوسط غنية بالتراث والثقافة الفلسطينية الأصيلة',
+                'description_ar' => 'مدينة ساحلية عريقة على البحر المتوسط غنية بالتراث والثقافة الفلسطينية الأصيلة',
+                'description_en' => 'An ancient coastal city on the Mediterranean rich with Palestinian heritage and culture',
             ]
         );
         $this->command->info("✓ City: {$city->name}");
@@ -72,91 +74,91 @@ class TestProductQRSeeder extends Seeder
         ]);
         $this->command->info("✓ Product created: {$product->name} (UUID: {$product->uuid})");
 
-        // Step 3: Create test landmarks with artifacts and media
+        // Step 3: Create test landmarks with timeline and ambient data
         $landmarkData = [
             [
                 'name' => 'الجامع الأموي الكبير',
+                'name_ar' => 'الجامع الأموي الكبير',
+                'name_en' => 'The Great Umayyad Mosque',
                 'type' => 'مسجد',
                 'short_description' => 'من أقدم المساجس الأثرية في غزة',
                 'description' => 'مسجد تاريخي يعود للعصر الأموي، يتميز بعمارة إسلامية تقليدية فريدة. يحتوي على زخارف إسلامية جميلة ومآذن عالية.',
-                'artifacts' => [
-                    [
-                        'title' => 'المحراب الأصلي',
-                        'short_description' => 'محراب من الحجر المنحوت بزخارف إسلامية',
-                        'description' => 'تحفة معمارية نادرة من القرن الثامن الميلادي. التاريخ التفصيلي: تم بناء هذا المحراب عام 720م في ظل الخلافة الأموية ويعد من أقدم المحاريب في المنطقة، ويمثل مرحلة تطور فنون الحجارة الإسلامية في تلك الحقبة.',
-                    ],
-                    [
-                        'title' => 'المنبر التاريخي',
-                        'short_description' => 'منبر خشبي منحوت بفن العمارة الإسلامية',
-                        'description' => 'يعود إلى القرون الوسطى، محفوظ بعناية. التاريخ التفصيلي: صُنع المنبر في القرن الثاني عشر الميلادي خلال العصر الأيوبي، ويتميز بنقوش معقدة وزخارف تراثية تعكس براعة الحرفيين المحليين في تلك الفترة.',
-                    ],
+                'ambient' => 'تسمع وقع خطواتك على الأحجار القديمة وتشم رائحة البخور الفلسطيني التقليدي وهو يتسلل عبر الأروقة المزخرفة. أضواء الشمس الذهبية تخترق النوافذ الملونة مرسلة ظلالاً نقشية على الأرضيات الفسيفسائية.',
+                'timeline' => [
+                    'القرن الثامن: بناء المسجد في العصر الأموي كمركز ديني وثقافي',
+                    'القرون الوسطى: التوسعات والإضافات المعمارية وتزيين المحاريب',
+                    'العصر الحديث: الترميم والحفاظ على التراث للأجيال القادمة',
                 ],
             ],
             [
                 'name' => 'سوق الشجاعية التقليدي',
+                'name_ar' => 'سوق الشجاعية التقليدي',
+                'name_en' => 'Al-Shuja\'iya Traditional Market',
                 'type' => 'سوق',
                 'short_description' => 'أقدم أسواق غزة التجارية',
                 'description' => 'سوق تقليدي عريق يضم المئات من المتاجر والحرفيين، مكان حي يعكس الثقافة الفلسطينية الأصيلة.',
-                'artifacts' => [
-                    [
-                        'title' => 'دكاكين الصياغة التقليدية',
-                        'short_description' => 'محلات صياغة ذهب وفضة تقليدية',
-                        'description' => 'يعمل فيها الصاغة على إنتاج الحلي التقليدية بفن عريق. التاريخ التفصيلي: تعود نشأة هذه الدكاكين إلى مطلع القرن العشرين، حيث كانت تصنع الحلي بشكل يدوي كامل بناءً على التصاميم التراثية الفلسطينية المتوارثة.',
-                    ],
-                    [
-                        'title' => 'متاجر الحرف اليدوية',
-                        'short_description' => 'متاجر متخصصة في الحرف الفلسطينية التقليدية',
-                        'description' => 'تعرض التطريز والخزف والمنسوجات التقليدية. التاريخ التفصيلي: نشأت هذه المتاجر في منتصف القرن العشرين وتشتهر بعرض منتجات مستخلصة من التراث الغزي، خصوصًا المطرزات والخزف ذي الزخارف المحلية.',
-                    ],
+                'ambient' => 'ضجة الأصوات المحتدمة للباعة ينادون على بضائعهم، رائحة التوابل والعطور الشرقية تملأ الأرجاء. ألوان زاهية من الحرير والحلي تتلألأ تحت أضواء الفوانيس الذهبية. صخب حي يعكس ألف سنة من التجارة والحرفة.',
+                'timeline' => [
+                    'القرن الثاني عشر: نشأة السوق كمركز تجاري ودعم للاقتصاد المحلي',
+                    'العصور الوسطى حتى الحديثة: ازدهار تجاري مستمر وتطور الحرف اليدوية',
+                    'اليوم: حفاظ على التراث والتقاليس في عالم معاصر متسارع',
                 ],
             ],
             [
                 'name' => 'شاطئ غزة البحري',
+                'name_ar' => 'شاطئ غزة البحري',
+                'name_en' => 'Gaza Beach',
                 'type' => 'حديقة',
                 'short_description' => 'الشاطئ الرملي الجميل على بحر المتوسط',
                 'description' => 'شاطئ ساحر يتمتع برمال ذهبية ومياه صافية، مكان مثالي للاستجمام والتأمل.',
-                'artifacts' => [
-                    [
-                        'title' => 'برج الملاحة البحرية',
-                        'short_description' => 'برج تاريخي يطل على البحر',
-                        'description' => 'استخدم في الملاحة البحرية القديمة. التاريخ التفصيلي: يُعتقد أن البرج بني في القرن التاسع عشر لمساعدة السفن على الملاحة، وقد كان يعتبر من أهم معالم الساحل في تلك الحقبة.',
-                    ],
+                'ambient' => 'صوت الموج الهادئ يصطدم برفق بالرمال الذهبية، رائحة الملح والنسيم البحري تلامس وجهك. الشمس تغيب ببطء على الأفق ترسم لوحة من الذهب والبرتقالي. هدوء سلام يخيم على المكان، مزيج من طقطقة الحصى وندف الطيور البحرية.',
+                'timeline' => [
+                    'العصور القديمة: ميناء تجاري حيوي وموقع استراتيجي للملاحة البحرية',
+                    'العصر الوسيط: مكان اجتماع ولقاء للتجار والمسافرين من مختلف الأقطار',
+                    'الحاضر: ملاذ الاستجمام والجمال الطبيعي للسكان والزوار',
                 ],
             ],
         ];
 
         foreach ($landmarkData as $ldata) {
-            $landmark = Landmark::create([
-                'city_id' => $city->id,
-                'name' => $ldata['name'],
-                'slug' => Str::slug($ldata['name']),
-                'type' => $ldata['type'],
-                'short_description' => $ldata['short_description'],
-                'description' => $ldata['description'],
-                'image' => 'https://picsum.photos/seed/' . Str::slug($ldata['name']) . '/400/300?random=1',
-            ]);
-            $this->command->info("✓ Landmark: {$landmark->name}");
+            // Check if landmark already exists
+            $slug = Str::slug($ldata['name']);
+            $existingLandmark = Landmark::where('slug', $slug)->where('city_id', $city->id)->first();
+            
+            if ($existingLandmark) {
+                // Update existing landmark
+                $landmark = $existingLandmark;
+                $landmark->update([
+                    'name_ar' => $ldata['name_ar'] ?? $ldata['name'],
+                    'name_en' => $ldata['name_en'] ?? $ldata['name'],
+                    'ambient_description' => $ldata['ambient'] ?? null,
+                    'ambient_description_ar' => $ldata['ambient'] ?? null,
+                    'ambient_description_en' => $ldata['ambient'] ?? null,
+                    'timeline' => $ldata['timeline'] ?? [],
+                ]);
+                $this->command->info("✓ Landmark updated: {$landmark->name}");
+            } else {
+                // Create new landmark
+                $landmark = Landmark::create([
+                    'city_id' => $city->id,
+                    'name' => $ldata['name'],
+                    'name_ar' => $ldata['name_ar'] ?? $ldata['name'],
+                    'name_en' => $ldata['name_en'] ?? $ldata['name'],
+                    'slug' => $slug,
+                    'type' => $ldata['type'],
+                    'short_description' => $ldata['short_description'],
+                    'description' => $ldata['description'],
+                    'ambient_description' => $ldata['ambient'] ?? null,
+                    'ambient_description_ar' => $ldata['ambient'] ?? null,
+                    'ambient_description_en' => $ldata['ambient'] ?? null,
+                    'timeline' => $ldata['timeline'] ?? [],
+                    'image' => 'https://picsum.photos/seed/' . Str::slug($ldata['name']) . '/400/300?random=1',
+                ]);
+                $this->command->info("✓ Landmark created: {$landmark->name}");
+            }
 
             // Add media to landmark
             $this->addMediaToModel($landmark, 'landmark');
-
-            // Create artifacts for this landmark
-            foreach ($ldata['artifacts'] as $adata) {
-                $artifact = Artifact::create([
-                    'landmark_id' => $landmark->id,
-                    'title' => $adata['title'],
-                    'short_description' => $adata['short_description'],
-                    'description' => $adata['description'],
-                    'image' => 'https://picsum.photos/seed/' . Str::slug($adata['title']) . '/300/200?random=1',
-                ]);
-                $this->command->info("  ✓ Artifact: {$artifact->title}");
-
-                // Add media to artifact
-                // قد يكون هناك فيديو، وقد لا يكون
-                $hasVideo = (bool) random_int(0, 1); // 50% chance to assign videos
-
-                $this->addMediaToModel($artifact, 'artifact', $hasVideo);
-            }
         }
 
         $this->command->info("✅ Test product and all related data created successfully!");
@@ -167,7 +169,6 @@ class TestProductQRSeeder extends Seeder
 
     /**
      * Add sample media (images, videos, audio) to a model.
-     * It possible to has videos and mabe not. يمكنك تعيين $withVideo = false لمنع إدراج فيديو.
      *
      * @param $model
      * @param string $type
@@ -175,6 +176,12 @@ class TestProductQRSeeder extends Seeder
      */
     private function addMediaToModel($model, $type, $withVideo = true)
     {
+        // Check if media already exists for this model
+        if ($model->media()->exists()) {
+            $this->command->info("  ✓ Media already exists for {$model->name}");
+            return;
+        }
+
         // Add sample images
         for ($i = 1; $i <= 2; $i++) {
             Media::create([
@@ -200,5 +207,6 @@ class TestProductQRSeeder extends Seeder
                 'order' => 3,
             ]);
         }
+        $this->command->info("  ✓ Media added for {$model->name}");
     }
 }

@@ -50,11 +50,11 @@ Then open: `http://127.0.0.1:8000/experience/{UUID}`
 - City name shows
 - Current date displays
 
-✅ **Landmarks & Artifacts**
+✅ **Landmarks**
 - 3 landmarks display in grid
 - Each landmark shows 2 images
 - Each landmark has 1 video player
-- Artifacts nested under landmarks with thumbnails
+- Click landmark to view details in modal
 
 ✅ **Responsive**
 - Resize browser window
