@@ -54,6 +54,12 @@
 </section>
 
 <style>
+    /* Layout hardening to avoid horizontal whitespace on mobile */
+    html, body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
     .hero-section-wrapper {
         position: relative;
         width: 100%;
@@ -252,11 +258,14 @@
         .hero-slide-item {
             justify-content: center;
             text-align: center;
-            padding: 0 1.5rem;
+            /* Remove side padding to prevent white gutters */
+            padding: 0;
+            margin: 0;
         }
 
         .hero-content-wrapper {
-            max-width: 90%;
+            max-width: 92%;
+            margin: 0 auto;
         }
 
         .hero-overlay {
@@ -287,7 +296,7 @@
 
     @media (max-width: 480px) {
         .hero-section-wrapper {
-            height: 50vh;
+            height: 52vh;
         }
 
         .hero-nav-btn {
@@ -311,6 +320,12 @@
         .hero-btn {
             padding: 0.8rem 2rem;
             font-size: 1rem;
+        }
+
+        /* Make pagination dots easier to tap */
+        .hero-pagination-dot {
+            width: 12px;
+            height: 12px;
         }
     }
 </style>
@@ -336,10 +351,9 @@
         const heroSliderConfig = {
             loop: true,
             speed: 600,
-            effect: 'fade',
-            fadeEffect: {
-                crossFade: true
-            },
+            direction: 'horizontal',
+            slidesPerView: 1,
+            spaceBetween: 0,
             autoplay: {
                 delay: 5000,
                 disableOnInteraction: false,
@@ -352,6 +366,7 @@
             grabCursor: true,
             simulateTouch: true,
             touchRatio: 1,
+            allowTouchMove: true,
             on: {
                 slideChange: function() {
                     updatePagination(this);
@@ -403,7 +418,12 @@
                 }
                 
                 dot.addEventListener('click', function() {
-                    swiper.slideTo(i);
+                    // Use slideToLoop to correctly navigate when loop is enabled
+                    if (typeof swiper.slideToLoop === 'function') {
+                        swiper.slideToLoop(i);
+                    } else {
+                        swiper.slideTo(i);
+                    }
                 });
                 
                 paginationEl.appendChild(dot);

@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
         // Create one Admin user (not editable)
         $this->call(AdminSeeder::class);
 
+        // Application settings
+        $this->call(SettingsSeeder::class);
+
         // Seed core data with customizable counts
         $this->call(CountrySeeder::class, false, ['count' => 50]);
         $this->call(CitySeeder::class, false, ['count' => 1000]);
@@ -33,7 +36,9 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call(LandmarkSeeder::class);
+        // Optional artifacts (no-op seeder placeholder)
         $this->call(ArtifactSeeder::class);
+ 
 
         // Slider seeder
         $this->call(SliderSeeder::class);

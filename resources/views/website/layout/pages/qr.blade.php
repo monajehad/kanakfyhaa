@@ -30,7 +30,7 @@
     @endphp
 
     <!-- Immersive City Experience Section -->
-    <section class="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white">
+    <section class="relative overflow-hidden bg-white">
         <!-- Hero Background -->
         <div class="absolute inset-0 opacity-10 pointer-events-none">
             <svg class="absolute top-0 right-0 w-96 h-96 text-blue-400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -42,7 +42,7 @@
             <!-- City Header -->
             <div class="mb-12">
                 <div class="flex items-start gap-4 mb-6">
-                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xl flex-shrink-0">
+                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl shrink-0">
                         📍
                     </div>
                     <div class="flex-1">
@@ -59,7 +59,7 @@
             @if($landmarkCount > 0)
                 <div class="mb-12">
                     <div class="flex items-center gap-3 mb-8">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-lg">🏛️</div>
+                        <div class="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center text-white text-lg">🏛️</div>
                         <div>
                             <h3 class="text-2xl font-bold text-gray-900">@lang('qr.city.landmarks.title')</h3>
                             <p class="text-sm text-gray-600 mt-1">@lang('qr.city.landmarks.description')</p>
@@ -136,7 +136,7 @@
     </section>
 
     <!-- City Map Section -->
-    <section class="relative bg-gradient-to-b from-white via-blue-50 to-white py-12 overflow-hidden">
+    <section class="relative bg-white py-12 overflow-hidden">
         <!-- Background decoration -->
         <div class="absolute inset-0 opacity-5 pointer-events-none">
             <svg class="absolute bottom-0 left-0 w-96 h-96" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -170,7 +170,7 @@
                     </div>
 
                     <!-- Map Info Footer -->
-                    <div class="p-6 bg-gradient-to-r from-blue-50 to-blue-100/50 border-t border-blue-200">
+                    <div class="p-6 bg-blue-50 border-t border-blue-200">
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <!-- Coordinates -->
                             <div class="flex items-start gap-3">
@@ -206,7 +206,7 @@
                     </div>
                 @else
                     <!-- No Coordinates Available -->
-                    <div class="w-full h-96 md:h-[500px] bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
+                    <div class="w-full h-96 md:h-[500px] bg-blue-50 flex items-center justify-center">
                         <div class="text-center">
                             <div class="text-6xl mb-4">🗺️</div>
                             <p class="text-gray-600 font-medium">@lang('qr.city.map.no_coordinates')</p>
@@ -289,7 +289,7 @@
                         <!-- Gallery Container -->
                         <div class="px-6 lg:px-8 pb-8">
                             <!-- Main Image Viewer -->
-                            <div class="relative rounded-2xl overflow-hidden mb-6 bg-gradient-to-br from-gray-100 to-gray-50 aspect-square group shadow-md">
+                            <div class="relative rounded-2xl overflow-hidden mb-6 bg-gray-100 aspect-square group shadow-md">
                                 <img 
                                     id="productMainImage" 
                                     src="{{ $productMedia->first()?->url ?? 'https://placehold.co/600x600?text=' . urlencode($productName) }}" 
@@ -331,7 +331,7 @@
 
                                 <!-- Scroll Indicators (if needed) -->
                                 @if($productMedia->count() > 4)
-                                    <div class="absolute right-0 top-0 bottom-0 w-8 pointer-events-none bg-gradient-to-l from-[#fafafa] to-[#fafafa]/0"></div>
+                                    <div class="absolute right-0 top-0 bottom-0 w-8 pointer-events-none bg-[#fafafa]"></div>
                                 @endif
                             </div>
 
@@ -354,7 +354,7 @@
     </section>
 
     <!-- Hero Section and QR Preview at Bottom -->
-    <section class="relative overflow-hidden" style="background: radial-gradient(circle at top, #0f172a, #020617);">
+    <section class="relative overflow-hidden" style="background: #0f172a;">
         <div class="absolute inset-0 opacity-50 pointer-events-none">
             <div class="w-72 h-72 bg-[#e6b800]/40 blur-3xl rounded-full absolute -top-16 {{ $isArabic ? '-right-10' : '-left-10' }}"></div>
             <div class="w-96 h-96 bg-[#00d2ff]/20 blur-3xl rounded-full absolute bottom-0 {{ $isArabic ? 'left-0' : 'right-0' }}"></div>
@@ -421,7 +421,7 @@
                                 @lang('qr.card.ready_badge')
                             </span>
                         </div>
-                        <div class="rounded-2xl p-6 bg-gradient-to-br from-slate-900 to-slate-800">
+                        <div class="rounded-2xl p-6 bg-slate-900">
                             <img src="{{ $qrUrl }}" alt="QR {{ $productName }}" class="mx-auto w-56 h-56 object-contain">
                             <p class="text-center text-white/80 text-sm mt-4">
                                 @lang('qr.card.scan_tip')

@@ -133,11 +133,11 @@
                         @endif
                     </div>
 
-                    <!-- Price Section - Material Design 3 -->
-                    <div class="rounded-2xl p-6 mb-6" style="background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%); color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                        <div class="mb-4">
-                            <p class="text-sm opacity-90 font-medium">{{ app()->getLocale() === 'ar' ? 'السعر الحالي' : 'Current Price' }}</p>
-                            <p class="text-4xl font-bold mt-1">${{ number_format($product->final_price, 2) }}</p>
+                    <!-- Price Section - Solid surface, better UX -->
+                    <div class="rounded-2xl p-6 mb-6" style="background: var(--md-surface-container-highest); color: var(--md-on-surface); border: 1px solid var(--md-outline-variant); box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+                        <div class="mb-4 flex items-end justify-between gap-4">
+                            <p class="text-sm font-medium" style="color: var(--md-on-surface-variant);">{{ app()->getLocale() === 'ar' ? 'السعر الحالي' : 'Current Price' }}</p>
+                            <p class="text-4xl font-extrabold tracking-tight" style="color: var(--md-on-surface);">${{ number_format($product->final_price, 2) }}</p>
                         </div>
                         
                         @php
@@ -146,9 +146,9 @@
                         @endphp
 
                         @if($hasDiscount)
-                        <div class="flex items-center gap-3 pt-4" style="border-top: 1px solid rgba(255,255,255,0.3);">
-                            <span class="line-through text-sm opacity-75">${{ number_format($originalPrice, 2) }}</span>
-                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-all duration-300" style="background: var(--md-error); color: var(--md-on-error);">
+                        <div class="flex items-center gap-3 pt-4" style="border-top: 1px solid var(--md-outline-variant);">
+                            <span class="line-through text-sm" style="color: var(--md-on-surface-variant);">${{ number_format($originalPrice, 2) }}</span>
+                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold transition-all duration-300" style="background: var(--md-error-container); color: var(--md-on-error-container);">
                                 <span class="material-icons-outlined icon-sm">flash_on</span>
                                 -{{ $product->discount }}%
                             </span>
@@ -156,8 +156,8 @@
                         @endif
 
                         @if($product->shipping_price && $product->shipping_price > 0)
-                        <div class="flex items-center gap-2 text-sm mt-4 pt-4 font-medium" style="border-top: 1px solid rgba(255,255,255,0.3);">
-                            <span class="material-icons-outlined icon-sm">local_shipping</span>
+                        <div class="flex items-center gap-2 text-sm mt-4 pt-4 font-medium" style="border-top: 1px solid var(--md-outline-variant); color: var(--md-on-surface-variant);">
+                            <span class="material-icons-outlined icon-sm" style="color: var(--md-primary);">local_shipping</span>
                             <span>{{ app()->getLocale() === 'ar' ? 'الشحن:' : 'Shipping:' }} ${{ number_format($product->shipping_price, 2) }}</span>
                         </div>
                         @endif
@@ -184,7 +184,7 @@
 
                     <!-- Variants Section - Same style as product card -->
                     @if(!empty($colors) || !empty($sizes))
-                        <div class="flex flex-col gap-3 mb-8 p-6 rounded-2xl" style="background: linear-gradient(135deg, var(--md-surface-container) 0%, var(--md-surface) 100%); border: 1px solid var(--md-outline-variant); box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+                        <div class="flex flex-col gap-3 mb-8 p-6 rounded-2xl" style="background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
                             {{-- Colors --}}
                             @if(!empty($colors))
                                 <div class="flex flex-col gap-2">

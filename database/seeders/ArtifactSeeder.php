@@ -1,0 +1,17 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+
+class ArtifactSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Placeholder seeder to avoid BindingResolutionException.
+        // No artifacts defined in this codebase; safely no-op.
+    }
+}

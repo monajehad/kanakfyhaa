@@ -4,7 +4,7 @@
     $mobile = $mobile ?? false;
 @endphp
 
-<div class="{{ $mobile ? 'md:hidden pb-3' : 'hidden md:block flex-1 mx-4' }}">
+<div class="{{ $mobile ? 'md:hidden pb-3' : 'hidden md:block flex-1 mx-4' }}" {{ $mobile ? 'data-search-mobile' : 'data-search-desktop' }}>
     <form action="{{ route('search') }}" method="GET" class="relative flex-1">
         <div class="relative md-search-bar" style="background: var(--md-surface-variant); border-radius: 28px; overflow: hidden; display: flex; align-items: center; padding: 0 16px;">
             <span class="material-icons-outlined icon-sm" style="color: var(--md-on-surface-variant); margin-right: 8px;">search</span>
