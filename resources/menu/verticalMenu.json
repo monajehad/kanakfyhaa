@@ -21,9 +21,13 @@
           "name": "Create",
           "url": "/admin/products/create",
           "slug": "admin.products.create"
-        },
-        {
+        }
+      
+      ]
+    },
+      {
           "name": "Category Management",
+          "icon": "menu-icon icon-base ri ri-list-check",
           "slug": "admin.categories",
           "submenu": [
             {
@@ -37,9 +41,7 @@
               "slug": "admin.categories.create"
             }
           ]
-        }
-      ]
-    },
+        },
     { "menuHeader": "Geography" },
     {
       "name": "Country Management",
@@ -72,9 +74,13 @@
           "name": "Create",
           "url": "/admin/cities/create",
           "slug": "admin.cities.create"
-        },
-        {
+        }
+        
+      ]
+    },
+    {
           "name": "Landmark Management",
+          "icon": "menu-icon icon-base ri ri-map-pin-line",
           "slug": "admin.landmarks",
           "submenu": [
             {
@@ -88,9 +94,7 @@
               "slug": "admin.landmarks.create"
             }
           ]
-        }
-      ]
-    },
+        },
     { "menuHeader": "Commerce" },
     {
       "name": "Orders",

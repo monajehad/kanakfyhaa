@@ -24,16 +24,17 @@
             @method('PUT')
 
             <div class="row g-3">
-                <!-- Names -->
-                <div class="col-md-6">
-                    <label class="form-label" for="name">اسم المعلم <span class="text-danger">*</span></label>
-                    <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $landmark->name) }}">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label" for="slug">الاسم المختصر (Slug)</label>
-                    <input class="form-control" type="text" id="slug" name="slug" value="{{ old('slug', $landmark->slug) }}">
+                <!-- Names Section -->
+                <div class="col-12">
+                    <h5 class="card-title text-primary"><i class="bi bi-pencil-square me-2"></i>الأسماء</h5>
+                    <hr class="border-primary">
                 </div>
 
+                <div class="col-md-4">
+                    <label class="form-label" for="name">اسم المعلم (عام) <span class="text-danger">*</span></label>
+                    <input class="form-control" type="text" id="name" name="name" required value="{{ old('name', $landmark->name) }}">
+                </div>
+                
                 <div class="col-md-4">
                     <label class="form-label" for="name_ar">الاسم بالعربية</label>
                     <input class="form-control" type="text" id="name_ar" name="name_ar" value="{{ old('name_ar', $landmark->name_ar) }}">
@@ -44,51 +45,92 @@
                     <input class="form-control" type="text" id="name_en" name="name_en" value="{{ old('name_en', $landmark->name_en) }}">
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <label class="form-label" for="slug">الاسم المختصر (Slug)</label>
+                    <input class="form-control" type="text" id="slug" name="slug" value="{{ old('slug', $landmark->slug) }}">
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label" for="type">نوع المعلم</label>
                     <input class="form-control" type="text" id="type" name="type" value="{{ old('type', $landmark->type) }}" placeholder="مثال: مسجد، سوق، متحف">
                 </div>
 
-                <!-- Descriptions -->
+                <!-- Location Section -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">الوصف</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-geo-alt-fill me-2"></i>الموقع</h5>
+                    <hr class="border-primary">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="city_id">المدينة <span class="text-danger">*</span></label>
+                    <select class="form-select" id="city_id" name="city_id" required>
+                        <option value="">-- اختر المدينة --</option>
+                        @foreach($cities as $city)
+                            <option value="{{ $city->id }}" {{ $landmark->city_id == $city->id ? 'selected' : '' }}>
+                                {{ $city->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Short Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title text-primary"><i class="bi bi-card-text me-2"></i>الوصف القصير</h5>
+                    <hr class="border-primary">
+                </div>
+
+                <!-- Short Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title text-primary"><i class="bi bi-card-text me-2"></i>الوصف القصير</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label" for="short_description">وصف قصير</label>
-                    <input class="form-control" type="text" id="short_description" name="short_description" maxlength="255" value="{{ old('short_description', $landmark->short_description) }}">
+                    <label class="form-label" for="short_description">وصف قصير (عام)</label>
+                    <input class="form-control" type="text" id="short_description" name="short_description" maxlength="255" value="{{ old('short_description', $landmark->short_description) }}" placeholder="وصف مختصر للمعلم">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label" for="short_description_ar">وصف قصير (عربي)</label>
-                    <input class="form-control" type="text" id="short_description_ar" name="short_description_ar" maxlength="255" value="{{ old('short_description_ar', $landmark->short_description_ar) }}">
+                    <input class="form-control" type="text" id="short_description_ar" name="short_description_ar" maxlength="255" value="{{ old('short_description_ar', $landmark->short_description_ar) }}" placeholder="وصف مختصر بالعربية">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label" for="short_description_en">وصف قصير (إنجليزي)</label>
-                    <input class="form-control" type="text" id="short_description_en" name="short_description_en" maxlength="255" value="{{ old('short_description_en', $landmark->short_description_en) }}">
+                    <input class="form-control" type="text" id="short_description_en" name="short_description_en" maxlength="255" value="{{ old('short_description_en', $landmark->short_description_en) }}" placeholder="Short description in English">
+                </div>
+
+                <!-- Full Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title text-primary"><i class="bi bi-file-text me-2"></i>الوصف التفصيلي</h5>
+                    <hr class="border-primary">
+                </div>
+
+                <!-- Full Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title text-primary"><i class="bi bi-file-text me-2"></i>الوصف التفصيلي</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label" for="description">وصف تفصيلي</label>
-                    <textarea class="form-control" id="description" name="description" rows="3">{{ old('description', $landmark->description) }}</textarea>
+                    <label class="form-label" for="description">وصف تفصيلي (عام)</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" placeholder="وصف تفصيلي للمعلم">{{ old('description', $landmark->description) }}</textarea>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label" for="description_ar">وصف تفصيلي (عربي)</label>
-                    <textarea class="form-control" id="description_ar" name="description_ar" rows="3">{{ old('description_ar', $landmark->description_ar) }}</textarea>
+                    <textarea class="form-control" id="description_ar" name="description_ar" rows="3" placeholder="وصف تفصيلي بالعربية">{{ old('description_ar', $landmark->description_ar) }}</textarea>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label" for="description_en">وصف تفصيلي (إنجليزي)</label>
-                    <textarea class="form-control" id="description_en" name="description_en" rows="3">{{ old('description_en', $landmark->description_en) }}</textarea>
+                    <textarea class="form-control" id="description_en" name="description_en" rows="3" placeholder="Detailed description in English">{{ old('description_en', $landmark->description_en) }}</textarea>
                 </div>
 
                 <!-- Ambient Description -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">وصف التجربة الحسية (Ambient)</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-stars me-2"></i>وصف التجربة الحسية (Ambient)</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-4">
@@ -108,26 +150,30 @@
 
                 <!-- Timeline -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">خط الزمن (Timeline)</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-clock-history me-2"></i>خط الزمن (Timeline)</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label" for="timeline">خط الزمن (JSON)</label>
-                    <textarea class="form-control" id="timeline" name="timeline" rows="4" placeholder="مثال: [&#10;  &quot;الفترة الأولى: وصف المرحلة&quot;,&#10;  &quot;الفترة الثانية: وصف المرحلة&quot;,&#10;  &quot;الفترة الثالثة: وصف المرحلة&quot;&#10;]">{{ old('timeline', json_encode($landmark->timeline ?? [], JSON_UNESCAPED_UNICODE)) }}</textarea>
-                    <small class="text-muted">أدخل JSON array</small>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label" for="city_id">المدينة</label>
-                    <select class="form-select" id="city_id" name="city_id" required>
-                        <option value="">-- اختر المدينة --</option>
-                        @foreach($cities as $city)
-                            <option value="{{ $city->id }}" {{ $landmark->city_id == $city->id ? 'selected' : '' }}>
-                                {{ $city->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="card shadow-sm border-0 timeline-gradient-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label mb-0 timeline-label fw-bold"><i class="bi bi-calendar-event me-2"></i>الأحداث الزمنية</label>
+                                <button type="button" class="btn btn-light btn-sm shadow-sm" id="addTimelineBtn">
+                                    <i class="bi bi-plus-circle me-1"></i>إضافة حدث
+                                </button>
+                            </div>
+                            
+                            <div id="timelineContainer">
+                                <!-- Timeline items will be added here -->
+                            </div>
+                            
+                            <div id="emptyTimelineMessage" class="text-center timeline-empty py-4" style="display: none;">
+                                <i class="bi bi-hourglass-split fs-2"></i>
+                                <p class="mb-0 mt-2">لا توجد أحداث زمنية. انقر على "إضافة حدث" لبدء الإضافة.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -208,8 +254,95 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('landmarkForm');
     const submitBtn = document.getElementById('submitBtn');
+    
+    // Timeline management
+    const timelineContainer = document.getElementById('timelineContainer');
+    const emptyTimelineMessage = document.getElementById('emptyTimelineMessage');
+    const addTimelineBtn = document.getElementById('addTimelineBtn');
+    let timelineIndex = 0;
 
     axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Load existing timeline data
+    const existingTimeline = @json($landmark->timeline ?? []);
+    if (existingTimeline && existingTimeline.length > 0) {
+        existingTimeline.forEach(item => {
+            // Parse the timeline item (format: "period: description")
+            const parts = item.split(':');
+            const period = parts[0]?.trim() || '';
+            const description = parts.slice(1).join(':').trim() || '';
+            addTimelineItem(period, description);
+        });
+    } else {
+        emptyTimelineMessage.style.display = 'block';
+    }
+
+    // Add timeline event function
+    function addTimelineItem(period = '', description = '') {
+        const timelineItem = document.createElement('div');
+        timelineItem.className = 'timeline-item mb-3 p-3 rounded-3 shadow-sm';
+        timelineItem.style.animation = 'slideIn 0.3s ease-out';
+        timelineItem.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0 fw-bold timeline-event-title"><i class="bi bi-calendar-check me-2"></i>حدث زمني ${timelineIndex + 1}</h6>
+                <button type="button" class="btn btn-sm btn-danger shadow-sm remove-timeline-btn" style="min-width: 32px; height: 32px;">
+                    <i class="bi bi-trash text-white"></i>
+                </button>
+            </div>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold"><i class="bi bi-calendar3 me-1"></i>الفترة/التاريخ</label>
+                    <input type="text" name="timeline[${timelineIndex}][period]" class="form-control form-control-sm shadow-sm" placeholder="مثال: 1920-1950" value="${period}">
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label small fw-semibold"><i class="bi bi-textarea-t me-1"></i>الوصف</label>
+                    <textarea name="timeline[${timelineIndex}][description]" class="form-control form-control-sm shadow-sm" rows="2" placeholder="اكتب وصف الحدث...">${description}</textarea>
+                </div>
+            </div>
+        `;
+        
+        timelineContainer.appendChild(timelineItem);
+        emptyTimelineMessage.style.display = 'none';
+        timelineIndex++;
+        
+        // Add remove functionality
+        timelineItem.querySelector('.remove-timeline-btn').addEventListener('click', function() {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "سيتم حذف هذا الحدث الزمني",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    timelineItem.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => {
+                        timelineItem.remove();
+                        updateTimelineNumbers();
+                        if (timelineContainer.children.length === 0) {
+                            emptyTimelineMessage.style.display = 'block';
+                        }
+                    }, 300);
+                }
+            });
+        });
+    }
+
+    // Add timeline button click
+    addTimelineBtn.addEventListener('click', () => {
+        addTimelineItem();
+    });
+
+    // Update timeline item numbers
+    function updateTimelineNumbers() {
+        const items = timelineContainer.querySelectorAll('.timeline-item');
+        items.forEach((item, index) => {
+            item.querySelector('h6').innerHTML = `<i class="bi bi-calendar-check me-2"></i>حدث زمني ${index + 1}`;
+        });
+    }
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -218,6 +351,35 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let formData = new FormData(form);
         if (form.published) formData.set('published', form.published.checked ? 1 : 0);
+
+        // Convert timeline to JSON array
+        const timelineItems = [];
+        const timelineInputs = form.querySelectorAll('[name^="timeline["]');
+        const timelineData = {};
+        
+        timelineInputs.forEach(input => {
+            const match = input.name.match(/timeline\[(\d+)\]\[(\w+)\]/);
+            if (match) {
+                const index = match[1];
+                const field = match[2];
+                if (!timelineData[index]) {
+                    timelineData[index] = {};
+                }
+                timelineData[index][field] = input.value;
+            }
+        });
+        
+        Object.values(timelineData).forEach(item => {
+            if (item.period || item.description) {
+                timelineItems.push(`${item.period || ''}: ${item.description || ''}`);
+            }
+        });
+        
+        if (timelineItems.length > 0) {
+            formData.set('timeline', JSON.stringify(timelineItems));
+        } else {
+            formData.set('timeline', JSON.stringify([]));
+        }
 
         axios.post('{{ route('admin.landmarks.update', $landmark->id) }}', formData, {
             headers: { 
@@ -282,4 +444,125 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 </script>
+
+<style>
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.card-title {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* Timeline gradient card - adapts to light/dark mode */
+.timeline-gradient-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none !important;
+}
+
+[data-bs-theme="dark"] .timeline-gradient-card {
+    background: linear-gradient(135deg, #4c63d2 0%, #5a3a7f 100%);
+}
+
+/* Timeline label color */
+.timeline-label {
+    color: #ffffff !important;
+}
+
+/* Timeline empty message */
+.timeline-empty {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Timeline items - light mode */
+.timeline-item {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* Timeline items - dark mode */
+[data-bs-theme="dark"] .timeline-item {
+    background: #2b3544;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline-item:hover {
+    transform: translateX(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-bs-theme="dark"] .timeline-item:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Timeline event title */
+.timeline-event-title {
+    color: #667eea;
+}
+
+[data-bs-theme="dark"] .timeline-event-title {
+    color: #a0aaf7;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.remove-timeline-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+}
+
+.remove-timeline-btn i {
+    font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+/* Dark mode form controls */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+    background-color: #1e2530;
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e4e6eb;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #1e2530;
+    border-color: #a0aaf7;
+    color: #e4e6eb;
+}
+</style>
+
 @endsection

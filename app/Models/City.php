@@ -8,7 +8,24 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     use HasFactory;
-    protected $fillable = ['country_id', 'name', 'name_ar', 'name_en', 'native_name', 'region', 'subregion', 'latitude', 'longitude', 'population', 'description', 'description_ar', 'description_en'];
+    protected $fillable = [
+        'country_id', 
+        'name', 
+        'name_ar', 
+        'name_en', 
+        'native_name', 
+        'region', 
+        'subregion', 
+        'latitude', 
+        'longitude', 
+        'population', 
+        'description', 
+        'description_ar', 
+        'description_en',
+        'short_description',
+        'short_description_ar',
+        'short_description_en',
+    ];
     public function country() {
         return $this->belongsTo(Country::class);
     }
@@ -62,6 +79,21 @@ class City extends Model
             return $this->description_en;
         }
         return $this->description;
+    }
+
+    /**
+     * Get the city short description based on current language
+     */
+    public function getLocalizedShortDescriptionAttribute()
+    {
+        $lang = app()->getLocale();
+        if ($lang === 'ar' && $this->short_description_ar) {
+            return $this->short_description_ar;
+        }
+        if ($lang === 'en' && $this->short_description_en) {
+            return $this->short_description_en;
+        }
+        return $this->short_description;
     }
 
     /**

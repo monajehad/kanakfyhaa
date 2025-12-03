@@ -89,6 +89,9 @@ public function update(Request $request, Order $order)
 {
 $request->validate([
         'order_status' => 'required|in:processing,shipped,delivered,cancelled',
+    ], [
+        'order_status.required' => 'حالة الطلب مطلوبة',
+        'order_status.in' => 'حالة الطلب يجب أن تكون: قيد المعالجة، تم الشحن، تم التوصيل، أو ملغي',
     ]);
 
     $order->update([

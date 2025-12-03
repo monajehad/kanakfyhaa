@@ -7,13 +7,28 @@
     <div class="swiper hero-slider-main">
         <div class="swiper-wrapper">
             @foreach($sliders as $slider)
+                @php
+                    $mainMedia = $slider->mainImage;
+                    $isVideo = $mainMedia && $mainMedia->type === 'video';
+                    $buttonText = $slider->button_text ?: ($slider->link ? 'اكتشف المزيد' : 'اكتشف المجموعة');
+                    $buttonUrl = $slider->button_url ?: $slider->link;
+                @endphp
                 <div class="swiper-slide hero-slide-item"
-                    @if($slider->mainImage && $slider->mainImage->url)
-                        style="background-image: url('{{ $slider->mainImage->url }}');"
+                    @if(!$isVideo)
+                        @if($mainMedia && $mainMedia->url)
+                            style="background-image: url('{{ $mainMedia->url }}');"
+                        @else
+                            style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
+                        @endif
                     @else
-                        style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
+                        style="background: #000;"
                     @endif
                 >
+                    @if($isVideo)
+                        <video class="hero-video" autoplay loop muted playsinline>
+                            <source src="{{ $mainMedia->url }}" type="video/mp4">
+                        </video>
+                    @endif
                     <div class="hero-overlay"></div>
                     <div class="hero-content-wrapper">
                         <div class="hero-text">
@@ -21,13 +36,13 @@
                             @if($slider->description)
                                 <p class="hero-description">{{ $slider->description }}</p>
                             @endif
-                            @if($slider->link)
-                                <a href="{{ $slider->link }}" class="hero-btn">
-                                    اكتشف المزيد
+                            @if($buttonUrl)
+                                <a href="{{ $buttonUrl }}" class="hero-btn">
+                                    {{ $buttonText }}
                                 </a>
                             @else
                                 <button onclick="document.getElementById('cities') ? document.getElementById('cities').scrollIntoView({behavior: 'smooth'}) : null" class="hero-btn">
-                                    اكتشف المجموعة
+                                    {{ $buttonText }}
                                 </button>
                             @endif
                         </div>
@@ -84,6 +99,16 @@
         align-items: center;
         justify-content: flex-start;
         padding: 0 5%;
+    }
+
+    .hero-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
     }
 
     .hero-overlay {

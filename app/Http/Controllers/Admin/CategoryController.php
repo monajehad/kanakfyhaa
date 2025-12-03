@@ -51,6 +51,14 @@ class CategoryController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255|unique:categories,name',
                 'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
+            ], [
+                'name.required' => 'اسم التصنيف مطلوب',
+                'name.string' => 'يجب أن يكون الاسم نصاً',
+                'name.max' => 'يجب ألا يتجاوز الاسم 255 حرفاً',
+                'name.unique' => 'هذا الاسم مستخدم بالفعل، يرجى اختيار اسم آخر',
+                'image.image' => 'يجب أن يكون الملف صورة',
+                'image.mimes' => 'يجب أن تكون الصورة بصيغة: jpg, jpeg, png, gif, أو webp',
+                'image.max' => 'يجب ألا يتجاوز حجم الصورة 2 ميجابايت',
             ]);
 
             $validated['slug'] = Str::slug($validated['name']);
@@ -115,6 +123,14 @@ class CategoryController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
                 'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
+            ], [
+                'name.required' => 'اسم التصنيف مطلوب',
+                'name.string' => 'يجب أن يكون الاسم نصاً',
+                'name.max' => 'يجب ألا يتجاوز الاسم 255 حرفاً',
+                'name.unique' => 'هذا الاسم مستخدم بالفعل، يرجى اختيار اسم آخر',
+                'image.image' => 'يجب أن يكون الملف صورة',
+                'image.mimes' => 'يجب أن تكون الصورة بصيغة: jpg, jpeg, png, gif, أو webp',
+                'image.max' => 'يجب ألا يتجاوز حجم الصورة 2 ميجابايت',
             ]);
 
             $validated['slug'] = Str::slug($validated['name']);

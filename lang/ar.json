@@ -255,5 +255,21 @@
   "Select Backup File": "اختر ملف النسخة الاحتياطية",
   "Only ZIP files are supported": "يتم دعم ملفات ZIP فقط",
   "Import": "استيراد",
-  "Settings": "الإعدادات"
+  "Settings": "الإعدادات",
+  "My Profile": "ملفي الشخصي",
+  "Settings": "الإعدادات",
+  "Logout": "تسجيل الخروج",
+  "settings.enable_cod.label": "تفعيل الدفع عند الاستلام",
+  "settings.enable_cod.description": "السماح للعملاء بالدفع عند استلام الطلب",
+  "settings.enable_latlong.label": "تفعيل حقول الموقع الجغرافي",
+  "settings.enable_latlong.description": "إظهار حقول خطوط الطول والعرض في صفحة الدفع",
+  "settings.enable_whatsapp_fab.label": "تفعيل زر واتساب العائم",
+  "settings.enable_whatsapp_fab.description": "إظهار زر واتساب عائم في جميع صفحات الموقع",
+  "settings.whatsapp_number.label": "رقم واتساب",
+  "settings.whatsapp_number.description": "رقم واتساب للتواصل (مع رمز الدولة، مثال: +970599123456)",
+  "settings.cod_supported_countries.label": "الدول التي تدعم الدفع عند الاستلام",
+  "settings.cod_supported_countries.description": "الدول التي تدعم الدفع عند الاستلام (رموز ISO2 مفصولة بفواصل، مثال: PS,JO,SA,AE,EG,LB)",
+  "Cash on Delivery": "الدفع عند الاستلام",
+  "Cash on Delivery is available only in: Palestine, Jordan, Saudi Arabia, UAE, Egypt, Lebanon": "الدفع عند الاستلام متاح فقط في: فلسطين، الأردن، السعودية، الإمارات، مصر، لبنان",
+  "Continue Order": "متابعة الطلب"
 }

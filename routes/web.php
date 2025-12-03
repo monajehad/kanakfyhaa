@@ -26,7 +26,13 @@ Route::post('/api/orders', [PaymentController::class, 'storeOrder'])->name('orde
 Route::post('/api/stripe/create-intent', [PaymentController::class, 'stripeCreatePaymentIntent'])->name('stripe.intent');
 Route::post('/webhooks/stripe', [PaymentController::class, 'stripeWebhook'])->name('stripe.webhook');
 
-Route::get(uri: '/experience/{uuid}', action: [App\Http\Controllers\ExperienceController::class, 'show'])->name('experience.show');
+// Beautiful URL for experience page; keep route name for compatibility
+Route::get(uri: '/discover/{uuid}', action: [App\Http\Controllers\ExperienceController::class, 'show'])->name('experience.show');
+
+// Backward-compatible redirect from old /experience/{uuid}
+Route::get('/experience/{uuid}', function ($uuid) {
+	return redirect()->route('experience.show', ['uuid' => $uuid], 301);
+});
 
 // Order success
 Route::view('/order-success', 'website.layout.pages.order-success')->name('order.success');

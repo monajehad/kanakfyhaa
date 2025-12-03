@@ -17,10 +17,13 @@ $activeClass = in_array($currentRouteName, $activeRoutes) ? 'active' : '';
           <i class="icon-base ri ri-menu-fill icon-lg align-middle text-heading fw-medium"></i>
         </button>
         <!-- Mobile menu toggle: End-->
-        <a href="javascript:;" class="app-brand-link">
-          <span class="app-brand-logo demo">@include('_partials.macros')</span>
-          <span
-            class="app-brand-text demo menu-text fw-semibold ms-2 ps-1">{{ config('variables.templateName') }}</span>
+        <a href="{{ url('/') }}" class="app-brand-link">
+          @if($appLogo ?? null)
+            <img src="{{ $appLogo }}" alt="{{ $appName }}" class="app-brand-logo" style="max-height: 40px;">
+          @else
+            <span class="app-brand-logo demo">@include('_partials.macros')</span>
+          @endif
+          <span class="app-brand-text demo menu-text fw-semibold ms-2 ps-1">{{ $appName ?? config('variables.templateName') }}</span>
         </a>
       </div>
       <!-- Menu logo wrapper: End -->
@@ -72,8 +75,13 @@ $activeClass = in_array($currentRouteName, $activeRoutes) ? 'active' : '';
 
         <!-- navbar button: Start -->
         <li>
-          <a href="javascript:;" class="btn btn-primary px-2 px-sm-4 px-lg-2 px-xl-4" target="_blank"><span
-              class="icon-base ri ri-user-line me-md-1"></span><span class="d-none d-md-block">Login/Register</span></a>
+          @auth
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-primary px-2 px-sm-4 px-lg-2 px-xl-4"><span
+                class="icon-base ri ri-dashboard-line me-md-1"></span><span class="d-none d-md-block">{{ __('Dashboard') }}</span></a>
+          @else
+            <a href="{{ route('login') }}" class="btn btn-primary px-2 px-sm-4 px-lg-2 px-xl-4"><span
+                class="icon-base ri ri-user-line me-md-1"></span><span class="d-none d-md-block">{{ __('Login/Register') }}</span></a>
+          @endauth
         </li>
         <!-- navbar button: End -->
       </ul>

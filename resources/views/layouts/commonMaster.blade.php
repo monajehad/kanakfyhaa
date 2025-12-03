@@ -33,9 +33,10 @@ $primaryColorCSS = Helpers::generatePrimaryColorCSS($configData['color']);
 
 @endphp
 
+
 <html lang="{{ session()->get('locale') ?? app()->getLocale() }}"
 class="{{ $navbarType ?? '' }} {{ $contentLayout ?? '' }} {{ $menuFixed ?? '' }} {{ $menuCollapsed ?? '' }} {{ $footerFixed ?? '' }} {{ $customizerHidden ?? '' }}"
-dir="{{ $configData['textDirection'] }}" data-skin="{{ $skinName }}" data-assets-path="{{ asset('/assets') . '/' }}"
+dir="rtl" data-skin="{{ $skinName }}" data-assets-path="{{ asset('/assets') . '/' }}"
 data-base-url="{{ url('/') }}" data-framework="laravel" data-template="{{ $configData['layout'] }}-menu-template"
   data-bs-theme="{{ $configData['theme'] }}" @if ($isAdminLayout && $semiDarkEnabled) data-semidark-menu="true" @endif>
 
@@ -45,28 +46,28 @@ data-base-url="{{ url('/') }}" data-framework="laravel" data-template="{{ $confi
 content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
   <title>
-    @yield('title') | {{ config('variables.templateName') ? config('variables.templateName') : 'TemplateName' }}
-    - {{ config('variables.templateSuffix') ? config('variables.templateSuffix') : 'TemplateSuffix' }}
+    @yield('title') | {{ $appName ?? config('variables.templateName', 'TemplateName') }}
+    @if(config('variables.templateSuffix'))
+      - {{ config('variables.templateSuffix') }}
+    @endif
 </title>
-  <meta name="description"
-content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
-  <meta name="keywords"
-content="{{ config('variables.templateKeyword') ? config('variables.templateKeyword') : '' }}" />
-  <meta property="og:title" content="{{ config('variables.ogTitle') ? config('variables.ogTitle') : '' }}" />
-  <meta property="og:type" content="{{ config('variables.ogType') ? config('variables.ogType') : '' }}" />
-  <meta property="og:url" content="{{ config('variables.productPage') ? config('variables.productPage') : '' }}" />
-  <meta property="og:image" content="{{ config('variables.ogImage') ? config('variables.ogImage') : '' }}" />
-  <meta property="og:description"
-    content="{{ config('variables.templateDescription') ? config('variables.templateDescription') : '' }}" />
-  <meta property="og:site_name"
-    content="{{ config('variables.creatorName') ? config('variables.creatorName') : '' }}" />
+  <meta name="description" content="@yield('meta_description', $seoConfig['description'] ?? config('variables.templateDescription', ''))"/>
+  <meta name="keywords" content="@yield('meta_keywords', $seoConfig['keywords'] ?? config('variables.templateKeyword', ''))"/>
+  <meta name="author" content="{{ $appName ?? config('variables.templateName', '') }}" />
+  <meta property="og:title" content="@yield('og_title', ($seoConfig['title'] ?? $appName ?? config('variables.ogTitle', '')))" />
+  <meta property="og:type" content="@yield('og_type', config('variables.ogType', 'website'))" />
+  <meta property="og:url" content="@yield('og_url', url()->current())" />
+  <meta property="og:image" content="@yield('og_image', ($appLogo ?? config('variables.ogImage', '')))" />
+  <meta property="og:description" content="@yield('og_description', ($seoConfig['description'] ?? config('variables.templateDescription', '')))" />
+  <meta property="og:site_name" content="{{ $appName ?? config('variables.creatorName', '') }}" />
   <meta name="robots" content="noindex, nofollow" />
   <!-- laravel CRUD token -->
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <!-- Canonical SEO -->
   <link rel="canonical" href="{{ config('variables.productPage') ? config('variables.productPage') : '' }}" />
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+  <!-- Favicon: use logo for admin (dashboard), favicon for website -->
+  <!-- Use unified logo as favicon across dashboard and website -->
+  <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}" />
 
   <!-- Include Styles -->
   <!-- $isFront is used to append the front layout styles only on the front layout otherwise the variable will be blank -->
@@ -86,12 +87,26 @@ content="{{ config('variables.templateKeyword') ? config('variables.templateKeyw
   <!-- Include Scripts for customizer, helper, analytics, config -->
   <!-- $isFront is used to append the front layout scriptsIncludes only on the front layout otherwise the variable will be blank -->
   @include('layouts/sections/scriptsIncludes' . $isFront)
+
+  @if(!empty($seoConfig['google_analytics_id'] ?? null))
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $seoConfig['google_analytics_id'] }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ $seoConfig['google_analytics_id'] }}');
+    </script>
+  @endif
 </head>
 
 <body>
   <!-- Layout Content -->
   @yield('layoutContent')
   <!--/ Layout Content -->
+
+  <!-- WhatsApp Floating Button -->
+  @include('components.whatsapp-fab')
 
   {{-- remove while creating package --}}
   {{-- remove while creating package end --}}

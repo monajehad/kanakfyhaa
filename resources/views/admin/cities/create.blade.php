@@ -13,22 +13,28 @@
         <form id="cityForm" enctype="multipart/form-data">
             @csrf
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">اسم المدينة *</label>
+                <!-- Names Section -->
+                <div class="col-12">
+                    <h5 class="card-title">الأسماء</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">اسم المدينة (عام) *</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">اسم المدينة (عربي)</label>
+                <div class="col-md-4">
+                    <label class="form-label">الاسم بالعربية</label>
                     <input type="text" name="name_ar" class="form-control">
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">اسم المدينة (إنجليزي)</label>
+                <div class="col-md-4">
+                    <label class="form-label">الاسم بالإنجليزية</label>
                     <input type="text" name="name_en" class="form-control">
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label">الاسم المحلي</label>
                     <input type="text" name="native_name" class="form-control">
                 </div>
@@ -58,19 +64,40 @@
                     <input type="number" name="population" class="form-control" min="0">
                 </div>
 
-                <div class="col-12">
-                    <label class="form-label">الوصف (عام)</label>
-                    <textarea name="description" class="form-control" rows="4" placeholder="وصف المدينة بشكل عام"></textarea>
+                <!-- Descriptions Section -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">الوصف</h5>
+                    <hr>
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">الوصف (عربي)</label>
-                    <textarea name="description_ar" class="form-control" rows="4" placeholder="وصف المدينة بالعربية"></textarea>
+                <div class="col-md-4">
+                    <label class="form-label">وصف قصير (عام)</label>
+                    <input type="text" name="short_description" class="form-control" placeholder="وصف مختصر للمدينة">
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">الوصف (إنجليزي)</label>
-                    <textarea name="description_en" class="form-control" rows="4" placeholder="وصف المدينة بالإنجليزية"></textarea>
+                <div class="col-md-4">
+                    <label class="form-label">وصف قصير (عربي)</label>
+                    <input type="text" name="short_description_ar" class="form-control" placeholder="وصف مختصر بالعربية">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف قصير (إنجليزي)</label>
+                    <input type="text" name="short_description_en" class="form-control" placeholder="Short description in English">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف تفصيلي (عام)</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="وصف المدينة بشكل عام"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف تفصيلي (عربي)</label>
+                    <textarea name="description_ar" class="form-control" rows="3" placeholder="وصف المدينة بالعربية"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف تفصيلي (إنجليزي)</label>
+                    <textarea name="description_en" class="form-control" rows="3" placeholder="وصف المدينة بالإنجليزية"></textarea>
                 </div>
 
                 <div class="col-md-6">

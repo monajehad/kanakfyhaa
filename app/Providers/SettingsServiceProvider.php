@@ -67,11 +67,16 @@ class SettingsServiceProvider extends ServiceProvider
                     'primaryColor' => Helpers::getSetting('primary_color', '#eab308'),
                     'secondaryColor' => Helpers::getSetting('secondary_color', '#0ea5e9'),
                     'accentColor' => Helpers::getSetting('accent_color', '#10b981'),
+                    'whatsappNumber' => Helpers::getSetting('whatsapp_number', ''),
+                    'enableWhatsappFab' => Helpers::getSetting('enable_whatsapp_fab', false),
+                    'contactEmail' => Helpers::getSetting('contact_email', ''),
+                    'supportEmail' => Helpers::getSetting('support_email', ''),
                     // Services
                     'paymentConfig' => PaymentService::getConfig(),
                     'emailConfig' => EmailService::getConfig(),
                     'seoConfig' => SeoService::getConfig(),
                     'socialLinks' => SocialService::getActive(),
+                    'socialLinksAll' => SocialService::getAll(),
                 ]);
             });
 

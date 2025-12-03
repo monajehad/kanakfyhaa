@@ -27,13 +27,24 @@
                     <textarea class="form-control" id="description" name="description" rows="3" placeholder="وصف شريط العرض"></textarea>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label" for="link">الرابط</label>
+                    <label class="form-label" for="link">الرابط (قديم)</label>
                     <input class="form-control" type="url" id="link" name="link" placeholder="https://example.com">
+                    <small class="form-text text-muted">يُستخدم للتوافق مع الإصدارات القديمة</small>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label" for="image">صورة شريط العرض</label>
-                    <input class="form-control" type="file" id="image" name="image" accept="image/*">
-                    <small class="form-text text-muted">الحد الأقصى للحجم: 5 ميجابايت. صيغ مقبولة: JPG, PNG, GIF, WebP</small>
+                    <label class="form-label" for="button_text">نص الزر</label>
+                    <input class="form-control" type="text" id="button_text" name="button_text" placeholder="اكتشف المزيد">
+                    <small class="form-text text-muted">النص الذي سيظهر على الزر</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="button_url">رابط الزر</label>
+                    <input class="form-control" type="url" id="button_url" name="button_url" placeholder="https://example.com">
+                    <small class="form-text text-muted">الرابط الذي سينتقل إليه المستخدم عند الضغط</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label" for="media">صورة أو فيديو <span class="text-danger">*</span></label>
+                    <input class="form-control" type="file" id="media" name="media" accept="image/*,video/*" required>
+                    <small class="form-text text-muted">صورة أو فيديو. الحد الأقصى: 100 ميجابايت</small>
                 </div>
                 <div class="col-md-6">
                     <div class="form-check form-switch">
@@ -56,19 +67,19 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById('sliderForm');
     const submitBtn = document.getElementById('submitBtn');
-    const imageInput = form.querySelector('input[name="image"]');
+    const imageInput = form.querySelector('input[name="media"]');
 
     // File size validation
     if (imageInput) {
         imageInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
-                const maxSize = 5 * 1024 * 1024; // 5MB
+                const maxSize = 100 * 1024 * 1024; // 100MB
                 if (file.size > maxSize) {
                     Swal.fire({ 
                         icon: 'warning', 
                         title: 'حجم الملف كبير جداً', 
-                        text: 'يجب ألا يتجاوز حجم الصورة 5 ميجابايت. الحجم الحالي: ' + (file.size / 1024 / 1024).toFixed(2) + ' ميجابايت'
+                        text: 'يجب ألا يتجاوز حجم الملف 100 ميجابايت. الحجم الحالي: ' + (file.size / 1024 / 1024).toFixed(2) + ' ميجابايت'
                     });
                     this.value = '';
                     return;
@@ -82,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
         submitBtn.disabled = true;
 
         const title = form.title.value.trim();
-        const imageInput = form.querySelector('input[name="image"]');
+        const mediaInput = form.querySelector('input[name="media"]');
         
         if (!title) {
             Swal.fire({ icon: 'error', title: 'تحقق من البيانات', text: 'العنوان مطلوب.' });
@@ -94,13 +105,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let formData = new FormData();
         formData.append('title', title);
-        formData.append('description', form.description.value);
-        formData.append('link', form.link.value);
+        formData.append('description', form.description.value || '');
+        formData.append('link', form.link.value || '');
+        formData.append('button_text', form.button_text.value || '');
+        formData.append('button_url', form.button_url.value || '');
         formData.append('order', form.order.value || 0);
         formData.append('active', form.active.checked ? 1 : 0);
         
-        if (imageInput && imageInput.files.length > 0) {
-            formData.append('image', imageInput.files[0]);
+        if (mediaInput && mediaInput.files.length > 0) {
+            formData.append('media', mediaInput.files[0]);
         }
 
         axios.post('{{ route('admin.sliders.store') }}', formData, {

@@ -29,12 +29,38 @@ class PaymentController extends Controller
             'total' => 'required|numeric',
             'currency_symbol' => 'required|string|max:5',
             'currency_rate' => 'required|numeric',
-            'payment_method' => 'required|string|in:paypal,stripe',
+            'payment_method' => 'required|string|in:paypal,stripe,cod',
             'payment_status' => 'required|string|in:paid,pending,failed,refunded',
             'order_status' => 'nullable|string|in:processing,shipped,delivered,cancelled',
             'transaction_id' => 'nullable|string',
             'payer_email' => 'nullable|email',
             'order_date' => 'nullable|date',
+        ], [
+            'order_number.required' => 'رقم الطلب مطلوب',
+            'order_number.unique' => 'رقم الطلب هذا موجود بالفعل',
+            'customer_name.required' => 'اسم العميل مطلوب',
+            'email.required' => 'البريد الإلكتروني مطلوب',
+            'email.email' => 'يجب أن يكون البريد الإلكتروني صحيحاً',
+            'country.max' => 'يجب ألا يتجاوز رمز الدولة حرفين',
+            'items.required' => 'يجب إضافة عنصر واحد على الأقل',
+            'items.array' => 'يجب أن تكون العناصر مصفوفة',
+            'subtotal.required' => 'المجموع الفرعي مطلوب',
+            'subtotal.numeric' => 'يجب أن يكون المجموع الفرعي رقماً',
+            'shipping.required' => 'تكلفة الشحن مطلوبة',
+            'shipping.numeric' => 'يجب أن تكون تكلفة الشحن رقماً',
+            'total.required' => 'المجموع الإجمالي مطلوب',
+            'total.numeric' => 'يجب أن يكون المجموع الإجمالي رقماً',
+            'currency_symbol.required' => 'رمز العملة مطلوب',
+            'currency_symbol.max' => 'يجب ألا يتجاوز رمز العملة 5 أحرف',
+            'currency_rate.required' => 'سعر العملة مطلوب',
+            'currency_rate.numeric' => 'يجب أن يكون سعر العملة رقماً',
+            'payment_method.required' => 'طريقة الدفع مطلوبة',
+            'payment_method.in' => 'طريقة الدفع يجب أن تكون: PayPal، Stripe، أو الدفع عند الاستلام',
+            'payment_status.required' => 'حالة الدفع مطلوبة',
+            'payment_status.in' => 'حالة الدفع يجب أن تكون: مدفوع، قيد الانتظار، فشل، أو مسترد',
+            'order_status.in' => 'حالة الطلب يجب أن تكون: قيد المعالجة، تم الشحن، تم التوصيل، أو ملغي',
+            'payer_email.email' => 'يجب أن يكون بريد الدافع صحيحاً',
+            'order_date.date' => 'يجب أن يكون تاريخ الطلب تاريخاً صحيحاً',
         ]);
 
         $order = Order::create($validated);
@@ -57,6 +83,12 @@ class PaymentController extends Controller
         $data = $request->validate([
             'amount' => 'required|numeric|min:0.5',
             'currency' => 'required|string|size:3',
+        ], [
+            'amount.required' => 'المبلغ مطلوب',
+            'amount.numeric' => 'يجب أن يكون المبلغ رقماً',
+            'amount.min' => 'يجب أن يكون المبلغ 0.5 على الأقل',
+            'currency.required' => 'العملة مطلوبة',
+            'currency.size' => 'رمز العملة يجب أن يكون 3 أحرف',
         ]);
 
         // Get Stripe config from PaymentService

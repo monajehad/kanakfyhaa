@@ -50,13 +50,15 @@ class SliderController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'link' => 'nullable|string|url',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+                'button_text' => 'nullable|string|max:100',
+                'button_url' => 'nullable|string|url',
+                'media' => 'required|file|mimes:jpg,jpeg,png,gif,webp,mp4,webm,avi|max:102400',
                 'active' => 'boolean',
                 'order' => 'nullable|integer|min:0',
             ], [
-                'image.max' => 'يجب ألا تتجاوز الصورة 5 ميجابايت.',
-                'image.mimes' => 'الصورة يجب أن تكون من نوع: jpg, jpeg, png, gif, webp',
-                'image.image' => 'الملف يجب أن يكون صورة.',
+                'media.required' => 'الصورة أو الفيديو مطلوب.',
+                'media.max' => 'يجب ألا يتجاوز الملف 100 ميجابايت.',
+                'media.mimes' => 'الملف يجب أن يكون صورة أو فيديو من الأنواع المدعومة.',
             ]);
 
             if (!isset($validated['active'])) {
@@ -69,12 +71,15 @@ class SliderController extends Controller
 
             $slider = Slider::create($validated);
 
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $path = $image->store('sliders', 'public');
+            if ($request->hasFile('media')) {
+                $media = $request->file('media');
+                $mimeType = $media->getMimeType();
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                $path = $media->store('sliders', 'public');
 
                 $slider->media()->create([
-                    'type' => 'image',
+                    'type' => $fileType,
                     'url' => $path,
                     'role' => 'main',
                 ]);
@@ -127,13 +132,14 @@ class SliderController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'link' => 'nullable|string|url',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:5120',
+                'button_text' => 'nullable|string|max:100',
+                'button_url' => 'nullable|string|url',
+                'media' => 'nullable|file|mimes:jpg,jpeg,png,gif,webp,mp4,webm,avi|max:102400',
                 'active' => 'boolean',
                 'order' => 'nullable|integer|min:0',
             ], [
-                'image.max' => 'يجب ألا تتجاوز الصورة 5 ميجابايت.',
-                'image.mimes' => 'الصورة يجب أن تكون من نوع: jpg, jpeg, png, gif, webp',
-                'image.image' => 'الملف يجب أن يكون صورة.',
+                'media.max' => 'يجب ألا يتجاوز الملف 100 ميجابايت.',
+                'media.mimes' => 'الملف يجب أن يكون صورة أو فيديو من الأنواع المدعومة.',
             ]);
 
             if (!isset($validated['active'])) {
@@ -146,24 +152,27 @@ class SliderController extends Controller
 
             $slider->update($validated);
 
-            // Handle image upload/update
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $path = $image->store('sliders', 'public');
+            // Handle media upload/update
+            if ($request->hasFile('media')) {
+                $media = $request->file('media');
+                $mimeType = $media->getMimeType();
+                $fileType = str_starts_with($mimeType, 'video') ? 'video' : 'image';
+                
+                $path = $media->store('sliders', 'public');
 
                 // Delete old main image if exists
-                $mainImage = $slider->mainImage;
-                if ($mainImage) {
-                    $originalUrl = $mainImage->attributes['url'] ?? null;
+                $mainMedia = $slider->mainImage;
+                if ($mainMedia) {
+                    $originalUrl = $mainMedia->attributes['url'] ?? null;
                     if ($originalUrl && Storage::disk('public')->exists($originalUrl)) {
                         Storage::disk('public')->delete($originalUrl);
                     }
-                    $mainImage->delete();
+                    $mainMedia->delete();
                 }
 
-                // Add new image as main
+                // Add new media as main
                 $slider->media()->create([
-                    'type' => 'image',
+                    'type' => $fileType,
                     'url' => $path,
                     'role' => 'main',
                 ]);

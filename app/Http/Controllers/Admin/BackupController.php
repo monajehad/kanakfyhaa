@@ -84,6 +84,11 @@ class BackupController extends Controller
     {
         $request->validate([
             'backup_file' => 'required|file|mimes:zip|max:104857600', // 100MB
+        ], [
+            'backup_file.required' => 'ملف النسخة الاحتياطية مطلوب',
+            'backup_file.file' => 'يجب أن يكون ملفاً صحيحاً',
+            'backup_file.mimes' => 'يجب أن يكون الملف بصيغة zip',
+            'backup_file.max' => 'يجب ألا يتجاوز حجم الملف 100 ميجابايت',
         ]);
 
         try {

@@ -73,6 +73,11 @@ Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
     Route::post('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('settings.store');
     Route::get('/settings/group/{group}', [\App\Http\Controllers\Admin\SettingsController::class, 'getByGroup'])->name('settings.group');
 
+    // Profile Settings
+    Route::get('/profile', function () {
+        return view('admin.profile');
+    })->name('profile');
+
     // Backup Management
     Route::get('/backup', [\App\Http\Controllers\Admin\BackupController::class, 'index'])->name('backup.index');
     Route::post('/backup/export', [\App\Http\Controllers\Admin\BackupController::class, 'export'])->name('backup.export');

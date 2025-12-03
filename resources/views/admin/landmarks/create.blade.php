@@ -14,15 +14,15 @@
             @csrf
             <div class="row g-3">
 
-                <!-- Names -->
-                <div class="col-md-6">
-                    <label class="form-label">اسم المعلم *</label>
-                    <input type="text" name="name" class="form-control" required>
+                <!-- Names Section -->
+                <div class="col-12">
+                    <h5 class="card-title text-primary"><i class="bi bi-pencil-square me-2"></i>الأسماء</h5>
+                    <hr class="border-primary">
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label">الاسم المختصر (slug)</label>
-                    <input type="text" name="slug" class="form-control">
+                <div class="col-md-4">
+                    <label class="form-label">اسم المعلم (عام) *</label>
+                    <input type="text" name="name" class="form-control" required>
                 </div>
 
                 <div class="col-md-4">
@@ -35,9 +35,22 @@
                     <input type="text" name="name_en" class="form-control">
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
+                    <label class="form-label">الاسم المختصر (slug)</label>
+                    <input type="text" name="slug" class="form-control">
+                </div>
+
+                <div class="col-md-6">
                     <label class="form-label">النوع</label>
                     <input type="text" name="type" class="form-control" placeholder="مثال: مسجد، سوق، متحف">
+                </div>
+
+                <!-- Location -->
+
+                <!-- Location -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title text-primary"><i class="bi bi-geo-alt-fill me-2"></i>الموقع</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-6">
@@ -52,44 +65,50 @@
 
                 <!-- Descriptions -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">الوصف</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-card-text me-2"></i>الوصف القصير</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label">الوصف المختصر</label>
-                    <input type="text" name="short_description" class="form-control">
+                    <label class="form-label">الوصف المختصر (عام)</label>
+                    <input type="text" name="short_description" class="form-control" placeholder="وصف مختصر للمعلم">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label">الوصف المختصر (عربي)</label>
-                    <input type="text" name="short_description_ar" class="form-control">
+                    <input type="text" name="short_description_ar" class="form-control" placeholder="وصف مختصر بالعربية">
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label">الوصف المختصر (إنجليزي)</label>
-                    <input type="text" name="short_description_en" class="form-control">
+                    <input type="text" name="short_description_en" class="form-control" placeholder="Short description in English">
+                </div>
+
+                <!-- Full Descriptions -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title text-primary"><i class="bi bi-file-text me-2"></i>الوصف التفصيلي</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label">الوصف الكامل</label>
-                    <textarea name="description" class="form-control" rows="3"></textarea>
+                    <label class="form-label">الوصف الكامل (عام)</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="وصف تفصيلي للمعلم"></textarea>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label">الوصف الكامل (عربي)</label>
-                    <textarea name="description_ar" class="form-control" rows="3"></textarea>
+                    <textarea name="description_ar" class="form-control" rows="3" placeholder="وصف تفصيلي بالعربية"></textarea>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label">الوصف الكامل (إنجليزي)</label>
-                    <textarea name="description_en" class="form-control" rows="3"></textarea>
+                    <textarea name="description_en" class="form-control" rows="3" placeholder="Detailed description in English"></textarea>
                 </div>
 
                 <!-- Ambient Description -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">وصف التجربة الحسية (Ambient)</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-stars me-2"></i>وصف التجربة الحسية (Ambient)</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-4">
@@ -109,20 +128,36 @@
 
                 <!-- Timeline -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">خط الزمن (Timeline)</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-clock-history me-2"></i>خط الزمن (Timeline)</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-12">
-                    <label class="form-label">خط الزمن (JSON أو نص مفصول بفواصل)</label>
-                    <textarea name="timeline" class="form-control" rows="4" placeholder="مثال: [&#10;  &quot;الفترة الأولى: وصف المرحلة&quot;,&#10;  &quot;الفترة الثانية: وصف المرحلة&quot;,&#10;  &quot;الفترة الثالثة: وصف المرحلة&quot;&#10;]"></textarea>
-                    <small class="text-muted">أدخل JSON array أو استخدم جيسون منسقاً بشكل صحيح</small>
+                    <div class="card shadow-sm border-0 timeline-gradient-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <label class="form-label mb-0 timeline-label fw-bold"><i class="bi bi-calendar-event me-2"></i>الأحداث الزمنية</label>
+                                <button type="button" class="btn btn-light btn-sm shadow-sm" id="addTimelineBtn">
+                                    <i class="bi bi-plus-circle me-1"></i>إضافة حدث
+                                </button>
+                            </div>
+                            
+                            <div id="timelineContainer">
+                                <!-- Timeline items will be added here -->
+                            </div>
+                            
+                            <div id="emptyTimelineMessage" class="text-center timeline-empty py-4">
+                                <i class="bi bi-hourglass-split fs-2"></i>
+                                <p class="mb-0 mt-2">لا توجد أحداث زمنية. انقر على "إضافة حدث" لبدء الإضافة.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Main Media Section -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">الملف الرئيسي (صورة أو فيديو)</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-image me-2"></i>الملف الرئيسي (صورة أو فيديو)</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-6">
@@ -135,8 +170,8 @@
 
                 <!-- Sub Media Section -->
                 <div class="col-12 mt-4">
-                    <h5 class="card-title">الملفات الإضافية (صور وفيديوهات)</h5>
-                    <hr>
+                    <h5 class="card-title text-primary"><i class="bi bi-images me-2"></i>الملفات الإضافية (صور وفيديوهات)</h5>
+                    <hr class="border-primary">
                 </div>
 
                 <div class="col-md-12">
@@ -167,8 +202,76 @@ document.addEventListener("DOMContentLoaded", () => {
     const subMediaInput = document.getElementById('subMediaInput');
     const mainMediaPreview = document.getElementById('mainMediaPreview');
     const subMediaPreview = document.getElementById('subMediaPreview');
+    
+    // Timeline management
+    const timelineContainer = document.getElementById('timelineContainer');
+    const emptyTimelineMessage = document.getElementById('emptyTimelineMessage');
+    const addTimelineBtn = document.getElementById('addTimelineBtn');
+    let timelineIndex = 0;
 
     axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Add timeline event
+    addTimelineBtn.addEventListener('click', () => {
+        const timelineItem = document.createElement('div');
+        timelineItem.className = 'timeline-item mb-3 p-3 rounded-3 shadow-sm';
+        timelineItem.style.animation = 'slideIn 0.3s ease-out';
+        timelineItem.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="mb-0 fw-bold timeline-event-title"><i class="bi bi-calendar-check me-2"></i>حدث زمني ${timelineIndex + 1}</h6>
+                <button type="button" class="btn btn-sm btn-danger shadow-sm remove-timeline-btn" style="min-width: 32px; height: 32px;">
+                    <i class="bi bi-trash text-white"></i>
+                </button>
+            </div>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label class="form-label small fw-semibold"><i class="bi bi-calendar3 me-1"></i>الفترة/التاريخ</label>
+                    <input type="text" name="timeline[${timelineIndex}][period]" class="form-control form-control-sm shadow-sm" placeholder="مثال: 1920-1950">
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label small fw-semibold"><i class="bi bi-textarea-t me-1"></i>الوصف</label>
+                    <textarea name="timeline[${timelineIndex}][description]" class="form-control form-control-sm shadow-sm" rows="2" placeholder="اكتب وصف الحدث..."></textarea>
+                </div>
+            </div>
+        `;
+        
+        timelineContainer.appendChild(timelineItem);
+        emptyTimelineMessage.style.display = 'none';
+        timelineIndex++;
+        
+        // Add remove functionality
+        timelineItem.querySelector('.remove-timeline-btn').addEventListener('click', function() {
+            Swal.fire({
+                title: 'هل أنت متأكد؟',
+                text: "سيتم حذف هذا الحدث الزمني",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'نعم، احذف',
+                cancelButtonText: 'إلغاء'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    timelineItem.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => {
+                        timelineItem.remove();
+                        updateTimelineNumbers();
+                        if (timelineContainer.children.length === 0) {
+                            emptyTimelineMessage.style.display = 'block';
+                        }
+                    }, 300);
+                }
+            });
+        });
+    });
+
+    // Update timeline item numbers
+    function updateTimelineNumbers() {
+        const items = timelineContainer.querySelectorAll('.timeline-item');
+        items.forEach((item, index) => {
+            item.querySelector('h6').innerHTML = `<i class="bi bi-calendar-check me-2"></i>حدث زمني ${index + 1}`;
+        });
+    }
 
     // Main media preview
     mainMediaInput?.addEventListener('change', (e) => {
@@ -203,7 +306,36 @@ document.addEventListener("DOMContentLoaded", () => {
         submitBtn.disabled = true;
         submitBtn.innerText = 'يتم الحفظ...';
 
-        axios.post('{{ route('admin.landmarks.store') }}', new FormData(form))
+        const formData = new FormData(form);
+        
+        // Convert timeline to JSON array
+        const timelineItems = [];
+        const timelineInputs = form.querySelectorAll('[name^="timeline["]');
+        const timelineData = {};
+        
+        timelineInputs.forEach(input => {
+            const match = input.name.match(/timeline\[(\d+)\]\[(\w+)\]/);
+            if (match) {
+                const index = match[1];
+                const field = match[2];
+                if (!timelineData[index]) {
+                    timelineData[index] = {};
+                }
+                timelineData[index][field] = input.value;
+            }
+        });
+        
+        Object.values(timelineData).forEach(item => {
+            if (item.period || item.description) {
+                timelineItems.push(`${item.period || ''}: ${item.description || ''}`);
+            }
+        });
+        
+        if (timelineItems.length > 0) {
+            formData.set('timeline', JSON.stringify(timelineItems));
+        }
+
+        axios.post('{{ route('admin.landmarks.store') }}', formData)
             .then(res => {
                 if (res.data.success) {
                     Swal.fire('نجاح', res.data.message, 'success').then(() => {
@@ -227,4 +359,125 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
+
+<style>
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.card-title {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* Timeline gradient card - adapts to light/dark mode */
+.timeline-gradient-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none !important;
+}
+
+[data-bs-theme="dark"] .timeline-gradient-card {
+    background: linear-gradient(135deg, #4c63d2 0%, #5a3a7f 100%);
+}
+
+/* Timeline label color */
+.timeline-label {
+    color: #ffffff !important;
+}
+
+/* Timeline empty message */
+.timeline-empty {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Timeline items - light mode */
+.timeline-item {
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+/* Timeline items - dark mode */
+[data-bs-theme="dark"] .timeline-item {
+    background: #2b3544;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.timeline-item:hover {
+    transform: translateX(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-bs-theme="dark"] .timeline-item:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Timeline event title */
+.timeline-event-title {
+    color: #667eea;
+}
+
+[data-bs-theme="dark"] .timeline-event-title {
+    color: #a0aaf7;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.remove-timeline-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.5rem;
+}
+
+.remove-timeline-btn i {
+    font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+/* Dark mode form controls */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+    background-color: #1e2530;
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e4e6eb;
+}
+
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: #1e2530;
+    border-color: #a0aaf7;
+    color: #e4e6eb;
+}
+</style>
+
 @endsection

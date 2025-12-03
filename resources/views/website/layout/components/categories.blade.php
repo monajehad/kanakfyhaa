@@ -30,8 +30,14 @@
                                     onerror="this.onerror=null;this.src='{{ asset('assets/img/illustrations/category_placeholder.svg') }}';">
                             </div>
                             <span
-                                class="font-medium text-base text-gray-700 group-hover:text-[#C8D400] truncate text-center transition-colors"
+                                class="font-medium text-base group-hover:text-[#C8D400] truncate text-center transition-colors category-name"
                                 style="font-size:1.08rem;max-width:125px;">{{ $category->name }}</span>
+                        </script>
+                        <style>
+                            [data-theme="dark"] .category-name {
+                                color: #fff !important;
+                            }
+                        </style>
                         </button>
                     @endforeach
 

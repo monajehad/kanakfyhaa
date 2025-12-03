@@ -78,4 +78,38 @@ class PaymentService
 
         return self::getPayPalConfig();
     }
+
+    /**
+     * Check if Cash on Delivery is enabled
+     */
+    public static function isCodEnabled()
+    {
+        return (bool) Helpers::getSetting('enable_cod', '1');
+    }
+
+    /**
+     * Get list of countries that support COD
+     * Returns array of country ISO codes
+     */
+    public static function getCodSupportedCountries()
+    {
+        $countries = Helpers::getSetting('cod_supported_countries', 'PS,JO,SA,AE,EG,LB');
+        return array_map('trim', explode(',', $countries));
+    }
+
+    /**
+     * Check if COD is supported in a specific country
+     *
+     * @param string $countryCode ISO2 country code
+     * @return bool
+     */
+    public static function isCodSupportedInCountry($countryCode)
+    {
+        if (!self::isCodEnabled()) {
+            return false;
+        }
+
+        $supportedCountries = self::getCodSupportedCountries();
+        return in_array(strtoupper($countryCode), array_map('strtoupper', $supportedCountries));
+    }
 }

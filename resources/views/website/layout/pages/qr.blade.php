@@ -13,47 +13,68 @@
         $landmarkCount = $landmarks->count();
         $colors = is_array($product->colors) ? array_values(array_filter($product->colors)) : [];
         $sizes = is_array($product->sizes) ? array_values(array_filter($product->sizes)) : [];
-        $steps = [
-            [
-                'title' => __('qr.steps.scan.title'),
-                'body' => __('qr.steps.scan.body'),
-            ],
-            [
-                'title' => __('qr.steps.explore.title'),
-                'body' => __('qr.steps.explore.body'),
-            ],
-            [
-                'title' => __('qr.steps.share.title'),
-                'body' => __('qr.steps.share.body'),
-            ],
-        ];
+        
+        // Get city media (video or image)
+        $cityMedia = $city?->media->where('role', 'main')->first();
+        $cityMediaUrl = $cityMedia?->url ?? '';
+        $isVideo = $cityMedia?->type === 'video';
     @endphp
+
+    <!-- Full Screen City Media Hero -->
+    <section class="relative w-screen h-screen overflow-hidden" style="margin-left: calc(-50vw + 50%); width: 100vw;">
+        @if($cityMediaUrl)
+            @if($isVideo)
+                <!-- Video Background -->
+                <video 
+                    class="absolute inset-0 w-full h-full object-cover"
+                    autoplay 
+                    loop 
+                    muted 
+                    playsinline
+                >
+                    <source src="{{ $cityMediaUrl }}" type="video/mp4">
+                </video>
+            @else
+                <!-- Image Background -->
+                <img 
+                    src="{{ $cityMediaUrl }}" 
+                    alt="{{ $cityName }}"
+                    class="absolute inset-0 w-full h-full object-cover"
+                >
+            @endif
+        @else
+            <!-- Fallback gradient background -->
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-700"></div>
+        @endif
+        
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/40"></div>
+        
+        <!-- Content -->
+        <div class="relative z-10 h-full flex flex-col items-center justify-center">
+            <div class="text-center text-white px-4 max-w-4xl">
+                <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-4xl mx-auto mb-6">
+                    📍
+                </div>
+                <p class="text-sm md:text-base font-medium text-white/90 mb-3 uppercase tracking-widest">@lang('qr.city.label')</p>
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">{{ $cityName }}</h1>
+                <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+                    {{ $city?->localized_description ?? $city?->description ?? __('qr.city.no_description') }}
+                </p>
+            </div>
+            
+            <!-- Scroll indicator -->
+            <div class="mt-16 mb-8 animate-bounce">
+                <div class="w-8 h-12 rounded-full border-2 border-white flex items-center justify-center pt-2 bg-white/10 backdrop-blur-sm">
+                    <div class="w-1.5 h-3 bg-white rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Immersive City Experience Section -->
     <section class="relative overflow-hidden bg-white">
-        <!-- Hero Background -->
-        <div class="absolute inset-0 opacity-10 pointer-events-none">
-            <svg class="absolute top-0 right-0 w-96 h-96 text-blue-400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                <path d="M50,-50 Q150,0 100,150 Q0,100 50,-50" fill="currentColor"/>
-            </svg>
-        </div>
-
         <div class="container mx-auto px-4 py-12 relative z-10">
-            <!-- City Header -->
-            <div class="mb-12">
-                <div class="flex items-start gap-4 mb-6">
-                    <div class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white text-xl shrink-0">
-                        📍
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-blue-600 mb-1">@lang('qr.city.label')</p>
-                        <h2 class="text-4xl md:text-5xl font-bold text-gray-900">{{ $cityName }}</h2>
-                        <p class="text-lg text-gray-600 mt-3 max-w-2xl leading-relaxed">
-                            {{ $city?->localized_description ?? $city?->description ?? __('qr.city.no_description') }}
-                        </p>
-                    </div>
-                </div>
-            </div>
 
             <!-- Landmarks Section -->
             @if($landmarkCount > 0)
@@ -217,141 +238,6 @@
             </div>
         </div>
     </section>
-        <div class="grid grid-cols-1 gap-8">
-            <div class="space-y-8">
-                <div class="rounded-3xl border p-6 lg:p-8" style="border-color: var(--border-color, #e5e7eb);">
-                    <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                        <div>
-                            <p class="text-sm text-gray-500 mb-1">@lang('qr.product.info_label')</p>
-                            <h2 class="text-2xl font-extrabold">{{ $productName }}</h2>
-                        </div>
-                        <span class="text-3xl font-black text-emerald-600">${{ number_format($product->final_price, 2) }}</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-3">
-                                @lang('qr.product.colors_label')
-                            </h3>
-                            <div class="flex flex-wrap gap-3">
-                                @forelse($colors as $color)
-                                    <div class="flex items-center gap-2 px-3 py-2 rounded-xl border" style="border-color: var(--border-color, #e5e7eb);">
-                                        <span class="w-6 h-6 rounded-full border" style="background: {{ $color }}"></span>
-                                        <span class="text-sm font-semibold">{{ $color }}</span>
-                                    </div>
-                                @empty
-                                    <p class="text-sm text-gray-500">
-                                        @lang('qr.product.no_colors')
-                                    </p>
-                                @endforelse
-                            </div>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-semibold uppercase tracking-widest text-gray-500 mb-3">
-                                @lang('qr.product.sizes_label')
-                            </h3>
-                            <div class="flex flex-wrap gap-2">
-                                @forelse($sizes as $size)
-                                    <span class="px-4 py-2 rounded-xl border font-semibold"
-                                          style="border-color: var(--border-color, #e5e7eb);">
-                                        {{ $size }}
-                                    </span>
-                                @empty
-                                    <p class="text-sm text-gray-500">
-                                        @lang('qr.product.no_sizes')
-                                    </p>
-                                @endforelse
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-8 text-sm leading-relaxed text-gray-600">
-                        {{ $productDescription ?? __('qr.product.fallback_story') }}
-                    </div>
-                </div>
-
-                <!-- Product Media Gallery - Material 3 -->
-                @php
-                    $productMedia = $product->media->where('role', 'product_image')->values();
-                    $hasProductMedia = $productMedia->count() > 0;
-                @endphp
-                @if($hasProductMedia)
-                    <div class="rounded-3xl overflow-hidden shadow-lg border" style="border-color: var(--border-color, #e5e7eb); background: #fafafa;">
-                        <!-- Gallery Header -->
-                        <div class="px-6 lg:px-8 pt-6 pb-4">
-                            <div class="flex items-center gap-3 mb-2">
-                                <div class="text-2xl">📸</div>
-                                <div>
-                                    <h3 class="text-xl font-bold text-gray-900">@lang('qr.product.gallery_title', ['count' => $productMedia->count()] ?? 'Product Gallery')</h3>
-                                    <p class="text-sm text-gray-600 mt-0.5">{{ $productMedia->count() }} @lang('qr.product.gallery_images', ['count' => $productMedia->count()] ?? 'images')</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Gallery Container -->
-                        <div class="px-6 lg:px-8 pb-8">
-                            <!-- Main Image Viewer -->
-                            <div class="relative rounded-2xl overflow-hidden mb-6 bg-gray-100 aspect-square group shadow-md">
-                                <img 
-                                    id="productMainImage" 
-                                    src="{{ $productMedia->first()?->url ?? 'https://placehold.co/600x600?text=' . urlencode($productName) }}" 
-                                    alt="{{ $productName }}"
-                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                >
-                                <!-- Image Counter Badge -->
-                                <div class="absolute top-4 {{ $isArabic ? 'left-4' : 'right-4' }} px-4 py-2 rounded-full bg-black/50 backdrop-blur-md text-white text-sm font-semibold">
-                                    <span id="imageCounter">1</span> / {{ $productMedia->count() }}
-                                </div>
-
-                                <!-- Loading State -->
-                                <div class="absolute inset-0 bg-black/0 transition-colors duration-300" id="imageLoadingState"></div>
-                            </div>
-
-                            <!-- Thumbnail Carousel -->
-                            <div class="relative">
-                                <div class="overflow-x-auto scrollbar-hide pb-2">
-                                    <div class="flex gap-3 min-w-max px-0.5">
-                                        @foreach($productMedia as $index => $media)
-                                            <button
-                                                type="button"
-                                                class="group relative flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2"
-                                                style="border-color: {{ $index === 0 ? 'var(--primary-yellow, #eab308)' : 'var(--border-color, #e5e7eb)' }};"
-                                                data-image-index="{{ $index }}"
-                                                data-image-url="{{ $media->url }}"
-                                            >
-                                                <img 
-                                                    src="{{ $media->url }}" 
-                                                    alt="Thumbnail {{ $index + 1 }}"
-                                                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                                                >
-                                                <!-- Active Indicator -->
-                                                <div class="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors"></div>
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                </div>
-
-                                <!-- Scroll Indicators (if needed) -->
-                                @if($productMedia->count() > 4)
-                                    <div class="absolute right-0 top-0 bottom-0 w-8 pointer-events-none bg-[#fafafa]"></div>
-                                @endif
-                            </div>
-
-                            <!-- Image Info -->
-                            <div class="mt-6 p-4 rounded-xl bg-white border" style="border-color: var(--border-color, #e5e7eb);">
-                                <div class="flex items-start gap-3">
-                                    <div class="text-2xl flex-shrink-0">ℹ️</div>
-                                    <div class="text-sm text-gray-700 leading-relaxed">
-                                        <p class="font-semibold mb-1">@lang('qr.product.gallery_tip_title')</p>
-                                        <p class="text-gray-600">@lang('qr.product.gallery_tip_body')</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-            </div>
-        </div>
-    </section>
 
     <!-- Hero Section and QR Preview at Bottom -->
     <section class="relative overflow-hidden" style="background: #0f172a;">
@@ -380,20 +266,6 @@
                         <p class="mt-4 text-base text-white/80 leading-relaxed">
                             {{ $productDescription ?? __('qr.hero_fallback') }}
                         </p>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-center">
-                        <div class="py-4 rounded-2xl bg-white/5 border border-white/10">
-                            <div class="text-2xl font-extrabold">{{ $landmarkCount }}</div>
-                            <p class="text-xs text-white/70 mt-1">@lang('qr.stats.linked_landmarks')</p>
-                        </div>
-                        <div class="py-4 rounded-2xl bg-white/5 border border-white/10">
-                            <div class="text-2xl font-extrabold">{{ number_format($product->final_price, 0) }} $</div>
-                            <p class="text-xs text-white/70 mt-1">@lang('qr.stats.final_price')</p>
-                        </div>
-                        <div class="py-4 rounded-2xl bg-white/5 border border-white/10">
-                            <div class="text-2xl font-extrabold">{{ $product->is_package ? __('qr.stats.package_yes') : __('qr.stats.package_single') }}</div>
-                            <p class="text-xs text-white/70 mt-1">@lang('qr.stats.experience_type')</p>
-                        </div>
                     </div>
                     <div class="flex flex-wrap gap-3">
                         <a href="{{ route('product.show', $product->uuid) }}" class="btn-yellow px-6 py-3 font-bold">
@@ -445,22 +317,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <section class="container mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            @foreach($steps as $index => $step)
-                <div class="rounded-2xl border px-6 py-8 bg-white/80" style="border-color: var(--border-color, #e5e7eb);">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center font-bold mb-5
-                        {{ in_array($index, [0,2]) ? 'text-white' : '' }}"
-                        style="background: {{ $index === 1 ? 'var(--gray-bg, #f3f4f6)' : 'var(--primary-yellow, #eab308)' }};">
-                        {{ $index + 1 }}
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">{{ $step['title'] }}</h3>
-                    <p class="text-sm text-gray-600 leading-relaxed">{{ $step['body'] }}</p>
-                </div>
-            @endforeach
         </div>
     </section>
 

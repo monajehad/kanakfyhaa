@@ -36,6 +36,9 @@ class SettingsController extends Controller
     {
         $validated = $request->validate([
             'settings' => 'required|array',
+        ], [
+            'settings.required' => 'الإعدادات مطلوبة',
+            'settings.array' => 'يجب أن تكون الإعدادات مصفوفة',
         ]);
 
         foreach ($validated['settings'] as $key => $value) {

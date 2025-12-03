@@ -2,6 +2,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>@yield('title', 'كأنك فيها - متجر الهوديهات الفلسطينية')</title>
 
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
+<link rel="alternate icon" type="image/png" href="{{ asset('logo.svg') }}">
+
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 

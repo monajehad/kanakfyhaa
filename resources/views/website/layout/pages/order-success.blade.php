@@ -22,6 +22,5 @@
         }
     });
 @endsection
-*** End Patch***  QPush ক json```} }-->
-*** End Patch
+
 

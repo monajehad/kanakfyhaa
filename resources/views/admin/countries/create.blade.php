@@ -13,12 +13,28 @@
         <form id="countryForm" enctype="multipart/form-data">
             @csrf
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label">اسم الدولة *</label>
+                <!-- Names Section -->
+                <div class="col-12">
+                    <h5 class="card-title">الأسماء</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">اسم الدولة (عام) *</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label">الاسم بالعربية</label>
+                    <input type="text" name="name_ar" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">الاسم بالإنجليزية</label>
+                    <input type="text" name="name_en" class="form-control">
+                </div>
+
+                <div class="col-md-4">
                     <label class="form-label">الاسم المحلي</label>
                     <input type="text" name="native_name" class="form-control">
                 </div>
@@ -91,6 +107,42 @@
                 <div class="col-md-4">
                     <label class="form-label">المساحة</label>
                     <input type="number" name="area" class="form-control">
+                </div>
+
+                <!-- Descriptions Section -->
+                <div class="col-12 mt-4">
+                    <h5 class="card-title">الوصف</h5>
+                    <hr>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف قصير (عام)</label>
+                    <input type="text" name="short_description" class="form-control" placeholder="وصف مختصر للدولة">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف قصير (عربي)</label>
+                    <input type="text" name="short_description_ar" class="form-control" placeholder="وصف مختصر بالعربية">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف قصير (إنجليزي)</label>
+                    <input type="text" name="short_description_en" class="form-control" placeholder="Short description in English">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف تفصيلي (عام)</label>
+                    <textarea name="description" class="form-control" rows="3" placeholder="وصف تفصيلي للدولة"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف تفصيلي (عربي)</label>
+                    <textarea name="description_ar" class="form-control" rows="3" placeholder="وصف تفصيلي بالعربية"></textarea>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">وصف تفصيلي (إنجليزي)</label>
+                    <textarea name="description_en" class="form-control" rows="3" placeholder="Detailed description in English"></textarea>
                 </div>
 
                 <!-- Main Media Section -->

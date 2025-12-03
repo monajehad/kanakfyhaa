@@ -102,8 +102,8 @@
     }
 
     [data-theme="dark"] .summary-row {
-        color: var(--primary-white);
-        border-color: #333;
+        color: #fff;
+        border-color: #444;
     }
 
     .summary-total {
@@ -116,7 +116,12 @@
     }
 
     [data-theme="dark"] .summary-total {
-        color: var(--primary-white);
+        color: #fff;
+        border-top: 3px solid #eab308;
+    }
+
+    [data-theme="dark"] .order-item, [data-theme="dark"] .order-item * {
+        color: #fff !important;
     }
 
     .payment-option {
@@ -140,6 +145,58 @@
         width: 20px;
         height: 20px;
         accent-color: var(--primary-yellow);
+    }
+
+    .payment-option {
+        position: relative;
+    }
+
+    .payment-tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--primary-black);
+        color: var(--primary-white);
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+        margin-bottom: 8px;
+        z-index: 1000;
+        pointer-events: none;
+    }
+
+    [data-theme="dark"] .payment-tooltip {
+        background: var(--primary-white);
+        color: var(--primary-black);
+    }
+
+    .payment-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--primary-black);
+    }
+
+    [data-theme="dark"] .payment-tooltip::after {
+        border-top-color: var(--primary-white);
+    }
+
+    .payment-option:hover .payment-tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .payment-option.show-tooltip .payment-tooltip {
+        opacity: 1;
+        visibility: visible;
     }
 </style>
 
@@ -267,6 +324,45 @@
                     <label class="form-label" data-ar="ملاحظات إضافية (اختياري)" data-en="Additional Notes (Optional)">ملاحظات إضافية (اختياري)</label>
                     <textarea id="notes" class="form-input" rows="2" placeholder="أي ملاحظات خاصة بالطلب..."></textarea>
                 </div>
+                                <!-- Lat/Long with location button -->
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="form-label" data-ar="خط العرض (اختياري)" data-en="Latitude (Optional)">خط العرض (اختياري)</label>
+                                        <input type="number" id="latitude" class="form-input" step="0.000001" placeholder="31.9522">
+                                    </div>
+                                    <div>
+                                        <label class="form-label" data-ar="خط الطول (اختياري)" data-en="Longitude (Optional)">خط الطول (اختياري)</label>
+                                        <input type="number" id="longitude" class="form-input" step="0.000001" placeholder="35.2332">
+                                    </div>
+                                </div>
+                                <button type="button" id="detectLocationBtn" class="btn btn-secondary mt-2 mb-2 w-full md:w-auto">
+                                    <span data-ar="حدد موقعي تلقائياً" data-en="Select My Location">حدد موقعي تلقائياً</span>
+                                </button>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var detectBtn = document.getElementById('detectLocationBtn');
+                if (detectBtn) {
+                    detectBtn.onclick = function() {
+                        if (!navigator.geolocation) {
+                            alert('Geolocation is not supported by your browser');
+                            return;
+                        }
+                        detectBtn.disabled = true;
+                        detectBtn.innerText = (localStorage.getItem('language') === 'en') ? 'Detecting...' : 'جاري التحديد...';
+                        navigator.geolocation.getCurrentPosition(function(pos) {
+                            document.getElementById('latitude').value = pos.coords.latitude.toFixed(6);
+                            document.getElementById('longitude').value = pos.coords.longitude.toFixed(6);
+                            detectBtn.disabled = false;
+                            detectBtn.innerText = (localStorage.getItem('language') === 'en') ? 'Select My Location' : 'حدد موقعي تلقائياً';
+                        }, function() {
+                            alert((localStorage.getItem('language') === 'en') ? 'Unable to retrieve your location' : 'تعذر تحديد الموقع');
+                            detectBtn.disabled = false;
+                            detectBtn.innerText = (localStorage.getItem('language') === 'en') ? 'Select My Location' : 'حدد موقعي تلقائياً';
+                        });
+                    };
+                }
+            });
+            </script>
             </form>
         </div>
 
@@ -299,18 +395,34 @@
             <div class="checkout-section">
                 <h2 class="text-2xl font-bold mb-6" style="color: var(--primary-black);" data-ar="طريقة الدفع" data-en="Payment Method">طريقة الدفع</h2>
                 
+                @if($codEnabled)
+                <div id="cod-notice" style="display: none; background: rgba(234, 179, 8, 0.1); border: 2px solid rgba(234, 179, 8, 0.3); color: #92400e; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
+                    <span id="cod-notice-text"></span>
+                </div>
+                @endif
+
                 <div class="space-y-4 mb-6">
                     <label class="payment-option">
-                        <input type="radio" name="payment" value="paypal" checked class="w-5 h-5">
+                        <input type="radio" name="payment" value="paypal" checked class="w-5 h-5" id="payment_paypal">
                         <span class="font-medium" style="color: var(--primary-black);" data-ar="PayPal" data-en="PayPal">PayPal</span>
                         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" class="h-6">
                     </label>
+                    @if($codEnabled)
+                    <label class="payment-option" id="cod-option" style="display: none;">
+                        <input type="radio" name="payment" value="cod" class="w-5 h-5" id="payment_cod">
+                        <span class="font-medium" style="color: var(--primary-black);" data-ar="الدفع عند الأستلام" data-en="Cash on Delivery">الدفع عند الأستلام</span>
+                        <div class="payment-tooltip" id="cod-tooltip"></div>
+                    </label>
+                    @endif
                 </div>
 
                 <div id="paypal-button-container" class="mb-4"></div>
 
                 <button type="button" id="placeOrderBtn" onclick="validateAndPay()" class="btn-yellow w-full py-4 text-lg" style="display:none;">
                     <span data-ar="الدفع الآن" data-en="Pay Now">الدفع الآن</span>
+                </button>
+                <button type="button" id="codOrderBtn" onclick="submitCodOrder()" class="btn-yellow w-full py-4 text-lg" style="display:none;">
+                    <span data-ar="متابعة الطلب" data-en="Continue Order">متابعة الطلب</span>
                 </button>
 
                 <p class="text-center mt-4" style="color: var(--gray-text); font-size: 0.85rem;">
@@ -323,7 +435,7 @@
 
 <script src="https://www.paypal.com/sdk/js?client-id={{ $paymentConfig['paypal']['client_id'] ?? 'test' }}&currency=USD"></script>
 <script>
-    (function () {
+(function () {
     if (window.__CHECKOUT_INIT__) return;
     window.__CHECKOUT_INIT__ = true;
 
@@ -331,28 +443,198 @@
     let currency = JSON.parse(localStorage.getItem('currency')) || { symbol: '$', rate: 1 };
     const SHIPPING_COST = 10;
     const currentLang = localStorage.getItem('language') || 'ar';
+    
+    // COD supported countries from backend
+    const codSupportedCountries = @json($codSupportedCountries ?? []);
+    const codEnabled = {{ $codEnabled ? 'true' : 'false' }};
 
+    // Country names mapping
+    const countryNames = {
+        'PS': { ar: 'فلسطين', en: 'Palestine', flag: '🇵🇸' },
+        'JO': { ar: 'الأردن', en: 'Jordan', flag: '🇯🇴' },
+        'SA': { ar: 'السعودية', en: 'Saudi Arabia', flag: '🇸🇦' },
+        'AE': { ar: 'الإمارات', en: 'UAE', flag: '🇦🇪' },
+        'EG': { ar: 'مصر', en: 'Egypt', flag: '🇪🇬' },
+        'LB': { ar: 'لبنان', en: 'Lebanon', flag: '🇱🇧' },
+        'SY': { ar: 'سوريا', en: 'Syria', flag: '🇸🇾' },
+        'IQ': { ar: 'العراق', en: 'Iraq', flag: '🇮🇶' },
+        'KW': { ar: 'الكويت', en: 'Kuwait', flag: '🇰🇼' },
+        'QA': { ar: 'قطر', en: 'Qatar', flag: '🇶🇦' },
+        'BH': { ar: 'البحرين', en: 'Bahrain', flag: '🇧🇭' },
+        'OM': { ar: 'عمان', en: 'Oman', flag: '🇴🇲' },
+        'YE': { ar: 'اليمن', en: 'Yemen', flag: '🇾🇪' },
+        'MA': { ar: 'المغرب', en: 'Morocco', flag: '🇲🇦' },
+        'DZ': { ar: 'الجزائر', en: 'Algeria', flag: '🇩🇿' },
+        'TN': { ar: 'تونس', en: 'Tunisia', flag: '🇹🇳' },
+        'LY': { ar: 'ليبيا', en: 'Libya', flag: '🇱🇾' },
+        'SD': { ar: 'السودان', en: 'Sudan', flag: '🇸🇩' }
+    };
+
+    // Build COD tooltip content dynamically
+    function buildCodTooltip() {
+        const tooltip = document.getElementById('cod-tooltip');
+        if (!tooltip || !codEnabled) return;
+
+        const prefix = currentLang === 'ar' ? 'متاح في: ' : 'Available in: ';
+        const countries = codSupportedCountries
+            .map(code => {
+                const country = countryNames[code.toUpperCase()];
+                if (country) {
+                    return `${country[currentLang]} ${country.flag}`;
+                }
+                return null;
+            })
+            .filter(Boolean)
+            .join(currentLang === 'ar' ? '، ' : ', ');
+
+        tooltip.textContent = prefix + countries;
+    }
+
+    // Build COD notice content dynamically
+    function buildCodNotice() {
+        const noticeText = document.getElementById('cod-notice-text');
+        if (!noticeText || !codEnabled) return;
+
+        const prefix = currentLang === 'ar' 
+            ? '💡 الدفع عند الاستلام متاح في الدول التالية فقط: ' 
+            : '💡 Cash on Delivery is available only in: ';
+        
+        const countries = codSupportedCountries
+            .map(code => {
+                const country = countryNames[code.toUpperCase()];
+                if (country) {
+                    return country[currentLang];
+                }
+                return null;
+            })
+            .filter(Boolean)
+            .join(currentLang === 'ar' ? '، ' : ', ');
+
+        noticeText.textContent = prefix + countries;
+    }
+
+    // Payment method toggle logic
+    function togglePaymentUI() {
+        const paypalRadio = document.getElementById('payment_paypal');
+        const codRadio = document.getElementById('payment_cod');
+        const paypalContainer = document.getElementById('paypal-button-container');
+        const payBtn = document.getElementById('placeOrderBtn');
+        const codBtn = document.getElementById('codOrderBtn');
+
+        if (codRadio.checked) {
+            paypalContainer.style.display = 'none';
+            payBtn.style.display = 'none';
+            codBtn.style.display = '';
+        } else {
+            paypalContainer.style.display = '';
+            payBtn.style.display = '';
+            codBtn.style.display = 'none';
+        }
+    }
+
+    // Check if COD is supported in selected country
+    function checkCodAvailability() {
+        const countrySelect = document.getElementById('country');
+        const codOption = document.getElementById('cod-option');
+        const codNotice = document.getElementById('cod-notice');
+        const paypalRadio = document.getElementById('payment_paypal');
+        const codRadio = document.getElementById('payment_cod');
+        
+        if (!codEnabled || !codOption) {
+            return;
+        }
+        
+        const selectedCountry = countrySelect.value;
+        
+        // If no country selected, show COD option (user hasn't chosen yet)
+        if (!selectedCountry) {
+            codOption.style.display = '';
+            if (codNotice) codNotice.style.display = 'none';
+            return;
+        }
+        
+        if (codSupportedCountries.includes(selectedCountry.toUpperCase())) {
+            // Show COD option for supported countries
+            codOption.style.display = '';
+            if (codNotice) codNotice.style.display = 'none';
+        } else {
+            // Hide COD option for unsupported countries
+            codOption.style.display = 'none';
+            if (codNotice) codNotice.style.display = '';
+            // If COD was selected, switch to PayPal
+            if (codRadio && codRadio.checked) {
+                paypalRadio.checked = true;
+                togglePaymentUI();
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Payment method toggle
+        const paypalRadio = document.getElementById('payment_paypal');
+        const codRadio = document.getElementById('payment_cod');
+        
+        if (paypalRadio) {
+            paypalRadio.addEventListener('change', togglePaymentUI);
+        }
+        if (codRadio) {
+            codRadio.addEventListener('change', togglePaymentUI);
+        }
+        
+        // Country change listener for COD availability
+        const countrySelect = document.getElementById('country');
+        if (countrySelect) {
+            countrySelect.addEventListener('change', checkCodAvailability);
+            // Check on page load if country is pre-selected
+            checkCodAvailability();
+        }
+        
+        // Build COD tooltip and notice with supported countries
+        buildCodTooltip();
+        buildCodNotice();
+        
+        // Long tap/touch support for tooltip on mobile
+        const codOption = document.getElementById('cod-option');
+        if (codOption) {
+            let touchTimer;
+            let touchDuration = 500; // 500ms for long tap
+            
+            codOption.addEventListener('touchstart', function(e) {
+                touchTimer = setTimeout(function() {
+                    codOption.classList.add('show-tooltip');
+                }, touchDuration);
+            });
+            
+            codOption.addEventListener('touchend', function(e) {
+                clearTimeout(touchTimer);
+                setTimeout(function() {
+                    codOption.classList.remove('show-tooltip');
+                }, 2000); // Hide after 2 seconds
+            });
+            
+            codOption.addEventListener('touchmove', function(e) {
+                clearTimeout(touchTimer);
+            });
+        }
+        
+        togglePaymentUI();
+    });
 
     // Load Order Items
     function loadOrderItems() {
         const orderItemsContainer = document.getElementById('orderItems');
-        
         if (cart.length === 0) {
             window.location.href = '/';
             return;
         }
-
         orderItemsContainer.innerHTML = cart.map(item => {
             const productName = item.name[currentLang] || item.name.ar || item.name;
             const cityName = item.cityName[currentLang] || item.cityName.ar || item.cityName;
-            
-            // Check if it's a package item
             if (item.isPackageItem) {
                 const packageName = item.packageName[currentLang] || item.packageName.ar || item.packageName;
                 const itemsText = item.packageItems && Array.isArray(item.packageItems) 
                     ? item.packageItems.map(pi => typeof pi === 'object' ? (pi.name[currentLang] || pi.name) : pi).join(', ')
                     : '';
-                
                 return `
                     <div class="order-item">
                         <div class="flex gap-4">
@@ -373,7 +655,6 @@
                     </div>
                 `;
             }
-            
             return `
                 <div class="order-item">
                     <div class="flex gap-4">
@@ -393,7 +674,6 @@
                 </div>
             `;
         }).join('');
-
         updateTotals();
     }
 
@@ -402,7 +682,6 @@
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const shipping = cart.reduce((sum, item) => sum + ((item.shipping_price || SHIPPING_COST) * item.quantity), 0);
         const total = subtotal + shipping;
-
         document.getElementById('subtotal').textContent = 
             `${currency.symbol}${(subtotal * currency.rate).toFixed(2)}`;
         document.getElementById('shipping').textContent = 
@@ -422,11 +701,9 @@
             { id: 'city', error: 'cityError', message: currentLang === 'ar' ? 'الرجاء إدخال المدينة' : 'Please enter the city' },
             { id: 'address', error: 'addressError', message: currentLang === 'ar' ? 'الرجاء إدخال العنوان التفصيلي' : 'Please enter the address' }
         ];
-
         fields.forEach(field => {
             const input = document.getElementById(field.id);
             const errorDiv = document.getElementById(field.error);
-            
             if (!input.value.trim()) {
                 errorDiv.style.display = 'block';
                 errorDiv.textContent = field.message;
@@ -435,7 +712,6 @@
                 errorDiv.style.display = 'none';
             }
         });
-
         // Email validation
         const emailInput = document.getElementById('email');
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -444,7 +720,6 @@
             document.getElementById('emailError').textContent = currentLang === 'ar' ? 'البريد الإلكتروني غير صحيح' : 'Invalid email address';
             isValid = false;
         }
-
         return isValid;
     }
 
@@ -454,17 +729,37 @@
             alert(currentLang === 'ar' ? 'الرجاء تعبئة جميع الحقول المطلوبة' : 'Please fill all required fields');
             return;
         }
-
         document.getElementById('placeOrderBtn').disabled = true;
         document.getElementById('paypal-button-container').classList.remove('hidden');
         initializePayPal();
+    }
+
+    // Submit COD order
+    function submitCodOrder() {
+        if (!validateForm()) {
+            alert(currentLang === 'ar' ? 'الرجاء تعبئة جميع الحقول المطلوبة' : 'Please fill all required fields');
+            return;
+        }
+        // Build order payload and send to backend (simulate success for now)
+        const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const total = (subtotal + SHIPPING_COST).toFixed(2);
+        const orderPayload = buildOrderPayload('cod', 'pending', null, null, subtotal, total);
+        fetch('/api/orders', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify(orderPayload)
+        }).then(r => r.json()).then(() => {
+            localStorage.removeItem('cart');
+            window.location.href = '/order-success?orderId=' + orderPayload.order_number;
+        }).catch(() => {
+            alert(currentLang === 'ar' ? 'تعذر حفظ الطلب.' : 'Failed to save order.');
+        });
     }
 
     // Initialize PayPal
     function initializePayPal() {
         const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const total = (subtotal + SHIPPING_COST).toFixed(2);
-
         paypal.Buttons({
             onClick: function(data, actions) {
                 if (!validateForm()) {
@@ -518,6 +813,8 @@
             address: document.getElementById('address').value,
             postal_code: document.getElementById('postalCode').value,
             notes: document.getElementById('notes').value,
+            latitude: document.getElementById('latitude') ? document.getElementById('latitude').value : '',
+            longitude: document.getElementById('longitude') ? document.getElementById('longitude').value : '',
             items: cart,
             subtotal: subtotal,
             shipping: SHIPPING_COST,
@@ -533,15 +830,17 @@
         };
     }
 
+    // Expose for inline onclick handler
+    window.validateAndPay = validateAndPay;
+    window.submitCodOrder = submitCodOrder;
+
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         loadOrderItems();
         document.getElementById('paypal-button-container').classList.remove('hidden');
         initializePayPal();
     });
-    // Expose for inline onclick handler
-    window.validateAndPay = validateAndPay;
-    })();
+})();
 </script>
 @endsection
 

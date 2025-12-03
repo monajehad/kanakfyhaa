@@ -6,20 +6,40 @@
     <div class="container">
       <div class="row gx-0 gy-6 g-lg-10">
         <div class="col-lg-5">
-          <a href="javascript:;" class="app-brand-link mb-6">
-            <span class="app-brand-logo demo">@include('_partials.macros')</span>
-            <span
-              class="app-brand-text demo text-white fw-semibold ms-2 ps-1">{{ config('variables.templateName') }}</span>
+          <a href="{{ url('/') }}" class="app-brand-link mb-6">
+            @if($appLogo ?? null)
+              <img src="{{ $appLogo }}" alt="{{ $appName }}" class="app-brand-logo" style="max-height: 40px;">
+            @else
+              <span class="app-brand-logo demo">@include('_partials.macros')</span>
+            @endif
+            <span class="app-brand-text demo text-white fw-semibold ms-2 ps-1">{{ $appName ?? config('variables.templateName') }}</span>
           </a>
-          <p class="footer-text footer-logo-description mb-6">Most Powerful & Comprehensive 🤩 React NextJS Admin
-            Template with Elegant Material Design & Unique Layouts.</p>
-          <form class="footer-form">
-            <div class="d-flex mt-2 gap-4">
-              <div class="form-floating form-floating-outline w-px-250">
-                <input type="text" class="form-control bg-transparent" id="newsletter-1" placeholder="Your email" />
-                <label for="newsletter-1">Subscribe to newsletter</label>
+          <p class=\"footer-text footer-logo-description mb-6\">{{ $appDescription ?? config('variables.templateDescription') ?? '' }}</p>
+          
+          @if(!empty($contactEmail) || !empty($supportEmail))
+            <div class=\"mb-4\">
+              @if(!empty($contactEmail))
+                <p class=\"mb-2\">
+                  <i class=\"icon-base ri ri-mail-line me-2\"></i>
+                  <a href=\"mailto:{{ $contactEmail }}\" class=\"footer-link\">{{ $contactEmail }}</a>
+                </p>
+              @endif
+              @if(!empty($supportEmail))
+                <p class=\"mb-0\">
+                  <i class=\"icon-base ri ri-customer-service-line me-2\"></i>
+                  <a href=\"mailto:{{ $supportEmail }}\" class=\"footer-link\">{{ $supportEmail }}</a>
+                </p>
+              @endif
+            </div>
+          @endif
+
+          <form class=\"footer-form\">
+            <div class=\"d-flex mt-2 gap-4\">
+              <div class=\"form-floating form-floating-outline w-px-250\">
+                <input type=\"text\" class=\"form-control bg-transparent\" id=\"newsletter-1\" placeholder=\"Your email\" />
+                <label for=\"newsletter-1\">Subscribe to newsletter</label>
               </div>
-              <button type="submit" class="btn btn-primary">Subscribe</button>
+              <button type=\"submit\" class=\"btn btn-primary\">Subscribe</button>
             </div>
           </form>
         </div>
@@ -87,14 +107,24 @@
           class="footer-link fw-medium footer-theme-link">{{config('variables.creatorName')}}</a>
       </div>
       <div>
-        <a href="{{config('variables.githubFreeUrl')}}" class="footer-link me-4" target="_blank"><i
-            class="icon-base ri ri-github-fill"></i></a>
-        <a href="{{config('variables.facebookUrl')}}" class="footer-link me-4" target="_blank"><i
-            class="icon-base ri ri-facebook-circle-fill"></i></a>
-        <a href="{{config('variables.twitterUrl')}}" class="footer-link me-4" target="_blank"><i
-            class="icon-base ri ri-twitter-x-fill"></i></a>
-        <a href="{{config('variables.instagramUrl')}}" class="footer-link" target="_blank"><i
-            class="icon-base ri ri-instagram-line"></i></a>
+        @if(!empty($socialLinks['facebook'] ?? null))
+          <a href="{{ $socialLinks['facebook'] }}" class="footer-link me-4" target="_blank" rel="noopener noreferrer"><i class="icon-base ri ri-facebook-circle-fill"></i></a>
+        @endif
+        @if(!empty($socialLinks['twitter'] ?? null))
+          <a href="{{ $socialLinks['twitter'] }}" class="footer-link me-4" target="_blank" rel="noopener noreferrer"><i class="icon-base ri ri-twitter-x-fill"></i></a>
+        @endif
+        @if(!empty($socialLinks['instagram'] ?? null))
+          <a href="{{ $socialLinks['instagram'] }}" class="footer-link me-4" target="_blank" rel="noopener noreferrer"><i class="icon-base ri ri-instagram-line"></i></a>
+        @endif
+        @if(!empty($socialLinks['linkedin'] ?? null))
+          <a href="{{ $socialLinks['linkedin'] }}" class="footer-link me-4" target="_blank" rel="noopener noreferrer"><i class="icon-base ri ri-linkedin-fill"></i></a>
+        @endif
+        @if(!empty($socialLinks['youtube'] ?? null))
+          <a href="{{ $socialLinks['youtube'] }}" class="footer-link me-4" target="_blank" rel="noopener noreferrer"><i class="icon-base ri ri-youtube-fill"></i></a>
+        @endif
+        @if(!empty($socialLinks['tiktok'] ?? null))
+          <a href="{{ $socialLinks['tiktok'] }}" class="footer-link" target="_blank" rel="noopener noreferrer"><i class="icon-base ri ri-tiktok-fill"></i></a>
+        @endif
       </div>
     </div>
   </div>

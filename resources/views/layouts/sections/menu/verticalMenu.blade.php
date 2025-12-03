@@ -11,7 +11,9 @@
   @if (!isset($navbarFull))
     <div class="app-brand demo">
       <a href="{{ url('/') }}" class="app-brand-link gap-xl-0 gap-2">
-        <span class="app-brand-logo demo">@include('_partials.macros')</span>
+        <span class="app-brand-logo demo">
+          <img src="{{ asset('logo.svg') }}" alt="Kanakfyhaa" style="height: 28px; width: auto;" />
+        </span>
         <span class="app-brand-text demo menu-text fw-semibold ms-2">{{ config('variables.templateName') }}</span>
       </a>
 

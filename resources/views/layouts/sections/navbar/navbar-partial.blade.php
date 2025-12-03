@@ -70,79 +70,52 @@
     <li class="nav-item navbar-dropdown dropdown-user dropdown">
       <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
         <div class="avatar avatar-online">
-          <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
+          <img src="{{ (Auth::check() && !empty(Auth::user()->profile_photo_url)) ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
             alt="avatar" class="rounded-circle" />
         </div>
       </a>
       <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
         <li>
-          <a class="dropdown-item"
-            href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
-            <div class="d-flex align-items-center">
-              <div class="flex-shrink-0 me-2">
-                <div class="avatar avatar-online">
-                  <img src="{{ Auth::user() ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
-                    alt="alt" class="w-px-40 h-auto rounded-circle" />
+              <a class="dropdown-item"
+                href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
+                <div class="d-flex align-items-center">
+                  <div class="shrink-0 me-2">
+                    <div class="avatar avatar-online">
+                      <img src="{{ (Auth::check() && !empty(Auth::user()->profile_photo_url)) ? Auth::user()->profile_photo_url : asset('assets/img/avatars/1.png') }}"
+                        alt="{{ Auth::check() ? Auth::user()->name : 'User' }}" class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                  </div>
+                  <div class="grow">
+                    <h6 class="mb-0 small">
+                      @if (Auth::check())
+                        {{ Auth::user()->name }}
+                      @else
+                        Guest
+                      @endif
+                    </h6>
+                    @if (Auth::check())
+                      <small class="text-body-secondary">{{ Auth::user()->role ?? 'Admin' }}</small>
+                    @endif
+                  </div>
                 </div>
-              </div>
-              <div class="flex-grow-1">
-                <h6 class="mb-0 small">
-                  @if (Auth::check())
-                    {{ Auth::user()->name }}
-                  @else
-                    John Doe
-                  @endif
-                </h6>
-                <small class="text-body-secondary">Admin</small>
-              </div>
-            </div>
-          </a>
+              </a>
         </li>
         <li>
           <div class="dropdown-divider"></div>
         </li>
         <li>
-          <a class="dropdown-item"
-            href="{{ Route::has('profile.show') ? route('profile.show') : 'javascript:void(0);' }}">
-            <i class="icon-base ri ri-user-3-line icon-22px me-2"></i> <span class="align-middle">My
-              Profile</span> </a>
+          <a class="dropdown-item" href="{{ route('admin.profile') }}">
+            <i class="icon-base ri ri-user-3-line icon-22px me-2"></i> <span class="align-middle">{{ __('My Profile') }}</span> </a>
         </li>
         @if (Auth::check() )
           <li>
-            <a class="dropdown-item" > <i
-                class="icon-base ri ri-settings-4-line icon-22px me-3"></i><span class="align-middle">Settings</span>
+            <a class="dropdown-item" href="{{ route('admin.settings.index') }}"> <i
+              class="icon-base ri ri-settings-4-line icon-22px me-3"></i><span class="align-middle">{{ __('Settings') }}</span>
             </a>
           </li>
         @endif
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);">
-            <span class="d-flex align-items-center align-middle">
-              <i class="flex-shrink-0 icon-base ri ri-file-text-line icon-22px me-3"></i>
-              <span class="flex-grow-1 align-middle">Billing Plan</span>
-              <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger">4</span>
-            </span>
-          </a>
-        </li>
-        @if (Auth::User() )
-          <li>
-            <div class="dropdown-divider"></div>
-          </li>
-          <li>
-            <h6 class="dropdown-header">Manage Team</h6>
-          </li>
-          <li>
-            <div class="dropdown-divider my-1"></div>
-          </li>
-          <li>
-            <a class="dropdown-item"
-              href="javascript:void(0)">
-              <i class="icon-base ri ri-settings-3-line icon-md me-3"></i><span>Team Settings</span>
-            </a>
-          </li>
-          
-      
-          
-        @endif
+        {{-- Removed Billing Plan for a cleaner account menu --}}
+        {{-- Removed Team management section to keep only essentials --}}
         <li>
           <div class="dropdown-divider my-1"></div>
         </li>
@@ -151,7 +124,7 @@
             <div class="d-grid px-4 pt-2 pb-1">
               <a class="btn btn-danger d-flex" href="{{ route('admin.logout') }}"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <small class=" align-middle">Logout</small>
+                <small class=" align-middle">{{ __('Logout') }}</small>
                 <i class="icon-base ri ri-logout-box-r-line ms-2 icon-16px"></i>
               </a>
             </div>

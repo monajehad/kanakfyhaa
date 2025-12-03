@@ -414,5 +414,60 @@ class SettingsSeeder extends Seeder
         foreach ($settings as $setting) {
             Setting::updateOrCreate(['key' => $setting['key']], $setting);
         }
+
+        // Custom: Enable Cash on Delivery
+        Setting::updateOrCreate([
+            'key' => 'enable_cod',
+        ], [
+            'value' => '1',
+            'group' => 'payment',
+            'label' => 'Enable Cash on Delivery',
+            'description' => 'Allow customers to pay with cash on delivery',
+            'type' => 'boolean',
+        ]);
+
+        // Custom: Enable Lat/Long Fields
+        Setting::updateOrCreate([
+            'key' => 'enable_latlong',
+        ], [
+            'value' => '0',
+            'group' => 'general',
+            'label' => 'Enable Lat/Long Fields',
+            'description' => 'Show latitude and longitude fields in checkout',
+            'type' => 'boolean',
+        ]);
+
+        // Custom: Enable WhatsApp FAB
+        Setting::updateOrCreate([
+            'key' => 'enable_whatsapp_fab',
+        ], [
+            'value' => '1',
+            'group' => 'general',
+            'label' => 'Enable WhatsApp Floating Button',
+            'description' => 'Show WhatsApp floating action button on all pages',
+            'type' => 'boolean',
+        ]);
+
+        // Custom: WhatsApp Number
+        Setting::updateOrCreate([
+            'key' => 'whatsapp_number',
+        ], [
+            'value' => '+970599123456',
+            'group' => 'general',
+            'label' => 'WhatsApp Number',
+            'description' => 'WhatsApp number for contact (with country code, e.g., +970599123456)',
+            'type' => 'text',
+        ]);
+
+        // Custom: COD Supported Countries
+        Setting::updateOrCreate([
+            'key' => 'cod_supported_countries',
+        ], [
+            'value' => 'PS,JO,SA,AE,EG,LB',
+            'group' => 'payment',
+            'label' => 'COD Supported Countries',
+            'description' => 'Countries that support Cash on Delivery (comma-separated ISO2 codes, e.g., PS,JO,SA,AE,EG,LB)',
+            'type' => 'text',
+        ]);
     }
 }
